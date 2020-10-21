@@ -1,0 +1,13 @@
+package com.epam.esm.dao;
+
+public class SqlRequestTag {
+
+    public static final String SELECT_FIND_ALL="select id,name from tags;";
+    public static final String SELECT_FIND_BY_ID="select id,name from tags where id=?;";
+    public static final String SELECT_FIND_BY_NAME="select id,name from tags where name=?;";
+
+    public static final String INSERT="insert into tags (name) values (?);";
+
+    public static final String DELETE="delete from tags where id=?;";
+    public static final String UPDATE="update tags set  name=? where id=?;";
+}

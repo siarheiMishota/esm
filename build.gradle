@@ -5,9 +5,9 @@ plugins {
 group 'com.epam'
 version '1.0-SNAPSHOT'
 
-java{
-    sourceCompatibility=JavaVersion.VERSION_1_8
-    targetCompatibility=JavaVersion.VERSION_1_8
+java {
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
 }
 
 repositories {
@@ -17,7 +17,11 @@ repositories {
 dependencies {
     implementation group: 'org.springframework', name: 'spring-jdbc', version: '3.1.0.RELEASE'
 //    implementation group: 'com.zaxxer:HikariCP:3.4.5'
+    // https://mvnrepository.com/artifact/org.springframework/spring-context-support
+    compile group: 'org.springframework', name: 'spring-context-support', version: '5.2.9.RELEASE'
+
     implementation group: 'org.springframework', name: 'spring-core', version: '5.2.9.RELEASE'
+
 
     testImplementation group: 'org.mockito', name: 'mockito-core', version: '3.5.13'
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.3.1'

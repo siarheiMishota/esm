@@ -8,14 +8,14 @@ import java.util.Optional;
 public interface TagDao {
     List<Tag> findAll();
 
-    Optional<Tag> findById(int id);
+    Optional<Tag> findById(long id);
 
     Optional<Tag> findByName(String name);
 
     Tag add(Tag tag);
 
-    void update(Tag tag);
+    int update(Tag tag);
 
-    void delete(int id);
+    void delete(long id);
 
 }

@@ -9,15 +9,15 @@ import java.util.Optional;
 public interface GiftCertificateDao {
     List<GiftCertificate> findAll();
 
-    Optional<GiftCertificate> findById(int id);
+    Optional<GiftCertificate> findById(long id);
 
     Optional<GiftCertificate> findByName(String name);
 
-    List<GiftCertificate> findByTagId(int tagId);
+    List<GiftCertificate> findByTagId(long tagId);
 
     GiftCertificate add(GiftCertificate giftCertificate);
 
-    void update(GiftCertificate giftCertificate);
+    int update(GiftCertificate giftCertificate);
 
     void delete(long id);
 

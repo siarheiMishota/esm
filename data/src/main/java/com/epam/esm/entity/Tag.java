@@ -12,6 +12,10 @@ public class Tag {
         this.name = name;
     }
 
+    public Tag(String name) {
+        this.name = name;
+    }
+
     public long getId() {
         return id;
     }
@@ -29,12 +33,11 @@ public class Tag {
     }
 
     @Override
-    public boolean equals(Object object) {
-        if (this == object) return true;
-        if (object == null || getClass() != object.getClass()) return false;
-        if (!super.equals(object)) return false;
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
 
-        Tag tag = (Tag) object;
+        Tag tag = (Tag) o;
 
         if (id != tag.id) return false;
         return name != null ? name.equals(tag.name) : tag.name == null;
@@ -42,8 +45,7 @@ public class Tag {
 
     @Override
     public int hashCode() {
-        int result = super.hashCode();
-        result = 31 * result + (int) (id ^ (id >>> 32));
+        int result = (int) (id ^ (id >>> 32));
         result = 31 * result + (name != null ? name.hashCode() : 0);
         return result;
     }

@@ -25,7 +25,7 @@ public class TagDaoImpl implements TagDao {
         return jdbcTemplate.query(SELECT_FIND_ALL, new BeanPropertyRowMapper<>(Tag.class));
     }
 
-    public Optional<Tag> findById(int id) {
+    public Optional<Tag> findById(long id) {
         return jdbcTemplate.query(SELECT_FIND_BY_ID, new Object[]{id}, new BeanPropertyRowMapper<>(Tag.class)).stream().findAny();
     }
 
@@ -33,7 +33,9 @@ public class TagDaoImpl implements TagDao {
         return jdbcTemplate.query(SELECT_FIND_BY_NAME, new Object[]{name}, new BeanPropertyRowMapper<>(Tag.class)).stream().findAny();
     }
 
+    @Override
     public Tag add(Tag tag) {
+
         GeneratedKeyHolder generatedKeyHolder = new GeneratedKeyHolder();
 
         jdbcTemplate.update(
@@ -50,12 +52,12 @@ public class TagDaoImpl implements TagDao {
     }
 
     @Override
-    public void delete(int id) {
+    public void delete(long id) {
         jdbcTemplate.update(DELETE, id);
     }
 
     @Override
-    public void update(Tag tag) {
-        jdbcTemplate.update(UPDATE,tag.getName(),tag.getId());
+    public int update(Tag tag) {
+        return jdbcTemplate.update(UPDATE,tag.getName(),tag.getId());
     }
 }

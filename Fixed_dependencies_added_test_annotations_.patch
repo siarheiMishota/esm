@@ -1,0 +1,72 @@
+Index: data/src/test/java/com/epam/esm/dao/impl/TagDaoImplTest.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- data/src/test/java/com/epam/esm/dao/impl/TagDaoImplTest.java	(revision edcc07e6ca7899f6e03981cf33170190f3b5e15a)
++++ data/src/test/java/com/epam/esm/dao/impl/TagDaoImplTest.java	(date 1603279328556)
+@@ -1,29 +1,27 @@
+ package com.epam.esm.dao.impl;
+ 
++import static org.junit.jupiter.api.Assertions.assertEquals;
++
+ import com.epam.esm.configuration.DaoConfiguration;
+ import com.epam.esm.dao.TagDao;
+-import net.bytebuddy.implementation.bind.annotation.RuntimeType;
+-import org.junit.jupiter.api.Assertions;
+-import org.junit.jupiter.api.BeforeAll;
++
+ import org.junit.jupiter.api.Test;
+ import org.junit.jupiter.api.extension.ExtendWith;
+-import org.springframework.context.ApplicationContext;
+-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
++import org.springframework.beans.factory.annotation.Autowired;
++import org.springframework.test.context.ContextConfiguration;
++import org.springframework.test.context.junit.jupiter.SpringExtension;
+ 
+-import static org.junit.jupiter.api.Assertions.assertEquals;
+ 
++@ExtendWith(SpringExtension.class)
++@ContextConfiguration(classes = DaoConfiguration.class) // TestConfig should be here
+ class TagDaoImplTest {
+-    private ApplicationContext context;
+ 
+-    @BeforeAll
+-    public void createApplicationContext(){
+-        context = new AnnotationConfigApplicationContext(DaoConfiguration.class);
+-    }
++    @Autowired
++    private TagDao tagDaoImpl;
+ 
+     @Test
+     void findAll() {
+-        TagDao tagDaoImpl = context.getBean("tagDao", TagDao.class);
+-        assertEquals(5,tagDaoImpl.findAll().size());
++        assertEquals(5, tagDaoImpl.findAll().size());
+     }
+ 
+     @Test
+Index: data/build.gradle
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- data/build.gradle	(revision edcc07e6ca7899f6e03981cf33170190f3b5e15a)
++++ data/build.gradle	(date 1603279215046)
+@@ -20,8 +20,15 @@
+         implementation group: 'mysql', name: 'mysql-connector-java', version: '8.0.22'
+ 
+         testImplementation group: 'org.mockito', name: 'mockito-core', version: '3.5.13'
++        testImplementation group: 'org.springframework', name: 'spring-test', version: '5.2.9.RELEASE'
+         testImplementation(platform('org.junit:junit-bom:5.7.0'))
+-        testImplementation 'org.junit.jupiter:junit-jupiter-api:5.3.1'
+         testImplementation 'org.junit.jupiter:junit-jupiter-engine:5.3.1'
+     }
++
++    test {
++        useJUnitPlatform()
++        testLogging {
++            events "passed", "skipped", "failed"
++        }
++    }
+ }

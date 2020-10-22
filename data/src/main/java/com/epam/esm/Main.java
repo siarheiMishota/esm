@@ -2,32 +2,31 @@ package com.epam.esm;
 
 
 import com.epam.esm.configuration.DaoConfiguration;
-import com.epam.esm.dao.GiftCertificateDao;
-import com.epam.esm.entity.GiftCertificate;
+import com.epam.esm.dao.TagDao;
+import com.epam.esm.entity.Tag;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
 
 public class Main {
     public static void main(String[] args) {
         ApplicationContext context = new AnnotationConfigApplicationContext(DaoConfiguration.class);
-        GiftCertificateDao tagDaoImpl = context.getBean("giftCertificateDao", GiftCertificateDao.class);
+//        GiftCertificateDao tagDaoImpl = context.getBean("giftCertificateDao", GiftCertificateDao.class);
+        TagDao tagDaoImpl = context.getBean("tagDao", TagDao.class);
+        tagDaoImpl.update(new Tag(300,"newwwwwwww"));
 
 //        System.out.println(tagDaoImpl.findAll().stream().findFirst());
-        GiftCertificate giftCertificate = new GiftCertificate(10, "name 10", "description 10",
-                BigDecimal.valueOf(10), LocalDateTime.now(), LocalDateTime.now(), 10);
-        tagDaoImpl.add(giftCertificate);
-
-        System.out.println(giftCertificate);
-        System.out.println("___________________________________________________________________________\n update\n");
-        giftCertificate.setName("New name 1001010101");
-        tagDaoImpl.update(giftCertificate);
-        System.out.println(giftCertificate);
-        System.out.println("___________________________________________________________________________\n update end\n");
-
-        tagDaoImpl.delete(giftCertificate.getId());
+//        GiftCertificate giftCertificate = new GiftCertificate(10, "name 10", "description 10",
+//                BigDecimal.valueOf(10), LocalDateTime.now(), LocalDateTime.now(), 10);
+//        tagDaoImpl.add(giftCertificate);
+//
+//        System.out.println(giftCertificate);
+//        System.out.println("___________________________________________________________________________\n update\n");
+//        giftCertificate.setName("New name 1001010101");
+//        tagDaoImpl.update(giftCertificate);
+//        System.out.println(giftCertificate);
+//        System.out.println("___________________________________________________________________________\n update end\n");
+//
+//        tagDaoImpl.delete(giftCertificate.getId());
 
 //        TagDao tagDaoImpl = context.getBean("tagDao", TagDao.class);
 //        Tag tag = new Tag();

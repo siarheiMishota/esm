@@ -2,6 +2,7 @@ package com.epam.esm.entity;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 public class GiftCertificate {
     private long id;
@@ -13,6 +14,15 @@ public class GiftCertificate {
     private int duration;
 
     public GiftCertificate() {
+    }
+
+    public GiftCertificate(String name, String description, BigDecimal price, LocalDateTime creationDate, LocalDateTime lastUpdateDate, int duration) {
+        this.name = name;
+        this.description = description;
+        this.price = price;
+        this.creationDate = creationDate;
+        this.lastUpdateDate = lastUpdateDate;
+        this.duration = duration;
     }
 
     public GiftCertificate(long id, String name, String description, BigDecimal price, LocalDateTime creationDate, LocalDateTime lastUpdateDate, int duration) {
@@ -111,14 +121,15 @@ public class GiftCertificate {
 
     @Override
     public String toString() {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("uuuu-MM-dd'T'HH:mm:ss.SSSSSSSSS");
         return new StringBuilder()
                 .append("main.java.com.epam.esm.entity.GiftCertificate( id= ")
                 .append(id).append(", name= ")
                 .append(name).append(", description= ")
                 .append(description).append(", price= ")
                 .append(price).append(", creation date= ")
-                .append(creationDate).append(", last update date= ")
-                .append(lastUpdateDate).append(", duration= ")
+                .append(creationDate.format(formatter)).append(", last update date= ")
+                .append(lastUpdateDate.format(formatter)).append(", duration= ")
                 .append(duration).append(");")
                 .toString();
     }

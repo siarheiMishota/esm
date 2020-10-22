@@ -28,17 +28,18 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
     }
 
     @Override
-    public Optional<GiftCertificate> findById(int id) {
-        return jdbcTemplate.query(SELECT_FIND_BY_ID, new BeanPropertyRowMapper<>(GiftCertificate.class)).stream().findAny();
+    public Optional<GiftCertificate> findById(long id) {
+        return jdbcTemplate.query(SELECT_FIND_BY_ID, new Object[]{id},
+                new BeanPropertyRowMapper<>(GiftCertificate.class)).stream().findAny();
     }
 
     @Override
     public Optional<GiftCertificate> findByName(String name) {
-        return jdbcTemplate.query(SELECT_FIND_BY_NAME, new BeanPropertyRowMapper<>(GiftCertificate.class)).stream().findAny();
+        return jdbcTemplate.query(SELECT_FIND_BY_NAME, new Object[]{name}, new BeanPropertyRowMapper<>(GiftCertificate.class)).stream().findAny();
     }
 
     @Override
-    public List<GiftCertificate> findByTagId(int tagId) {
+    public List<GiftCertificate> findByTagId(long tagId) {
         return jdbcTemplate.query(SELECT_FIND_ALL_BY_TAG_ID, new Object[]{tagId}, new BeanPropertyRowMapper<>(GiftCertificate.class));
     }
 
@@ -48,14 +49,10 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
     }
 
     @Override
-    public void update(GiftCertificate giftCertificate) {
-        try {
-            jdbcTemplate.update(UPDATE, giftCertificate.getName(), giftCertificate.getDescription(),
-                    giftCertificate.getPrice(), giftCertificate.getCreationDate(), giftCertificate.getLastUpdateDate(), giftCertificate.getDuration(),
-                    giftCertificate.getId());
-        }catch (Exception e){
-            e.printStackTrace();
-        }
+    public int update(GiftCertificate giftCertificate) {
+        return jdbcTemplate.update(UPDATE, giftCertificate.getName(), giftCertificate.getDescription(),
+                giftCertificate.getPrice(), giftCertificate.getCreationDate(), giftCertificate.getLastUpdateDate(), giftCertificate.getDuration(),
+                giftCertificate.getId());
     }
 
     @Override

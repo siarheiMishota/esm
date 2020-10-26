@@ -1,6 +1,6 @@
 package com.epam.esm.dao.impl;
 
-import com.epam.esm.configuration.DaoConfiguration;
+import com.epam.esm.configuration.DaoConfigurationTest;
 import com.epam.esm.dao.GiftCertificateDao;
 import com.epam.esm.entity.GiftCertificate;
 import com.epam.esm.entity.Tag;
@@ -18,7 +18,7 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes = DaoConfiguration.class)
+@ContextConfiguration(classes = DaoConfigurationTest.class)
 class GiftCertificateDaoImplTest {
 
     @Autowired
@@ -37,7 +37,7 @@ class GiftCertificateDaoImplTest {
                 BigDecimal.valueOf(4),
                 LocalDateTime.of(2020, 10, 22, 0, 03, 22, 917992000),
                 LocalDateTime.of(2020, 10, 22, 0, 03, 22, 917992000),
-                4,List.of(new Tag(1,"extreme")));
+                4, List.of(new Tag(1, "extreme")));
 
         GiftCertificate actual = giftCertificateDao.findById(4).get();
         assertEquals(expected, actual);
@@ -56,7 +56,7 @@ class GiftCertificateDaoImplTest {
 
     @Test
     void findByName() {
-        assertEquals(1, giftCertificateDao.findByName("name 4").size());
+        assertEquals(3, giftCertificateDao.findByName("1").size());
     }
 
     @Test
@@ -68,6 +68,22 @@ class GiftCertificateDaoImplTest {
     void findByNameWithNameNotExist() {
         assertEquals(0, giftCertificateDao.findByName("not exist").size());
     }
+
+    @Test
+    void findByDescription() {
+        assertEquals(3, giftCertificateDao.findByName("1").size());
+    }
+
+    @Test
+    void findByDescriptionWithNull() {
+        assertEquals(0, giftCertificateDao.findByDescription(null).size());
+    }
+
+    @Test
+    void findByDescriptionWithDescriptionNotExist() {
+        assertEquals(0, giftCertificateDao.findByName("not exist").size());
+    }
+
 
     @Test
     void findByTagId() {
@@ -104,7 +120,7 @@ class GiftCertificateDaoImplTest {
         GiftCertificate giftCertificate = new GiftCertificate("new name", "new description", BigDecimal.valueOf(200),
                 LocalDateTime.of(2020, 10, 22, 0, 03, 22, 917992000),
                 LocalDateTime.of(2020, 10, 22, 0, 03, 22, 917992000),
-                22,List.of(new Tag(1,"extreme")));
+                22, List.of(new Tag(1, "extreme")));
         giftCertificateDao.add(giftCertificate);
         Optional<GiftCertificate> expected = giftCertificateDao.findById(giftCertificate.getId());
         List<GiftCertificate> all = giftCertificateDao.findAll();
@@ -141,7 +157,7 @@ class GiftCertificateDaoImplTest {
         GiftCertificate giftCertificate = new GiftCertificate(4, "update name 4", "update description 4", BigDecimal.valueOf(200),
                 LocalDateTime.of(2000, 10, 22, 0, 03, 22, 917992000),
                 LocalDateTime.of(2000, 10, 22, 0, 03, 22, 917992000),
-                9,List.of(new Tag(1,"extreme")));
+                9, List.of(new Tag(1, "extreme")));
         int actual = giftCertificateDao.update(giftCertificate);
         assertEquals(1, actual);
 
@@ -164,7 +180,7 @@ class GiftCertificateDaoImplTest {
         GiftCertificate giftCertificate = new GiftCertificate(40000, "update name 4", "update description 4", BigDecimal.valueOf(200),
                 LocalDateTime.of(2000, 10, 22, 0, 03, 22, 917992000),
                 LocalDateTime.of(2000, 10, 22, 0, 03, 22, 917992000),
-                9,List.of(new Tag(1,"extreme")));
+                9, List.of(new Tag(1, "extreme")));
         assertEquals(0, giftCertificateDao.update(giftCertificate));
     }
 
@@ -173,7 +189,7 @@ class GiftCertificateDaoImplTest {
         GiftCertificate giftCertificate = new GiftCertificate("new name", "new description", BigDecimal.valueOf(200),
                 LocalDateTime.of(2020, 10, 22, 0, 03, 22, 917992000),
                 LocalDateTime.of(2020, 10, 22, 0, 03, 22, 917992000),
-                22,List.of(new Tag(1,"extreme")));
+                22, List.of(new Tag(1, "extreme")));
         long expected = giftCertificate.getId();
         giftCertificateDao.add(giftCertificate);
         assertNotEquals(expected, giftCertificate.getId());

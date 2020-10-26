@@ -13,8 +13,11 @@ import static com.epam.esm.dao.SqlRequestTagGiftCertificate.INSERT;
 @Component
 public class TagGiftCertificateDaoImpl implements TagGiftCertificateDao {
 
-    @Autowired
-    private JdbcTemplate jdbcTemplate;
+    private final JdbcTemplate jdbcTemplate;
+
+    public TagGiftCertificateDaoImpl(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
+    }
 
     @Override
     public boolean add(long tagId, long giftCertificateId) {

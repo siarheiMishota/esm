@@ -1,6 +1,6 @@
 package com.epam.esm.dao.impl;
 
-import com.epam.esm.configuration.DaoConfiguration;
+import com.epam.esm.configuration.DaoConfigurationTest;
 import com.epam.esm.dao.TagDao;
 import com.epam.esm.entity.Tag;
 import org.junit.jupiter.api.Test;
@@ -10,13 +10,12 @@ import org.springframework.dao.DuplicateKeyException;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes = DaoConfiguration.class)
+@ContextConfiguration(classes = DaoConfigurationTest.class)
 class TagDaoImplTest {
 
     @Autowired
@@ -61,7 +60,7 @@ class TagDaoImplTest {
 
     @Test
     void findByGiftCertificateId() {
-        assertEquals(2,tagDao.findByGiftCertificateId(3).size());
+        assertEquals(2, tagDao.findByGiftCertificateId(3).size());
     }
 
 

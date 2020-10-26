@@ -1,6 +1,6 @@
 package com.epam.esm.dao.impl;
 
-import com.epam.esm.configuration.DaoConfiguration;
+import com.epam.esm.configuration.DaoConfigurationTest;
 import com.epam.esm.dao.TagGiftCertificateDao;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -12,7 +12,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes = DaoConfiguration.class)
+@ContextConfiguration(classes = DaoConfigurationTest.class)
 class TagGiftCertificateDaoImplTest {
 
     @Autowired

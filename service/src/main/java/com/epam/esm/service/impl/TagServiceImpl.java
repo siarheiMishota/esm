@@ -12,8 +12,11 @@ import java.util.Optional;
 @Component
 public class TagServiceImpl implements TagService {
 
-    @Autowired
-    private TagDao tagDao;
+    private final TagDao tagDao;
+
+    public TagServiceImpl(TagDao tagDao) {
+        this.tagDao = tagDao;
+    }
 
     @Override
     public List<Tag> findAll() {
@@ -32,7 +35,7 @@ public class TagServiceImpl implements TagService {
 
     @Override
     public List<Tag> findByGiftCertificateId(long giftCertificateId) {
-        return findByGiftCertificateId(giftCertificateId);
+        return tagDao.findByGiftCertificateId(giftCertificateId);
     }
 
     @Override

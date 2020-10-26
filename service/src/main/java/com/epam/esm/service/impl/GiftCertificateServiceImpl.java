@@ -14,11 +14,14 @@ import java.util.Optional;
 @Component
 public class GiftCertificateServiceImpl implements GiftCertificateService {
 
-    @Autowired
-    private GiftCertificateDao giftCertificateDao;
+    private final GiftCertificateDao giftCertificateDao;
 
-    @Autowired
-    private TagService tagService;
+    private final TagService tagService;
+
+    public GiftCertificateServiceImpl(GiftCertificateDao giftCertificateDao, TagService tagService) {
+        this.giftCertificateDao = giftCertificateDao;
+        this.tagService = tagService;
+    }
 
     @Override
     public List<GiftCertificate> findAll() {
@@ -33,6 +36,11 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     @Override
     public List<GiftCertificate> findByName(String name) {
         return giftCertificateDao.findByName(name);
+    }
+
+    @Override
+    public List<GiftCertificate> findByDescription(String description) {
+        return giftCertificateDao.findByDescription(description);
     }
 
     @Override
@@ -62,7 +70,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
             if (optionalTagFromDb.isPresent()) {
                 tag.setId(optionalTagFromDb.get().getId());
             } else {
-                tagService.add(tag);
+               tagService.add(tag);
             }
         });
     }

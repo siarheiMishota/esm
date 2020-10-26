@@ -4,7 +4,6 @@ import com.epam.esm.dao.GiftCertificateDao;
 import com.epam.esm.dao.TagDao;
 import com.epam.esm.dao.TagGiftCertificateDao;
 import com.epam.esm.entity.GiftCertificate;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -22,14 +21,17 @@ import static com.epam.esm.dao.SqlRequestGiftCertificate.*;
 @Component
 public class GiftCertificateDaoImpl implements GiftCertificateDao {
 
-    @Autowired
-    private JdbcTemplate jdbcTemplate;
+    private final JdbcTemplate jdbcTemplate;
 
-    @Autowired
-    private TagDao tagDao;
+    private final TagDao tagDao;
 
-    @Autowired
-    private TagGiftCertificateDao tagGiftCertificateDao;
+    private final TagGiftCertificateDao tagGiftCertificateDao;
+
+    public GiftCertificateDaoImpl(JdbcTemplate jdbcTemplate, TagDao tagDao, TagGiftCertificateDao tagGiftCertificateDao) {
+        this.jdbcTemplate = jdbcTemplate;
+        this.tagDao = tagDao;
+        this.tagGiftCertificateDao = tagGiftCertificateDao;
+    }
 
     @Override
     public List<GiftCertificate> findAll() {
@@ -50,11 +52,18 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
 
     @Override
     public List<GiftCertificate> findByName(String name) {
-
+        name = "%" + name + "%";
         List<GiftCertificate> giftCertificates = jdbcTemplate.query(SELECT_FIND_BY_NAME, new Object[]{name}, new BeanPropertyRowMapper<>(GiftCertificate.class));
         giftCertificates.forEach(this::setTagsToGiftCertificate);
         return giftCertificates;
+    }
 
+    @Override
+    public List<GiftCertificate> findByDescription(String description) {
+        description = "%" + description + "%";
+        List<GiftCertificate> giftCertificates = jdbcTemplate.query(SELECT_FIND_BY_DESCRIPTION, new Object[]{description}, new BeanPropertyRowMapper<>(GiftCertificate.class));
+        giftCertificates.forEach(this::setTagsToGiftCertificate);
+        return giftCertificates;
     }
 
     @Override

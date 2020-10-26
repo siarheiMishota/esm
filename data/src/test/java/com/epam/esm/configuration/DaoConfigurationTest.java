@@ -15,7 +15,7 @@ import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
 import javax.sql.DataSource;
 
 @Configuration
-public class DaoConfiguration {
+public class DaoConfigurationTest {
 
     @Bean
     public DataSource dataSource() {
@@ -31,18 +31,18 @@ public class DaoConfiguration {
     }
 
     @Bean
-    public TagDao tagDao() {
-        return new TagDaoImpl();
+    public TagDao tagDao(JdbcTemplate jdbcTemplate) {
+        return new TagDaoImpl(jdbcTemplate);
     }
 
     @Bean
-    public GiftCertificateDao giftCertificateDao() {
-        return new GiftCertificateDaoImpl();
+    public GiftCertificateDao giftCertificateDao(JdbcTemplate jdbcTemplate,TagDao tagDao,TagGiftCertificateDao tagGiftCertificateDao) {
+        return new GiftCertificateDaoImpl(jdbcTemplate,tagDao,tagGiftCertificateDao);
     }
 
     @Bean
-    public TagGiftCertificateDao tagGiftCertificateDao(){
-        return new TagGiftCertificateDaoImpl();
+    public TagGiftCertificateDao tagGiftCertificateDao(JdbcTemplate jdbcTemplate){
+        return new TagGiftCertificateDaoImpl(jdbcTemplate);
     }
 
 }

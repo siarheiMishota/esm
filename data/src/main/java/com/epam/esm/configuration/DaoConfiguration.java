@@ -2,8 +2,10 @@ package com.epam.esm.configuration;
 
 import com.epam.esm.dao.GiftCertificateDao;
 import com.epam.esm.dao.TagDao;
+import com.epam.esm.dao.TagGiftCertificateDao;
 import com.epam.esm.dao.impl.GiftCertificateDaoImpl;
 import com.epam.esm.dao.impl.TagDaoImpl;
+import com.epam.esm.dao.impl.TagGiftCertificateDaoImpl;
 import com.zaxxer.hikari.HikariDataSource;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -39,6 +41,11 @@ public class DaoConfiguration {
     @Bean
     public TagDao tagDao() {
         return new TagDaoImpl();
+    }
+
+    @Bean
+    public TagGiftCertificateDao tagGiftCertificateDao(){
+        return new TagGiftCertificateDaoImpl();
     }
 
     @Bean

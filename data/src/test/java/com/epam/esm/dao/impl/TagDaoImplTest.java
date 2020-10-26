@@ -10,6 +10,7 @@ import org.springframework.dao.DuplicateKeyException;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -59,6 +60,12 @@ class TagDaoImplTest {
     }
 
     @Test
+    void findByGiftCertificateId() {
+        assertEquals(2,tagDao.findByGiftCertificateId(3).size());
+    }
+
+
+    @Test
     void add() {
         Tag tag = new Tag("new tag");
         long expected = tag.getId();
@@ -82,7 +89,7 @@ class TagDaoImplTest {
     @Test
     void update() {
         Tag tag = new Tag(3, "new tag");
-        int actual= tagDao.update(tag);
+        int actual = tagDao.update(tag);
         assertEquals(1, actual);
 
         tag.setName("love");
@@ -101,33 +108,33 @@ class TagDaoImplTest {
     }
 
     @Test
-    void  delete(){
+    void delete() {
         Tag tag = new Tag("new tag");
         tagDao.add(tag);
         Optional<Tag> expected = tagDao.findById(tag.getId());
 
         tagDao.delete(tag.getId());
-        Optional<Tag> actual= tagDao.findById(tag.getId());
+        Optional<Tag> actual = tagDao.findById(tag.getId());
 
         assertNotEquals(expected, actual);
     }
 
     @Test
-    void  deleteWithNegativeId(){
+    void deleteWithNegativeId() {
         int expected = tagDao.findAll().size();
 
         tagDao.delete(-1);
-        int actual= tagDao.findAll().size();
+        int actual = tagDao.findAll().size();
 
         assertEquals(expected, actual);
     }
 
     @Test
-    void  deleteWithNotExist(){
+    void deleteWithNotExist() {
         int expected = tagDao.findAll().size();
 
         tagDao.delete(10000);
-        int actual= tagDao.findAll().size();
+        int actual = tagDao.findAll().size();
 
         assertEquals(expected, actual);
     }

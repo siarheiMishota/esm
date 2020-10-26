@@ -29,9 +29,16 @@ public class TagDaoImpl implements TagDao {
         return jdbcTemplate.query(SELECT_FIND_BY_ID, new Object[]{id}, new BeanPropertyRowMapper<>(Tag.class)).stream().findAny();
     }
 
+    @Override
     public Optional<Tag> findByName(String name) {
         return jdbcTemplate.query(SELECT_FIND_BY_NAME, new Object[]{name}, new BeanPropertyRowMapper<>(Tag.class)).stream().findAny();
     }
+
+    @Override
+    public List<Tag> findByGiftCertificateId(long giftCertificateId) {
+        return jdbcTemplate.query(SELECT_FIND_BY_GIFT_CERTIFICATE_ID, new Object[]{giftCertificateId}, new BeanPropertyRowMapper<>(Tag.class));
+    }
+
 
     @Override
     public Tag add(Tag tag) {
@@ -58,6 +65,6 @@ public class TagDaoImpl implements TagDao {
 
     @Override
     public int update(Tag tag) {
-        return jdbcTemplate.update(UPDATE,tag.getName(),tag.getId());
+        return jdbcTemplate.update(UPDATE, tag.getName(), tag.getId());
     }
 }

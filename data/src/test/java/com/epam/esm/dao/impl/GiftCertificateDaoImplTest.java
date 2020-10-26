@@ -3,6 +3,7 @@ package com.epam.esm.dao.impl;
 import com.epam.esm.configuration.DaoConfiguration;
 import com.epam.esm.dao.GiftCertificateDao;
 import com.epam.esm.entity.GiftCertificate;
+import com.epam.esm.entity.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +26,7 @@ class GiftCertificateDaoImplTest {
 
     @Test
     void findAll() {
-        assertEquals(10, giftCertificateDao.findAll().size());
+        assertEquals(11, giftCertificateDao.findAll().size());
         List<GiftCertificate> all = giftCertificateDao.findAll();
         System.out.println(all);
     }
@@ -36,9 +37,10 @@ class GiftCertificateDaoImplTest {
                 BigDecimal.valueOf(4),
                 LocalDateTime.of(2020, 10, 22, 0, 03, 22, 917992000),
                 LocalDateTime.of(2020, 10, 22, 0, 03, 22, 917992000),
-                4);
+                4,List.of(new Tag(1,"extreme")));
 
-        assertEquals(expected, giftCertificateDao.findById(4).get());
+        GiftCertificate actual = giftCertificateDao.findById(4).get();
+        assertEquals(expected, actual);
     }
 
 
@@ -52,27 +54,19 @@ class GiftCertificateDaoImplTest {
         assertEquals(Optional.empty(), giftCertificateDao.findById(-400));
     }
 
-
     @Test
     void findByName() {
-        GiftCertificate expected = new GiftCertificate(4, "name 4", "description 4",
-                BigDecimal.valueOf(4),
-                LocalDateTime.of(2020, 10, 22, 0, 03, 22, 917992000),
-                LocalDateTime.of(2020, 10, 22, 0, 03, 22, 917992000),
-                4);
-
-        assertEquals(expected, giftCertificateDao.findByName("name 4").get());
+        assertEquals(1, giftCertificateDao.findByName("name 4").size());
     }
-
 
     @Test
     void findByNameWithNull() {
-        assertEquals(Optional.empty(), giftCertificateDao.findByName(null));
+        assertEquals(0, giftCertificateDao.findByName(null).size());
     }
 
     @Test
     void findByNameWithNameNotExist() {
-        assertEquals(Optional.empty(), giftCertificateDao.findByName("not exist"));
+        assertEquals(0, giftCertificateDao.findByName("not exist").size());
     }
 
     @Test
@@ -91,13 +85,30 @@ class GiftCertificateDaoImplTest {
     }
 
     @Test
+    void findByTagName() {
+        assertEquals(4, giftCertificateDao.findByTagName("fun").size());
+    }
+
+    @Test
+    void findByTagNameWithNull() {
+        assertEquals(0, giftCertificateDao.findByTagName(null).size());
+    }
+
+    @Test
+    void findByTagNameWithNotExist() {
+        assertEquals(0, giftCertificateDao.findByTagName("not exist").size());
+    }
+
+    @Test
     void delete() {
         GiftCertificate giftCertificate = new GiftCertificate("new name", "new description", BigDecimal.valueOf(200),
                 LocalDateTime.of(2020, 10, 22, 0, 03, 22, 917992000),
                 LocalDateTime.of(2020, 10, 22, 0, 03, 22, 917992000),
-                22);
+                22,List.of(new Tag(1,"extreme")));
         giftCertificateDao.add(giftCertificate);
         Optional<GiftCertificate> expected = giftCertificateDao.findById(giftCertificate.getId());
+        List<GiftCertificate> all = giftCertificateDao.findAll();
+        System.out.println(all);
 
         giftCertificateDao.delete(giftCertificate.getId());
         Optional<GiftCertificate> actual = giftCertificateDao.findById(giftCertificate.getId());
@@ -125,13 +136,12 @@ class GiftCertificateDaoImplTest {
         assertEquals(expected, actual);
     }
 
-
     @Test
     void update() {
         GiftCertificate giftCertificate = new GiftCertificate(4, "update name 4", "update description 4", BigDecimal.valueOf(200),
                 LocalDateTime.of(2000, 10, 22, 0, 03, 22, 917992000),
                 LocalDateTime.of(2000, 10, 22, 0, 03, 22, 917992000),
-                9);
+                9,List.of(new Tag(1,"extreme")));
         int actual = giftCertificateDao.update(giftCertificate);
         assertEquals(1, actual);
 
@@ -144,7 +154,6 @@ class GiftCertificateDaoImplTest {
         giftCertificateDao.update(giftCertificate);
     }
 
-
     @Test
     void updateWithNull() {
         assertThrows(NullPointerException.class, () -> giftCertificateDao.update(null));
@@ -155,7 +164,7 @@ class GiftCertificateDaoImplTest {
         GiftCertificate giftCertificate = new GiftCertificate(40000, "update name 4", "update description 4", BigDecimal.valueOf(200),
                 LocalDateTime.of(2000, 10, 22, 0, 03, 22, 917992000),
                 LocalDateTime.of(2000, 10, 22, 0, 03, 22, 917992000),
-                9);
+                9,List.of(new Tag(1,"extreme")));
         assertEquals(0, giftCertificateDao.update(giftCertificate));
     }
 
@@ -164,14 +173,13 @@ class GiftCertificateDaoImplTest {
         GiftCertificate giftCertificate = new GiftCertificate("new name", "new description", BigDecimal.valueOf(200),
                 LocalDateTime.of(2020, 10, 22, 0, 03, 22, 917992000),
                 LocalDateTime.of(2020, 10, 22, 0, 03, 22, 917992000),
-                22);
+                22,List.of(new Tag(1,"extreme")));
         long expected = giftCertificate.getId();
         giftCertificateDao.add(giftCertificate);
         assertNotEquals(expected, giftCertificate.getId());
 
         giftCertificateDao.delete(giftCertificate.getId());
     }
-
 
     @Test()
     void addWithNull() {

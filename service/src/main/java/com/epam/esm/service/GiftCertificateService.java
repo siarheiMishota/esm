@@ -1,12 +1,11 @@
-package com.epam.esm.dao;
+package com.epam.esm.service;
 
 import com.epam.esm.entity.GiftCertificate;
-import com.epam.esm.entity.Tag;
 
 import java.util.List;
 import java.util.Optional;
 
-public interface GiftCertificateDao {
+public interface GiftCertificateService {
     List<GiftCertificate> findAll();
 
     Optional<GiftCertificate> findById(long id);
@@ -15,13 +14,11 @@ public interface GiftCertificateDao {
 
     List<GiftCertificate> findByTagId(long tagId);
 
-    GiftCertificate add(GiftCertificate giftCertificate);
-
-    int update(GiftCertificate giftCertificate);
-
     List<GiftCertificate> findByTagName(String name);
 
     void delete(long id);
 
+    boolean update(GiftCertificate giftCertificate);
 
+    void add(GiftCertificate giftCertificate);
 }

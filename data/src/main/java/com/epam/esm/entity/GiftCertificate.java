@@ -3,6 +3,7 @@ package com.epam.esm.entity;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 public class GiftCertificate {
     private long id;
@@ -12,20 +13,22 @@ public class GiftCertificate {
     private LocalDateTime creationDate;
     private LocalDateTime lastUpdateDate;
     private int duration;
+    private List<Tag> tags;
 
     public GiftCertificate() {
     }
 
-    public GiftCertificate(String name, String description, BigDecimal price, LocalDateTime creationDate, LocalDateTime lastUpdateDate, int duration) {
+    public GiftCertificate(String name, String description, BigDecimal price, LocalDateTime creationDate, LocalDateTime lastUpdateDate, int duration, List<Tag> tags) {
         this.name = name;
         this.description = description;
         this.price = price;
         this.creationDate = creationDate;
         this.lastUpdateDate = lastUpdateDate;
         this.duration = duration;
+        this.tags = tags;
     }
 
-    public GiftCertificate(long id, String name, String description, BigDecimal price, LocalDateTime creationDate, LocalDateTime lastUpdateDate, int duration) {
+    public GiftCertificate(long id, String name, String description, BigDecimal price, LocalDateTime creationDate, LocalDateTime lastUpdateDate, int duration, List<Tag> tags) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -33,6 +36,7 @@ public class GiftCertificate {
         this.creationDate = creationDate;
         this.lastUpdateDate = lastUpdateDate;
         this.duration = duration;
+        this.tags = tags;
     }
 
     public long getId() {
@@ -91,6 +95,14 @@ public class GiftCertificate {
         this.duration = duration;
     }
 
+    public List<Tag> getTags() {
+        return tags;
+    }
+
+    public void setTags(List<Tag> tags) {
+        this.tags = tags;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -104,7 +116,9 @@ public class GiftCertificate {
         if (description != null ? !description.equals(that.description) : that.description != null) return false;
         if (price != null ? !price.equals(that.price) : that.price != null) return false;
         if (creationDate != null ? !creationDate.equals(that.creationDate) : that.creationDate != null) return false;
-        return lastUpdateDate != null ? lastUpdateDate.equals(that.lastUpdateDate) : that.lastUpdateDate == null;
+        if (lastUpdateDate != null ? !lastUpdateDate.equals(that.lastUpdateDate) : that.lastUpdateDate != null)
+            return false;
+        return tags != null ? tags.equals(that.tags) : that.tags == null;
     }
 
     @Override
@@ -116,6 +130,7 @@ public class GiftCertificate {
         result = 31 * result + (creationDate != null ? creationDate.hashCode() : 0);
         result = 31 * result + (lastUpdateDate != null ? lastUpdateDate.hashCode() : 0);
         result = 31 * result + duration;
+        result = 31 * result + (tags != null ? tags.hashCode() : 0);
         return result;
     }
 
@@ -130,7 +145,8 @@ public class GiftCertificate {
                 .append(price).append(", creation date= ")
                 .append(creationDate.format(formatter)).append(", last update date= ")
                 .append(lastUpdateDate.format(formatter)).append(", duration= ")
-                .append(duration).append(");")
+                .append(duration).append(", tags( ")
+                .append(tags).append("); ")
                 .toString();
     }
 }

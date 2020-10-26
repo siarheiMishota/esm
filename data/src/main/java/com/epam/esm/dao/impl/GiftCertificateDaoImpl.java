@@ -1,6 +1,8 @@
 package com.epam.esm.dao.impl;
 
 import com.epam.esm.dao.GiftCertificateDao;
+import com.epam.esm.dao.TagDao;
+import com.epam.esm.dao.TagGiftCertificateDao;
 import com.epam.esm.entity.GiftCertificate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
@@ -16,31 +18,57 @@ import java.util.Optional;
 
 import static com.epam.esm.dao.SqlRequestGiftCertificate.*;
 
+
 @Component
 public class GiftCertificateDaoImpl implements GiftCertificateDao {
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
+    @Autowired
+    private TagDao tagDao;
+
+    @Autowired
+    private TagGiftCertificateDao tagGiftCertificateDao;
+
     @Override
     public List<GiftCertificate> findAll() {
-        return jdbcTemplate.query(SELECT_FIND_ALL, new BeanPropertyRowMapper<>(GiftCertificate.class));
+
+        List<GiftCertificate> giftCertificates = jdbcTemplate.query(SELECT_FIND_ALL, new BeanPropertyRowMapper<>(GiftCertificate.class));
+        giftCertificates.forEach(this::setTagsToGiftCertificate);
+        return giftCertificates;
     }
 
     @Override
     public Optional<GiftCertificate> findById(long id) {
-        return jdbcTemplate.query(SELECT_FIND_BY_ID, new Object[]{id},
+        Optional<GiftCertificate> optionalGiftCertificate = jdbcTemplate.query(SELECT_FIND_BY_ID, new Object[]{id},
                 new BeanPropertyRowMapper<>(GiftCertificate.class)).stream().findAny();
+
+        optionalGiftCertificate.ifPresent(certificate -> setTagsToGiftCertificate(optionalGiftCertificate.get()));
+        return optionalGiftCertificate;
     }
 
     @Override
-    public Optional<GiftCertificate> findByName(String name) {
-        return jdbcTemplate.query(SELECT_FIND_BY_NAME, new Object[]{name}, new BeanPropertyRowMapper<>(GiftCertificate.class)).stream().findAny();
+    public List<GiftCertificate> findByName(String name) {
+
+        List<GiftCertificate> giftCertificates = jdbcTemplate.query(SELECT_FIND_BY_NAME, new Object[]{name}, new BeanPropertyRowMapper<>(GiftCertificate.class));
+        giftCertificates.forEach(this::setTagsToGiftCertificate);
+        return giftCertificates;
+
     }
 
     @Override
     public List<GiftCertificate> findByTagId(long tagId) {
-        return jdbcTemplate.query(SELECT_FIND_ALL_BY_TAG_ID, new Object[]{tagId}, new BeanPropertyRowMapper<>(GiftCertificate.class));
+        List<GiftCertificate> giftCertificates = jdbcTemplate.query(SELECT_FIND_ALL_BY_TAG_ID, new Object[]{tagId}, new BeanPropertyRowMapper<>(GiftCertificate.class));
+        giftCertificates.forEach(this::setTagsToGiftCertificate);
+        return giftCertificates;
+    }
+
+    @Override
+    public List<GiftCertificate> findByTagName(String name) {
+        List<GiftCertificate> giftCertificates = jdbcTemplate.query(SELECT_FIND_ALL_BY_TAG_NAME, new Object[]{name}, new BeanPropertyRowMapper<>(GiftCertificate.class));
+        giftCertificates.forEach(this::setTagsToGiftCertificate);
+        return giftCertificates;
     }
 
     @Override
@@ -73,7 +101,13 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
         Number key = generatedKeyHolder.getKey();
         if (key != null) {
             giftCertificate.setId(key.longValue());
+
+            giftCertificate.getTags().forEach(tag -> tagGiftCertificateDao.add(tag.getId(), giftCertificate.getId()));
         }
         return giftCertificate;
+    }
+
+    private void setTagsToGiftCertificate(GiftCertificate giftCertificate) {
+        giftCertificate.setTags(tagDao.findByGiftCertificateId(giftCertificate.getId()));
     }
 }

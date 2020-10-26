@@ -1,0 +1,25 @@
+plugins {
+    id 'java'
+}
+
+group 'com.epam'
+version '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    project.dependencies {
+        implementation(project(':data'))
+    }
+    implementation group: 'org.springframework', name: 'spring-core', version: '5.2.9.RELEASE'
+    implementation group: 'org.springframework', name: 'spring-context', version: '5.2.9.RELEASE'
+    implementation group: 'org.springframework', name: 'spring-context-support', version: '5.2.9.RELEASE'
+
+    testImplementation group: 'org.springframework', name: 'spring-test', version: '5.2.9.RELEASE'
+    testImplementation group: 'org.mockito', name: 'mockito-core', version: '3.5.13'
+    testImplementation group: 'org.springframework', name: 'spring-test', version: '5.2.9.RELEASE'
+    testImplementation(platform('org.junit:junit-bom:5.7.0'))
+    testImplementation 'org.junit.jupiter:junit-jupiter-engine:5.3.1'
+}

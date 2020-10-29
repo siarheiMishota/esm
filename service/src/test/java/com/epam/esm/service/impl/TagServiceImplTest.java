@@ -10,6 +10,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.dao.DuplicateKeyException;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -27,10 +28,10 @@ class TagServiceImplTest {
 
     @Test
     void findAll() {
-        given(tagDao.findAll()).willReturn(List.of(new Tag(1, "1"), new Tag(2, "2")));
+        given(tagDao.findAll(Map.of())).willReturn(List.of(new Tag(1, "1"), new Tag(2, "2")));
 
         List<Tag> expected = List.of(new Tag(1, "1"), new Tag(2, "2"));
-        assertEquals(expected, tagService.findAll());
+        assertEquals(expected, tagService.findAll(Map.of()));
     }
 
     @Test

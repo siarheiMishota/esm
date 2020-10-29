@@ -3,12 +3,13 @@ package com.epam.esm.service;
 import com.epam.esm.entity.Tag;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 public interface TagService {
 
 
-    List<Tag> findAll();
+    List<Tag> findAll(Map<String,String> parameters);
 
     Optional<Tag> findById(long id);
 
@@ -21,4 +22,6 @@ public interface TagService {
     void delete(long id);
 
     boolean update(long id, String newName);
+
+    boolean tagValidate(String sortString);
 }

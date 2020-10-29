@@ -1,6 +1,7 @@
 package com.epam.esm.exception.handler;
 
 import com.epam.esm.exception.NotFoundIdException;
+import com.epam.esm.exception.SortParametersException;
 import com.epam.esm.exception.handler.dto.ExceptionDto;
 import com.epam.esm.exception.handler.dto.NotFoundExceptionDto;
 import org.springframework.http.HttpStatus;
@@ -23,6 +24,12 @@ public class ExceptionHandlerController {
     @ExceptionHandler({NumberFormatException.class, MethodArgumentTypeMismatchException.class})
     public NotFoundExceptionDto handleNumberFormatException(NumberFormatException e) {
         return new NotFoundExceptionDto(String.format("Requested resource isn't correct (id=%s)", e.getMessage()), 404);
+    }
+
+    @ResponseStatus(HttpStatus.NOT_ACCEPTABLE)
+    @ExceptionHandler(SortParametersException.class)
+    public NotFoundExceptionDto handleSortParametersException(SortParametersException e) {
+        return new NotFoundExceptionDto(String.format("Requested resource isn't correct in sort part (%s=%s)", e.getNameField(),e.getValue()), 404);
     }
 
     @ResponseStatus(HttpStatus.NOT_ACCEPTABLE)

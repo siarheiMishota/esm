@@ -2,7 +2,6 @@ package com.epam.esm.dao.impl;
 
 import com.epam.esm.dao.TagDao;
 import com.epam.esm.entity.Tag;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -10,8 +9,7 @@ import org.springframework.stereotype.Component;
 
 import java.sql.PreparedStatement;
 import java.sql.Statement;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import static com.epam.esm.dao.SqlRequestTag.*;
 
@@ -24,7 +22,15 @@ public class TagDaoImpl implements TagDao {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    public List<Tag> findAll() {
+    public List<Tag> findAll(Map<String, String> parameters) {
+        "select id,name from tags;";
+
+        String fullSelect = SELECT_FIND_ALL;
+
+        if (parameters != null && !parameters.isEmpty()) {
+
+        }
+
         return jdbcTemplate.query(SELECT_FIND_ALL, new BeanPropertyRowMapper<>(Tag.class));
     }
 
@@ -69,5 +75,20 @@ public class TagDaoImpl implements TagDao {
     @Override
     public int update(Tag tag) {
         return jdbcTemplate.update(UPDATE, tag.getName(), tag.getId());
+    }
+
+    private List<String> splitLineOnSortPart(String line) {
+        return Arrays.asList(line.split(","));
+    }
+
+    private Map<String, String> splitSortLineOnParts(String sortLine) {
+        Map<String, String> sortMap = new HashMap<>();
+        int indexOfColon = sortLine.indexOf(":");
+        if (indexOfColon == -1) {
+            sortMap.put(sortLine, "");
+        } else {
+            sortMap.put(sortLine.substring(0, indexOfColon), sortLine.substring(indexOfColon + 1));
+        }
+        return sortMap;
     }
 }

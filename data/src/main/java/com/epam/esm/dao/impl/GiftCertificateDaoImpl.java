@@ -52,16 +52,23 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
 
     @Override
     public List<GiftCertificate> findByName(String name) {
-        name = "%" + name + "%";
         List<GiftCertificate> giftCertificates = jdbcTemplate.query(SELECT_FIND_BY_NAME, new Object[]{name}, new BeanPropertyRowMapper<>(GiftCertificate.class));
         giftCertificates.forEach(this::setTagsToGiftCertificate);
         return giftCertificates;
     }
 
     @Override
-    public List<GiftCertificate> findByDescription(String description) {
+    public List<GiftCertificate> findByPartName(String partName) {
+        partName = "%" + partName + "%";
+        List<GiftCertificate> giftCertificates = jdbcTemplate.query(SELECT_FIND_BY_PART_NAME, new Object[]{partName}, new BeanPropertyRowMapper<>(GiftCertificate.class));
+        giftCertificates.forEach(this::setTagsToGiftCertificate);
+        return giftCertificates;
+    }
+
+    @Override
+    public List<GiftCertificate> findByPartDescription(String description) {
         description = "%" + description + "%";
-        List<GiftCertificate> giftCertificates = jdbcTemplate.query(SELECT_FIND_BY_DESCRIPTION, new Object[]{description}, new BeanPropertyRowMapper<>(GiftCertificate.class));
+        List<GiftCertificate> giftCertificates = jdbcTemplate.query(SELECT_FIND_BY_PART_DESCRIPTION, new Object[]{description}, new BeanPropertyRowMapper<>(GiftCertificate.class));
         giftCertificates.forEach(this::setTagsToGiftCertificate);
         return giftCertificates;
     }

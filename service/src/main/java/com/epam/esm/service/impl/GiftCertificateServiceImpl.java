@@ -5,7 +5,6 @@ import com.epam.esm.entity.GiftCertificate;
 import com.epam.esm.entity.Tag;
 import com.epam.esm.service.GiftCertificateService;
 import com.epam.esm.service.TagService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -39,8 +38,13 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     }
 
     @Override
-    public List<GiftCertificate> findByDescription(String description) {
-        return giftCertificateDao.findByDescription(description);
+    public List<GiftCertificate> findByPartName(String partName){
+        return giftCertificateDao.findByPartName(partName);
+    }
+
+    @Override
+    public List<GiftCertificate> findByPartDescription(String description) {
+        return giftCertificateDao.findByPartDescription(description);
     }
 
     @Override

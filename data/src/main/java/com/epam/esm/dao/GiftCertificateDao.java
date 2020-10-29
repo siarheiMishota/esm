@@ -13,7 +13,9 @@ public interface GiftCertificateDao {
 
     List<GiftCertificate> findByName(String name);
 
-    List<GiftCertificate> findByDescription(String description);
+    List<GiftCertificate> findByPartName(String partName);
+
+    List<GiftCertificate> findByPartDescription(String description);
 
     List<GiftCertificate> findByTagId(long tagId);
 

@@ -56,7 +56,13 @@ class GiftCertificateDaoImplTest {
 
     @Test
     void findByName() {
-        assertEquals(3, giftCertificateDao.findByName("1").size());
+        GiftCertificate expected = new GiftCertificate(4, "name 4", "description 4",
+                BigDecimal.valueOf(4),
+                LocalDateTime.of(2020, 10, 22, 0, 03, 22, 917992000),
+                LocalDateTime.of(2020, 10, 22, 0, 03, 22, 917992000),
+                4, List.of(new Tag(1, "extreme")));
+
+        assertEquals(expected, giftCertificateDao.findByName("name 4").get(0));
     }
 
     @Test
@@ -70,13 +76,28 @@ class GiftCertificateDaoImplTest {
     }
 
     @Test
+    void findByPartName() {
+                assertEquals(3, giftCertificateDao.findByPartName("1").size());
+    }
+
+    @Test
+    void findByPartNameWithNull() {
+        assertEquals(0, giftCertificateDao.findByPartName(null).size());
+    }
+
+    @Test
+    void findByPartNameWithNameNotExist() {
+        assertEquals(0, giftCertificateDao.findByPartName("not exist").size());
+    }
+
+    @Test
     void findByDescription() {
         assertEquals(3, giftCertificateDao.findByName("1").size());
     }
 
     @Test
     void findByDescriptionWithNull() {
-        assertEquals(0, giftCertificateDao.findByDescription(null).size());
+        assertEquals(0, giftCertificateDao.findByPartDescription(null).size());
     }
 
     @Test

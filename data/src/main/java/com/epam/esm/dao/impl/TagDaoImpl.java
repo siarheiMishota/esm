@@ -22,32 +22,23 @@ public class TagDaoImpl implements TagDao {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    public List<Tag> findAll(Map<String, String> parameters) {
-        "select id,name from tags;";
-
-        String fullSelect = SELECT_FIND_ALL;
-
-        if (parameters != null && !parameters.isEmpty()) {
-
-        }
-
-        return jdbcTemplate.query(SELECT_FIND_ALL, new BeanPropertyRowMapper<>(Tag.class));
+    public List<Tag> findAll() {
+        return jdbcTemplate.query(FIND_ALL, new BeanPropertyRowMapper<>(Tag.class));
     }
 
     public Optional<Tag> findById(long id) {
-        return jdbcTemplate.query(SELECT_FIND_BY_ID, new Object[]{id}, new BeanPropertyRowMapper<>(Tag.class)).stream().findAny();
+        return jdbcTemplate.query(FIND_BY_ID, new Object[]{id}, new BeanPropertyRowMapper<>(Tag.class)).stream().findAny();
     }
 
     @Override
     public Optional<Tag> findByName(String name) {
-        return jdbcTemplate.query(SELECT_FIND_BY_NAME, new Object[]{name}, new BeanPropertyRowMapper<>(Tag.class)).stream().findAny();
+        return jdbcTemplate.query(FIND_BY_NAME, new Object[]{name}, new BeanPropertyRowMapper<>(Tag.class)).stream().findAny();
     }
 
     @Override
     public List<Tag> findByGiftCertificateId(long giftCertificateId) {
-        return jdbcTemplate.query(SELECT_FIND_BY_GIFT_CERTIFICATE_ID, new Object[]{giftCertificateId}, new BeanPropertyRowMapper<>(Tag.class));
+        return jdbcTemplate.query(FIND_BY_GIFT_CERTIFICATE_ID, new Object[]{giftCertificateId}, new BeanPropertyRowMapper<>(Tag.class));
     }
-
 
     @Override
     public Tag add(Tag tag) {
@@ -77,6 +68,7 @@ public class TagDaoImpl implements TagDao {
         return jdbcTemplate.update(UPDATE, tag.getName(), tag.getId());
     }
 
+    //todo
     private List<String> splitLineOnSortPart(String line) {
         return Arrays.asList(line.split(","));
     }

@@ -11,19 +11,15 @@ public interface GiftCertificateDao {
 
     Optional<GiftCertificate> findById(long id);
 
-    List<GiftCertificate> findByName(String name);
+    List<GiftCertificate> findByName(String partName);
 
-    List<GiftCertificate> findByPartName(String partName);
+    List<GiftCertificate> findByDescription(String description);
 
-    List<GiftCertificate> findByPartDescription(String description);
-
-    List<GiftCertificate> findByTagId(long tagId);
+    List<GiftCertificate> findByTagName(String name);
 
     GiftCertificate add(GiftCertificate giftCertificate);
 
     int update(GiftCertificate giftCertificate);
-
-    List<GiftCertificate> findByTagName(String name);
 
     void delete(long id);
 

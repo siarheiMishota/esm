@@ -85,37 +85,37 @@ class GiftCertificateServiceImplTest {
 
     @Test
     void findByPartName() {
-        given(giftCertificateDao.findByPartName("name")).willReturn(getGiftCertificates());
+        given(giftCertificateDao.findByName("name")).willReturn(getGiftCertificates());
         assertEquals(3, giftCertificateService.findByPartName("name").size());
     }
 
     @Test
     void findByPartNameNotExist() {
-        given(giftCertificateDao.findByPartName("not exist")).willReturn(List.of());
+        given(giftCertificateDao.findByName("not exist")).willReturn(List.of());
         assertEquals(List.of(), giftCertificateService.findByPartName("not exist"));
     }
 
     @Test
     void findByPartNameWithNull() {
-        given(giftCertificateDao.findByPartName(null)).willThrow(NullPointerException.class);
+        given(giftCertificateDao.findByName(null)).willThrow(NullPointerException.class);
         assertThrows(NullPointerException.class, () -> giftCertificateService.findByPartName(null));
     }
 
     @Test
     void findByPartDescription() {
-        given(giftCertificateDao.findByPartDescription("description")).willReturn(getGiftCertificates());
+        given(giftCertificateDao.findByDescription("description")).willReturn(getGiftCertificates());
         assertEquals(getGiftCertificates(), giftCertificateService.findByPartDescription("description"));
     }
 
     @Test
     void findByPartDescriptionNotExist() {
-        given(giftCertificateDao.findByPartDescription("not exist")).willReturn(List.of());
+        given(giftCertificateDao.findByDescription("not exist")).willReturn(List.of());
         assertEquals(List.of(), giftCertificateService.findByPartDescription("not exist"));
     }
 
     @Test
     void findByPartDescriptionWithNull() {
-        given(giftCertificateDao.findByPartDescription(null)).willThrow(NullPointerException.class);
+        given(giftCertificateDao.findByDescription(null)).willThrow(NullPointerException.class);
         assertThrows(NullPointerException.class, () -> giftCertificateService.findByPartDescription(null));
     }
 

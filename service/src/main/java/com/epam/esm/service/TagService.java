@@ -8,8 +8,7 @@ import java.util.Optional;
 
 public interface TagService {
 
-
-    List<Tag> findAll(Map<String,String> parameters);
+    List<Tag> findAll();
 
     Optional<Tag> findById(long id);
 

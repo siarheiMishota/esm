@@ -77,17 +77,17 @@ class GiftCertificateDaoImplTest {
 
     @Test
     void findByPartName() {
-                assertEquals(3, giftCertificateDao.findByPartName("1").size());
+                assertEquals(3, giftCertificateDao.findByName("1").size());
     }
 
     @Test
     void findByPartNameWithNull() {
-        assertEquals(0, giftCertificateDao.findByPartName(null).size());
+        assertEquals(0, giftCertificateDao.findByName(null).size());
     }
 
     @Test
     void findByPartNameWithNameNotExist() {
-        assertEquals(0, giftCertificateDao.findByPartName("not exist").size());
+        assertEquals(0, giftCertificateDao.findByName("not exist").size());
     }
 
     @Test
@@ -97,7 +97,7 @@ class GiftCertificateDaoImplTest {
 
     @Test
     void findByDescriptionWithNull() {
-        assertEquals(0, giftCertificateDao.findByPartDescription(null).size());
+        assertEquals(0, giftCertificateDao.findByDescription(null).size());
     }
 
     @Test

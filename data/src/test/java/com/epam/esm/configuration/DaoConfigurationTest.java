@@ -2,10 +2,8 @@ package com.epam.esm.configuration;
 
 import com.epam.esm.dao.GiftCertificateDao;
 import com.epam.esm.dao.TagDao;
-import com.epam.esm.dao.TagGiftCertificateDao;
 import com.epam.esm.dao.impl.GiftCertificateDaoImpl;
 import com.epam.esm.dao.impl.TagDaoImpl;
-import com.epam.esm.dao.impl.TagGiftCertificateDaoImpl;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -19,7 +17,6 @@ public class DaoConfigurationTest {
 
     @Bean
     public DataSource dataSource() {
-
         return new EmbeddedDatabaseBuilder().setType(EmbeddedDatabaseType.H2)
                 .addScript("classpath:creatingTestTables.sql")
                 .build();
@@ -36,13 +33,7 @@ public class DaoConfigurationTest {
     }
 
     @Bean
-    public GiftCertificateDao giftCertificateDao(JdbcTemplate jdbcTemplate,TagDao tagDao,TagGiftCertificateDao tagGiftCertificateDao) {
-        return new GiftCertificateDaoImpl(jdbcTemplate,tagDao,tagGiftCertificateDao);
+    public GiftCertificateDao giftCertificateDao(JdbcTemplate jdbcTemplate,TagDao tagDao) {
+        return new GiftCertificateDaoImpl(jdbcTemplate,tagDao);
     }
-
-    @Bean
-    public TagGiftCertificateDao tagGiftCertificateDao(JdbcTemplate jdbcTemplate){
-        return new TagGiftCertificateDaoImpl(jdbcTemplate);
-    }
-
 }

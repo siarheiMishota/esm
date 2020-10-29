@@ -22,7 +22,6 @@ dependencies {
     testImplementation group: 'org.springframework', name: 'spring-test', version: '5.2.9.RELEASE'
     testImplementation(platform('org.junit:junit-bom:5.7.0'))
     testImplementation 'org.junit.jupiter:junit-jupiter-engine:5.3.1'
-    // https://mvnrepository.com/artifact/com.h2database/h2
     testImplementation group: 'com.h2database', name: 'h2', version: '1.4.200'
 
 }

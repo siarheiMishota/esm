@@ -8,7 +8,10 @@ import com.epam.esm.service.TagService;
 import org.springframework.format.annotation.NumberFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.constraints.Min;
 import java.util.HashMap;
@@ -29,16 +32,8 @@ public class TagController {
     }
 
     @GetMapping
-    public List<TagDto> getTags(@RequestParam(required = false) String sort) {
-
-        if (tagService.tagValidate(sort)) {
-            throw new SortParametersException(HttpStatus.NOT_ACCEPTABLE, "sort", sort);
-        }
-
-        Map<String, String> parameters = new HashMap<>();
-        parameters.put("sorts", sort);
-
-        return tagService.findAll(parameters)
+    public List<TagDto> getTags() {
+        return tagService.findAll()
                 .stream()
                 .map(tag -> new TagDto(tag.getId(), tag.getName()))
                 .collect(Collectors.toList());

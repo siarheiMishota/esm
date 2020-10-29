@@ -39,12 +39,12 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
 
     @Override
     public List<GiftCertificate> findByPartName(String partName){
-        return giftCertificateDao.findByPartName(partName);
+        return giftCertificateDao.findByName(partName);
     }
 
     @Override
     public List<GiftCertificate> findByPartDescription(String description) {
-        return giftCertificateDao.findByPartDescription(description);
+        return giftCertificateDao.findByDescription(description);
     }
 
     @Override

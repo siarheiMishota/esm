@@ -1,29 +1,34 @@
 package com.epam.esm.service.validation;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import static com.epam.esm.dao.SqlRequestGiftCertificate.*;
-import static com.epam.esm.dao.SqlRequestGiftCertificate.ORDER_BY;
 
 public class GiftCertificateSortValidation {
 
-    public static final String PARAMETER_SORT="sort";
-    public static final String PARAMETER_DESCRIPTION="description";
-    public static final String COLUMN_NAME="name";
+    public static final String PARAMETER_SORT = "sort";
+    public static final String PARAMETER_NAME = "name";
+    public static final String PARAMETER_DESCRIPTION = "description";
+    public static final String COLUMN_ID = " id ";
+    public static final String COLUMN_NAME = " name ";
+    public static final String COLUMN_DESCRIPTION = " description ";
+
+    public static final String DESC = " desc ";
+    public static final String ASC = " asc ";
 
     private GiftCertificateSortValidation() {
     }
 
-    public static boolean sortValidate(String sortString){
-        if (sortString==null){
-            return true;
+    public static Map<String, String> sortValidate(Map<String, String> parameters) {
+        if (parameters == null) {
+            return new HashMap<>();
         }
-//todo
-        return true;
+
     }
 
     private String getFullSqlWithParameters(Map<String, String> parameters, String request) {
-        if (parameters==null){
+        if (parameters == null) {
             return request;
         }
 

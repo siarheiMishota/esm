@@ -24,7 +24,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     }
 
     @Override
-    public List<GiftCertificate> findAll(Map<String,String> parameters) {
+    public List<GiftCertificate> findAll(Map<String, String> parameters) {
         return giftCertificateDao.findAll(parameters);
     }
 
@@ -39,7 +39,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     }
 
     @Override
-    public List<GiftCertificate> findByPartName(String partName){
+    public List<GiftCertificate> findByPartName(String partName) {
         return giftCertificateDao.findByName(partName);
     }
 
@@ -71,7 +71,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
             if (optionalTagFromDb.isPresent()) {
                 tag.setId(optionalTagFromDb.get().getId());
             } else {
-               tagService.add(tag);
+                tagService.add(tag);
             }
         });
     }

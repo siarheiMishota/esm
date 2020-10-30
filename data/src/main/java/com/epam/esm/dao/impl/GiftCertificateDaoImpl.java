@@ -3,21 +3,20 @@ package com.epam.esm.dao.impl;
 import com.epam.esm.dao.GiftCertificateDao;
 import com.epam.esm.dao.TagDao;
 import com.epam.esm.entity.GiftCertificate;
-import com.mysql.cj.util.StringUtils;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.sql.Timestamp;
 import java.util.*;
-import java.util.stream.Collectors;
 
 import static com.epam.esm.dao.SqlRequestGiftCertificate.*;
 
-
+@Transactional
 @Component
 public class GiftCertificateDaoImpl implements GiftCertificateDao {
 
@@ -32,15 +31,15 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
 
     @Override
     public List<GiftCertificate> findAll(Map<String, String> parameters) {
-        String fullFind = getFullSqlWithParameters(parameters,FIND_ALL);
+        String fullFind = getFullSqlWithParameters(parameters, FIND_ALL);
 
         List<GiftCertificate> giftCertificates = jdbcTemplate.query(fullFind, new BeanPropertyRowMapper<>(GiftCertificate.class));
         giftCertificates.forEach(this::setTagsToGiftCertificate);
         return giftCertificates;
     }
 
-    private String getFullSqlWithParameters(Map<String, String> parameters,String request) {
-        if (parameters==null){
+    private String getFullSqlWithParameters(Map<String, String> parameters, String request) {
+        if (parameters == null) {
             return request;
         }
 
@@ -48,7 +47,7 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
         String fullFind = request;
 
         if (parameters.containsKey("name")) {
-            fullFind = fullFind + WHERE + COLUMN_NAME + LIKE +"'%"+ parameters.get("name")+"%'";
+            fullFind = fullFind + WHERE + COLUMN_NAME + LIKE + "'%" + parameters.get("name") + "%'";
             whereUse = true;
         }
 
@@ -56,7 +55,7 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
             if (!whereUse) {
                 fullFind += WHERE;
             } else {
-                fullFind = fullFind + OR + COLUMN_DESCRIPTION + LIKE +"'%"+ parameters.get("description")+"%'";
+                fullFind = fullFind + OR + COLUMN_DESCRIPTION + LIKE + "'%" + parameters.get("description") + "%'";
             }
         }
 
@@ -64,10 +63,10 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
             fullFind += ORDER_BY;
             Map<String, String> tokensMap = splitSortLineOnTokens(parameters.get("sort"));
 
-            for (Map.Entry<String, String> entryToken: tokensMap.entrySet()) {
+            for (Map.Entry<String, String> entryToken : tokensMap.entrySet()) {
                 fullFind = fullFind + entryToken.getKey() + " " + entryToken.getValue() + ",";
             }
-            fullFind=fullFind.substring(0,fullFind.length()-1);
+            fullFind = fullFind.substring(0, fullFind.length() - 1);
         }
         return fullFind;
     }

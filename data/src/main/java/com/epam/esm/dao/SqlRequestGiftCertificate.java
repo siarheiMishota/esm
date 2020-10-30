@@ -12,11 +12,11 @@ public final class SqlRequestGiftCertificate {
     public static final String LIKE=" like ";
     public static final String OR=" or ";
 
-
-    public static final String FIND_ALL = "select id, name, description, price, creation_date, last_update_date, duration from gift_certificates";
-    public static final String FIND_BY_ID = "select id, name, description, price, creation_date, last_update_date, duration from gift_certificates where id=?";
-    public static final String FIND_BY_NAME = "select id, name, description, price, creation_date, last_update_date, duration from gift_certificates  where name like ?";
-    public static final String FIND_BY_DESCRIPTION = "select id, name, description, price, creation_date, last_update_date, duration from gift_certificates  where description like ?";
+    public static final String COLUMNS = "id, name, description, price, creation_date, last_update_date, duration";
+    public static final String FIND_ALL = "select " + COLUMNS + " from gift_certificates";
+    public static final String FIND_BY_ID = "select " + COLUMNS + " from gift_certificates where id=?";
+    public static final String FIND_BY_NAME = "select " + COLUMNS + " from gift_certificates  where name like ?";
+    public static final String FIND_BY_DESCRIPTION = "select " + COLUMNS + " from gift_certificates  where description like ?";
     public static final String FIND_BY_TAG_NAME = "select gift_certificates.id, gift_certificates.name, description, price, creation_date, last_update_date, duration\n" +
             "from gift_certificates\n" +
             "         join tags_gift_certificates tgc on gift_certificates.id = tgc.gift_certificate_id\n" +

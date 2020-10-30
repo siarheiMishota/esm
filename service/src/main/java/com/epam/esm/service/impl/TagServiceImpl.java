@@ -3,12 +3,10 @@ package com.epam.esm.service.impl;
 import com.epam.esm.dao.TagDao;
 import com.epam.esm.entity.Tag;
 import com.epam.esm.service.TagService;
-import com.epam.esm.service.validation.TagSortValidation;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.epam.esm.service.validation.GiftCertificateSortValidation;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 @Component
@@ -61,6 +59,6 @@ public class TagServiceImpl implements TagService {
 
     @Override
     public boolean tagValidate(String sortString) {
-        return TagSortValidation.sortValidate(sortString);
+        return GiftCertificateSortValidation.sortValidate(sortString);
     }
 }

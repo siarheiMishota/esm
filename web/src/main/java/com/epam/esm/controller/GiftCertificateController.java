@@ -8,13 +8,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/giftCertificates")
 public class GiftCertificateController {
 
-    private GiftCertificateService giftCertificateService;
+    private final GiftCertificateService giftCertificateService;
 
     public GiftCertificateController(GiftCertificateService giftCertificateService) {
         this.giftCertificateService = giftCertificateService;
@@ -22,7 +23,7 @@ public class GiftCertificateController {
 
     @GetMapping()
     public List<GiftCertificateDto> getGiftCertificates() {
-        List<GiftCertificate> giftCertificates = giftCertificateService.findAll();
+        List<GiftCertificate> giftCertificates = giftCertificateService.findAll(Map.of());
         return adaptToDto(giftCertificates);
     }
 

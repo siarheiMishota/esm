@@ -5,13 +5,12 @@ import com.epam.esm.dao.TagDao;
 import com.epam.esm.dao.impl.GiftCertificateDaoImpl;
 import com.epam.esm.dao.impl.TagDaoImpl;
 import com.zaxxer.hikari.HikariDataSource;
+import javax.sql.DataSource;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.jdbc.core.JdbcTemplate;
-
-import javax.sql.DataSource;
 
 @Configuration
 @PropertySource("classpath:data.properties")
@@ -42,7 +41,7 @@ public class DaoConfiguration {
     }
 
     @Bean
-    public GiftCertificateDao giftCertificateDao(JdbcTemplate jdbcTemplate,TagDao tagDao) {
-        return new GiftCertificateDaoImpl(jdbcTemplate,tagDao);
+    public GiftCertificateDao giftCertificateDao(JdbcTemplate jdbcTemplate, TagDao tagDao) {
+        return new GiftCertificateDaoImpl(jdbcTemplate, tagDao);
     }
 }

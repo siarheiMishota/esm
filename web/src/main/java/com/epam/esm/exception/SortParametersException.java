@@ -2,8 +2,9 @@ package com.epam.esm.exception;
 
 import org.springframework.http.HttpStatus;
 
-public class SortParametersException extends ApiException{
-    private String value;
+public class SortParametersException extends ApiException {
+
+    private final String value;
 
     public SortParametersException(HttpStatus httpStatus, String nameField, String value) {
         super(httpStatus, nameField);

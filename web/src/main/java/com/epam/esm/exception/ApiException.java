@@ -3,8 +3,9 @@ package com.epam.esm.exception;
 import org.springframework.http.HttpStatus;
 
 public class ApiException extends RuntimeException {
-    private HttpStatus httpStatus;
-    private String nameField;
+
+    private final HttpStatus httpStatus;
+    private final String nameField;
 
     public ApiException(HttpStatus httpStatus, String nameField) {
         this.httpStatus = httpStatus;

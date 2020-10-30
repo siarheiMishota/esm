@@ -1,10 +1,8 @@
 package com.epam.esm.exception.handler.dto;
 
-import javax.validation.ConstraintViolation;
-import java.util.Set;
-
 public class TagValidateExceptionDto {
-    private String errorMessage;
+
+    private final String errorMessage;
 
     public TagValidateExceptionDto(String errorMessage) {
         this.errorMessage = errorMessage;

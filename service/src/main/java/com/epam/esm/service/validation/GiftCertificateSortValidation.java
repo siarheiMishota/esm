@@ -40,7 +40,7 @@ public class GiftCertificateSortValidation {
         String fullFind = request;
 
         if (parameters.containsKey("name")) {
-            fullFind = fullFind + WHERE + COLUMN_NAME + LIKE +"'%"+ parameters.get("name")+"%'";
+            fullFind = fullFind + WHERE + COLUMN_NAME + LIKE + "'%" + parameters.get("name") + "%'";
             whereUse = true;
         }
 
@@ -48,7 +48,7 @@ public class GiftCertificateSortValidation {
             if (!whereUse) {
                 fullFind += WHERE;
             } else {
-                fullFind = fullFind + OR + COLUMN_DESCRIPTION + LIKE +"'%"+ parameters.get("description")+"%'";
+                fullFind = fullFind + OR + COLUMN_DESCRIPTION + LIKE + "'%" + parameters.get("description") + "%'";
             }
         }
 
@@ -56,10 +56,10 @@ public class GiftCertificateSortValidation {
             fullFind += ORDER_BY;
             Map<String, String> tokensMap = splitSortLineOnTokens(parameters.get("sort"));
 
-            for (Map.Entry<String, String> entryToken: tokensMap.entrySet()) {
+            for (Map.Entry<String, String> entryToken : tokensMap.entrySet()) {
                 fullFind = fullFind + entryToken.getKey() + " " + entryToken.getValue() + ",";
             }
-            fullFind=fullFind.substring(0,fullFind.length()-1);
+            fullFind = fullFind.substring(0, fullFind.length() - 1);
         }
         return fullFind;
-}
+    }

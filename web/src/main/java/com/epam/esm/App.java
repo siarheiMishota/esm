@@ -7,7 +7,8 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 public class App {
 
     public static void main(String[] args) {
-        ApplicationContext annotationConfigWebApplicationContext = new AnnotationConfigApplicationContext(WebConfig.class);
+        ApplicationContext annotationConfigWebApplicationContext = new AnnotationConfigApplicationContext(
+            WebConfig.class);
 
     }
 }

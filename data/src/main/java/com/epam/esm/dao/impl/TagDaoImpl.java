@@ -1,17 +1,23 @@
 package com.epam.esm.dao.impl;
 
+import static com.epam.esm.dao.SqlRequestTag.DELETE;
+import static com.epam.esm.dao.SqlRequestTag.FIND_ALL;
+import static com.epam.esm.dao.SqlRequestTag.FIND_BY_GIFT_CERTIFICATE_ID;
+import static com.epam.esm.dao.SqlRequestTag.FIND_BY_ID;
+import static com.epam.esm.dao.SqlRequestTag.FIND_BY_NAME;
+import static com.epam.esm.dao.SqlRequestTag.INSERT;
+import static com.epam.esm.dao.SqlRequestTag.UPDATE;
+
 import com.epam.esm.dao.TagDao;
 import com.epam.esm.entity.Tag;
+import java.sql.PreparedStatement;
+import java.sql.Statement;
+import java.util.List;
+import java.util.Optional;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Component;
-
-import java.sql.PreparedStatement;
-import java.sql.Statement;
-import java.util.*;
-
-import static com.epam.esm.dao.SqlRequestTag.*;
 
 @Component
 public class TagDaoImpl implements TagDao {
@@ -32,17 +38,22 @@ public class TagDaoImpl implements TagDao {
     }
 
     public Optional<Tag> findById(long id) {
-        return jdbcTemplate.query(FIND_BY_ID, new Object[]{id}, new BeanPropertyRowMapper<>(Tag.class)).stream().findAny();
+        return jdbcTemplate.query(FIND_BY_ID, new Object[]{id}, new BeanPropertyRowMapper<>(Tag.class))
+            .stream()
+            .findAny();
     }
 
     @Override
     public Optional<Tag> findByName(String name) {
-        return jdbcTemplate.query(FIND_BY_NAME, new Object[]{name}, new BeanPropertyRowMapper<>(Tag.class)).stream().findAny();
+        return jdbcTemplate.query(FIND_BY_NAME, new Object[]{name}, new BeanPropertyRowMapper<>(Tag.class))
+            .stream()
+            .findAny();
     }
 
     @Override
     public List<Tag> findByGiftCertificateId(long giftCertificateId) {
-        return jdbcTemplate.query(FIND_BY_GIFT_CERTIFICATE_ID, new Object[]{giftCertificateId}, new BeanPropertyRowMapper<>(Tag.class));
+        return jdbcTemplate.query(FIND_BY_GIFT_CERTIFICATE_ID, new Object[]{giftCertificateId},
+            new BeanPropertyRowMapper<>(Tag.class));
     }
 
     @Override
@@ -50,11 +61,12 @@ public class TagDaoImpl implements TagDao {
         GeneratedKeyHolder generatedKeyHolder = new GeneratedKeyHolder();
 
         jdbcTemplate.update(
-                connection -> {
-                    PreparedStatement preparedStatement = connection.prepareStatement(INSERT, Statement.RETURN_GENERATED_KEYS);
-                    preparedStatement.setString(1, tag.getName());
-                    return preparedStatement;
-                }, generatedKeyHolder);
+            connection -> {
+                PreparedStatement preparedStatement = connection.prepareStatement(INSERT,
+                    Statement.RETURN_GENERATED_KEYS);
+                preparedStatement.setString(1, tag.getName());
+                return preparedStatement;
+            }, generatedKeyHolder);
         Number key = generatedKeyHolder.getKey();
         if (key != null) {
             tag.setId(key.longValue());

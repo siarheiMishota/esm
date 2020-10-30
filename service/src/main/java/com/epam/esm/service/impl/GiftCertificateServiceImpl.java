@@ -5,11 +5,10 @@ import com.epam.esm.entity.GiftCertificate;
 import com.epam.esm.entity.Tag;
 import com.epam.esm.service.GiftCertificateService;
 import com.epam.esm.service.TagService;
-import org.springframework.stereotype.Component;
-
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import org.springframework.stereotype.Component;
 
 @Component
 public class GiftCertificateServiceImpl implements GiftCertificateService {
@@ -47,7 +46,6 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     public List<GiftCertificate> findByPartDescription(String description) {
         return giftCertificateDao.findByDescription(description);
     }
-
 
     @Override
     public List<GiftCertificate> findByTagName(String name) {

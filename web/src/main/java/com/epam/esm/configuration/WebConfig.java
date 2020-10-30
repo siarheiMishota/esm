@@ -18,6 +18,7 @@ import org.springframework.web.servlet.view.JstlView;
 @Import(ServiceConfiguration.class)
 @ComponentScan(basePackages = "com.epam.esm.controller")
 public class WebConfig implements WebMvcConfigurer {
+
     @Override
     public void configureDefaultServletHandling(DefaultServletHandlerConfigurer configurer) {
         configurer.enable();

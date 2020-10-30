@@ -1,22 +1,24 @@
 package com.epam.esm.service.impl;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.BDDMockito.given;
+
 import com.epam.esm.dao.GiftCertificateDao;
 import com.epam.esm.entity.GiftCertificate;
 import com.epam.esm.entity.Tag;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
-
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.BDDMockito.given;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
 class GiftCertificateServiceImplTest {
@@ -36,10 +38,10 @@ class GiftCertificateServiceImplTest {
     @Test
     void findById() {
         GiftCertificate giftCertificate1 = new GiftCertificate(1, "name 1", "description 1",
-                BigDecimal.valueOf(1),
-                LocalDateTime.of(2020, 10, 22, 0, 03, 22, 917992000),
-                LocalDateTime.of(2020, 10, 22, 0, 03, 22, 917992000),
-                1, List.of(new Tag(1, "extreme")));
+            BigDecimal.valueOf(1),
+            LocalDateTime.of(2020, 10, 22, 0, 03, 22, 917992000),
+            LocalDateTime.of(2020, 10, 22, 0, 03, 22, 917992000),
+            1, List.of(new Tag(1, "extreme")));
 
         given(giftCertificateDao.findById(1)).willReturn(Optional.of(giftCertificate1));
 
@@ -63,10 +65,10 @@ class GiftCertificateServiceImplTest {
     @Test
     void findByName() {
         GiftCertificate giftCertificate = new GiftCertificate(1, "name 1", "description 1",
-                BigDecimal.valueOf(1),
-                LocalDateTime.of(2020, 10, 22, 0, 03, 22, 917992000),
-                LocalDateTime.of(2020, 10, 22, 0, 03, 22, 917992000),
-                1, List.of(new Tag(1, "extreme")));
+            BigDecimal.valueOf(1),
+            LocalDateTime.of(2020, 10, 22, 0, 03, 22, 917992000),
+            LocalDateTime.of(2020, 10, 22, 0, 03, 22, 917992000),
+            1, List.of(new Tag(1, "extreme")));
 
         given(giftCertificateDao.findByName("name 1")).willReturn(List.of(giftCertificate));
         assertEquals(List.of(giftCertificate), giftCertificateService.findByName("name 1"));
@@ -146,10 +148,10 @@ class GiftCertificateServiceImplTest {
     @Test
     void update() {
         GiftCertificate giftCertificate = new GiftCertificate(1, "name 1", "description 1",
-                BigDecimal.valueOf(1),
-                LocalDateTime.of(2020, 10, 22, 0, 03, 22, 917992000),
-                LocalDateTime.of(2020, 10, 22, 0, 03, 22, 917992000),
-                1, List.of(new Tag(1, "extreme")));
+            BigDecimal.valueOf(1),
+            LocalDateTime.of(2020, 10, 22, 0, 03, 22, 917992000),
+            LocalDateTime.of(2020, 10, 22, 0, 03, 22, 917992000),
+            1, List.of(new Tag(1, "extreme")));
         given(giftCertificateDao.update(giftCertificate)).willReturn(1);
         assertTrue(giftCertificateService.update(giftCertificate));
     }
@@ -157,10 +159,10 @@ class GiftCertificateServiceImplTest {
     @Test
     void updateNotExist() {
         GiftCertificate giftCertificate = new GiftCertificate(100, "name 1", "description 1",
-                BigDecimal.valueOf(1),
-                LocalDateTime.of(2020, 10, 22, 0, 03, 22, 917992000),
-                LocalDateTime.of(2020, 10, 22, 0, 03, 22, 917992000),
-                1, List.of(new Tag(1, "extreme")));
+            BigDecimal.valueOf(1),
+            LocalDateTime.of(2020, 10, 22, 0, 03, 22, 917992000),
+            LocalDateTime.of(2020, 10, 22, 0, 03, 22, 917992000),
+            1, List.of(new Tag(1, "extreme")));
         given(giftCertificateDao.update(giftCertificate)).willReturn(0);
         assertFalse(giftCertificateService.update(giftCertificate));
     }
@@ -168,10 +170,10 @@ class GiftCertificateServiceImplTest {
     @Test
     void updateWithNegativeId() {
         GiftCertificate giftCertificate = new GiftCertificate(-1, "name 1", "description 1",
-                BigDecimal.valueOf(1),
-                LocalDateTime.of(2020, 10, 22, 0, 03, 22, 917992000),
-                LocalDateTime.of(2020, 10, 22, 0, 03, 22, 917992000),
-                1, List.of(new Tag(1, "extreme")));
+            BigDecimal.valueOf(1),
+            LocalDateTime.of(2020, 10, 22, 0, 03, 22, 917992000),
+            LocalDateTime.of(2020, 10, 22, 0, 03, 22, 917992000),
+            1, List.of(new Tag(1, "extreme")));
         given(giftCertificateDao.update(giftCertificate)).willReturn(0);
         assertFalse(giftCertificateService.update(giftCertificate));
     }
@@ -196,20 +198,20 @@ class GiftCertificateServiceImplTest {
 
     List<GiftCertificate> getGiftCertificates() {
         GiftCertificate giftCertificate1 = new GiftCertificate(1, "name 1", "description 1",
-                BigDecimal.valueOf(1),
-                LocalDateTime.of(2020, 10, 22, 0, 03, 22, 917992000),
-                LocalDateTime.of(2020, 10, 22, 0, 03, 22, 917992000),
-                1, List.of(new Tag(1, "extreme")));
+            BigDecimal.valueOf(1),
+            LocalDateTime.of(2020, 10, 22, 0, 03, 22, 917992000),
+            LocalDateTime.of(2020, 10, 22, 0, 03, 22, 917992000),
+            1, List.of(new Tag(1, "extreme")));
         GiftCertificate giftCertificate2 = new GiftCertificate(2, "name 2", "description 2",
-                BigDecimal.valueOf(2),
-                LocalDateTime.of(2020, 10, 22, 0, 03, 22, 917992000),
-                LocalDateTime.of(2020, 10, 22, 0, 03, 22, 917992000),
-                2, List.of(new Tag(1, "extreme")));
+            BigDecimal.valueOf(2),
+            LocalDateTime.of(2020, 10, 22, 0, 03, 22, 917992000),
+            LocalDateTime.of(2020, 10, 22, 0, 03, 22, 917992000),
+            2, List.of(new Tag(1, "extreme")));
         GiftCertificate giftCertificate3 = new GiftCertificate(3, "name 3", "description 3",
-                BigDecimal.valueOf(3),
-                LocalDateTime.of(2020, 10, 22, 0, 03, 22, 917992000),
-                LocalDateTime.of(2020, 10, 22, 0, 03, 22, 917992000),
-                3, List.of(new Tag(1, "extreme")));
+            BigDecimal.valueOf(3),
+            LocalDateTime.of(2020, 10, 22, 0, 03, 22, 917992000),
+            LocalDateTime.of(2020, 10, 22, 0, 03, 22, 917992000),
+            3, List.of(new Tag(1, "extreme")));
         return List.of(giftCertificate1, giftCertificate2, giftCertificate3);
     }
 }

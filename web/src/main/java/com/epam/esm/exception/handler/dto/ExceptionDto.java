@@ -1,6 +1,7 @@
 package com.epam.esm.exception.handler.dto;
 
 public class ExceptionDto {
+
     private String errorMessage;
 
     public ExceptionDto() {

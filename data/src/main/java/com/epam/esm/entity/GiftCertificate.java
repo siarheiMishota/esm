@@ -6,6 +6,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 public class GiftCertificate {
+
     private long id;
     private String name;
     private String description;
@@ -18,7 +19,13 @@ public class GiftCertificate {
     public GiftCertificate() {
     }
 
-    public GiftCertificate(String name, String description, BigDecimal price, LocalDateTime creationDate, LocalDateTime lastUpdateDate, int duration, List<Tag> tags) {
+    public GiftCertificate(String name,
+                           String description,
+                           BigDecimal price,
+                           LocalDateTime creationDate,
+                           LocalDateTime lastUpdateDate,
+                           int duration,
+                           List<Tag> tags) {
         this.name = name;
         this.description = description;
         this.price = price;
@@ -28,7 +35,14 @@ public class GiftCertificate {
         this.tags = tags;
     }
 
-    public GiftCertificate(long id, String name, String description, BigDecimal price, LocalDateTime creationDate, LocalDateTime lastUpdateDate, int duration, List<Tag> tags) {
+    public GiftCertificate(long id,
+                           String name,
+                           String description,
+                           BigDecimal price,
+                           LocalDateTime creationDate,
+                           LocalDateTime lastUpdateDate,
+                           int duration,
+                           List<Tag> tags) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -105,19 +119,36 @@ public class GiftCertificate {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
 
         GiftCertificate that = (GiftCertificate) o;
 
-        if (id != that.id) return false;
-        if (duration != that.duration) return false;
-        if (name != null ? !name.equals(that.name) : that.name != null) return false;
-        if (description != null ? !description.equals(that.description) : that.description != null) return false;
-        if (price != null ? !price.equals(that.price) : that.price != null) return false;
-        if (creationDate != null ? !creationDate.equals(that.creationDate) : that.creationDate != null) return false;
-        if (lastUpdateDate != null ? !lastUpdateDate.equals(that.lastUpdateDate) : that.lastUpdateDate != null)
+        if (id != that.id) {
             return false;
+        }
+        if (duration != that.duration) {
+            return false;
+        }
+        if (name != null ? !name.equals(that.name) : that.name != null) {
+            return false;
+        }
+        if (description != null ? !description.equals(that.description) : that.description != null) {
+            return false;
+        }
+        if (price != null ? !price.equals(that.price) : that.price != null) {
+            return false;
+        }
+        if (creationDate != null ? !creationDate.equals(that.creationDate) : that.creationDate != null) {
+            return false;
+        }
+        if (lastUpdateDate != null ? !lastUpdateDate.equals(that.lastUpdateDate) : that.lastUpdateDate != null) {
+            return false;
+        }
         return tags != null ? tags.equals(that.tags) : that.tags == null;
     }
 
@@ -138,15 +169,15 @@ public class GiftCertificate {
     public String toString() {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("uuuu-MM-dd'T'HH:mm:ss.SSSSSSSSS");
         return new StringBuilder()
-                .append("main.java.com.epam.esm.entity.GiftCertificate( id= ")
-                .append(id).append(", name= ")
-                .append(name).append(", description= ")
-                .append(description).append(", price= ")
-                .append(price).append(", creation date= ")
-                .append(creationDate.format(formatter)).append(", last update date= ")
-                .append(lastUpdateDate.format(formatter)).append(", duration= ")
-                .append(duration).append(", tags( ")
-                .append(tags).append("); ")
-                .toString();
+            .append("main.java.com.epam.esm.entity.GiftCertificate( id= ")
+            .append(id).append(", name= ")
+            .append(name).append(", description= ")
+            .append(description).append(", price= ")
+            .append(price).append(", creation date= ")
+            .append(creationDate.format(formatter)).append(", last update date= ")
+            .append(lastUpdateDate.format(formatter)).append(", duration= ")
+            .append(duration).append(", tags( ")
+            .append(tags).append("); ")
+            .toString();
     }
 }

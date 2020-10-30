@@ -1,6 +1,7 @@
 package com.epam.esm.exception.handler.dto;
 
 public class NotFoundExceptionDto {
+
     private String errorMessage;
     private int errorCode;
 

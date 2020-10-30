@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 public class GiftCertificateDto {
+
     private long id;
     private String name;
     private String description;
@@ -17,7 +18,14 @@ public class GiftCertificateDto {
     public GiftCertificateDto() {
     }
 
-    public GiftCertificateDto(long id, String name, String description, BigDecimal price, LocalDateTime creationDate, LocalDateTime lastUpdateDate, int duration, List<Tag> tags) {
+    public GiftCertificateDto(long id,
+                              String name,
+                              String description,
+                              BigDecimal price,
+                              LocalDateTime creationDate,
+                              LocalDateTime lastUpdateDate,
+                              int duration,
+                              List<Tag> tags) {
         this.id = id;
         this.name = name;
         this.description = description;

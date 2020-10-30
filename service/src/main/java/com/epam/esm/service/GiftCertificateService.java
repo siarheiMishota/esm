@@ -9,6 +9,8 @@ public interface GiftCertificateService {
 
     List<GiftCertificate> findAll(Map<String, String> parameters);
 
+    List<GiftCertificate> findAll();
+
     Optional<GiftCertificate> findById(long id);
 
     List<GiftCertificate> findByName(String name);
@@ -24,4 +26,6 @@ public interface GiftCertificateService {
     boolean update(GiftCertificate giftCertificate);
 
     void add(GiftCertificate giftCertificate);
+
+    Map<String, String> validate(Map<String, String> parameters);
 }

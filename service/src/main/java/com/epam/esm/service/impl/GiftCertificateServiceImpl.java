@@ -5,6 +5,7 @@ import com.epam.esm.entity.GiftCertificate;
 import com.epam.esm.entity.Tag;
 import com.epam.esm.service.GiftCertificateService;
 import com.epam.esm.service.TagService;
+import com.epam.esm.service.validation.GiftCertificateValidation;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -14,17 +15,25 @@ import org.springframework.stereotype.Component;
 public class GiftCertificateServiceImpl implements GiftCertificateService {
 
     private final GiftCertificateDao giftCertificateDao;
-
     private final TagService tagService;
+    private final GiftCertificateValidation giftCertificateValidation;
 
-    public GiftCertificateServiceImpl(GiftCertificateDao giftCertificateDao, TagService tagService) {
+    public GiftCertificateServiceImpl(GiftCertificateDao giftCertificateDao,
+                                      TagService tagService,
+                                      GiftCertificateValidation giftCertificateValidation) {
         this.giftCertificateDao = giftCertificateDao;
         this.tagService = tagService;
+        this.giftCertificateValidation = giftCertificateValidation;
     }
 
     @Override
     public List<GiftCertificate> findAll(Map<String, String> parameters) {
         return giftCertificateDao.findAll(parameters);
+    }
+
+    @Override
+    public List<GiftCertificate> findAll() {
+        return giftCertificateDao.findAll();
     }
 
     @Override
@@ -72,5 +81,10 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
                 tagService.add(tag);
             }
         });
+    }
+
+    @Override
+    public Map<String, String> validate(Map<String, String> parameters) {
+        return giftCertificateValidation.validate(parameters);
     }
 }

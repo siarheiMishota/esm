@@ -3,11 +3,13 @@ package com.epam.esm.controller;
 import com.epam.esm.entity.GiftCertificate;
 import com.epam.esm.entity.GiftCertificateDto;
 import com.epam.esm.service.GiftCertificateService;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -21,8 +23,22 @@ public class GiftCertificateController {
     }
 
     @GetMapping()
-    public List<GiftCertificateDto> getGiftCertificates() {
-        List<GiftCertificate> giftCertificates = giftCertificateService.findAll(Map.of());
+    public List<GiftCertificateDto> getGiftCertificates(@RequestParam(required = false) String name,
+                                                        @RequestParam(required = false) String description,
+                                                        @RequestParam(required = false) String sort) {
+        Map<String, String> parameterMap = new HashMap<>();
+        parameterMap.put("name", name);
+        parameterMap.put("description", description);
+        parameterMap.put("sort", sort);
+
+        Map<String, String> validatedMap = giftCertificateService.validate(parameterMap);
+        List<GiftCertificate> giftCertificates;
+
+        if (validatedMap.isEmpty()) {
+            giftCertificates = giftCertificateService.findAll();
+        } else {
+            giftCertificates = giftCertificateService.findAll(validatedMap);
+        }
         return adaptToDto(giftCertificates);
     }
 

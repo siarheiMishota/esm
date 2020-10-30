@@ -10,7 +10,7 @@ public final class SqlRequestGiftCertificate {
     public static final String DESC = " desc ";
     public static final String WHERE = " where ";
     public static final String LIKE = " like ";
-    public static final String OR = " or ";
+    public static final String AND = " and ";
 
     public static final String COLUMNS = "id, name, description, price, creation_date, last_update_date, duration";
     public static final String FIND_ALL = "select " + COLUMNS + " from gift_certificates";

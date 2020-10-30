@@ -1,5 +1,6 @@
 package com.epam.esm.dao.impl;
 
+import static com.epam.esm.dao.SqlRequestGiftCertificate.AND;
 import static com.epam.esm.dao.SqlRequestGiftCertificate.COLUMN_DESCRIPTION;
 import static com.epam.esm.dao.SqlRequestGiftCertificate.COLUMN_NAME;
 import static com.epam.esm.dao.SqlRequestGiftCertificate.DELETE;
@@ -12,7 +13,6 @@ import static com.epam.esm.dao.SqlRequestGiftCertificate.FIND_BY_TAG_NAME;
 import static com.epam.esm.dao.SqlRequestGiftCertificate.INSERT;
 import static com.epam.esm.dao.SqlRequestGiftCertificate.INSERT_TAG_GIFT_CERTIFICATE;
 import static com.epam.esm.dao.SqlRequestGiftCertificate.LIKE;
-import static com.epam.esm.dao.SqlRequestGiftCertificate.OR;
 import static com.epam.esm.dao.SqlRequestGiftCertificate.ORDER_BY;
 import static com.epam.esm.dao.SqlRequestGiftCertificate.UPDATE;
 import static com.epam.esm.dao.SqlRequestGiftCertificate.WHERE;
@@ -57,6 +57,14 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
         return giftCertificates;
     }
 
+    @Override
+    public List<GiftCertificate> findAll() {
+        List<GiftCertificate> giftCertificates = jdbcTemplate.query(FIND_ALL,
+            new BeanPropertyRowMapper<>(GiftCertificate.class));
+        giftCertificates.forEach(this::setTagsToGiftCertificate);
+        return giftCertificates;
+    }
+
     private String getFullSqlWithParameters(Map<String, String> parameters, String request) {
         if (parameters == null) {
             return request;
@@ -74,7 +82,7 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
             if (!whereUse) {
                 fullFind += WHERE;
             } else {
-                fullFind = fullFind + OR + COLUMN_DESCRIPTION + LIKE + "'%" + parameters.get("description") + "%'";
+                fullFind = fullFind + AND + COLUMN_DESCRIPTION + LIKE + "'%" + parameters.get("description") + "%'";
             }
         }
 

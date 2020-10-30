@@ -9,6 +9,8 @@ public interface GiftCertificateDao {
 
     List<GiftCertificate> findAll(Map<String, String> parameters);
 
+    List<GiftCertificate> findAll();
+
     Optional<GiftCertificate> findById(long id);
 
     List<GiftCertificate> findByName(String partName);

@@ -19,6 +19,4 @@ public interface TagService {
     void delete(long id);
 
     boolean update(long id, String newName);
-
-    boolean tagValidate(String sortString);
 }

@@ -39,6 +39,14 @@ public class TagController {
                 .collect(Collectors.toList());
     }
 
+    @GetMapping("/giftCertificates")
+    public List<TagDto> getTagsa() {
+        return tagService.findAll()
+                .stream()
+                .map(tag -> new TagDto(tag.getId(), tag.getName()))
+                .collect(Collectors.toList());
+    }
+
     @GetMapping("/{id}")
     public TagDto getTagById(@PathVariable @Min(1) @NumberFormat long id) {
 

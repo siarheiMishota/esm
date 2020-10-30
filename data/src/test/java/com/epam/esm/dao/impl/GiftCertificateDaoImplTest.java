@@ -7,12 +7,15 @@ import com.epam.esm.entity.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.BadSqlGrammarException;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -26,9 +29,23 @@ class GiftCertificateDaoImplTest {
 
     @Test
     void findAll() {
-        assertEquals(11, giftCertificateDao.findAll().size());
-        List<GiftCertificate> all = giftCertificateDao.findAll();
-        System.out.println(all);
+        assertEquals(11, giftCertificateDao.findAll(null).size());
+    }
+
+    @Test
+    void findAllWithParametersNameAndSort() {
+        Map<String, String> stringStringMap = new HashMap<>();
+        stringStringMap.put("name", "name");
+        stringStringMap.put("sort", "price:desc,name");
+        assertEquals(11, giftCertificateDao.findAll(stringStringMap).size());
+    }
+
+    @Test
+    void findAllWithParametersNameAndSortException() {
+        Map<String, String> stringStringMap = new HashMap<>();
+        stringStringMap.put("name", "name");
+        stringStringMap.put("sort", "price:descss,name");
+        assertThrows(BadSqlGrammarException.class, () -> giftCertificateDao.findAll(stringStringMap).size());
     }
 
     @Test
@@ -42,7 +59,6 @@ class GiftCertificateDaoImplTest {
         GiftCertificate actual = giftCertificateDao.findById(4).get();
         assertEquals(expected, actual);
     }
-
 
     @Test
     void findByIdWithIdNotExist() {
@@ -77,7 +93,7 @@ class GiftCertificateDaoImplTest {
 
     @Test
     void findByPartName() {
-                assertEquals(3, giftCertificateDao.findByName("1").size());
+        assertEquals(3, giftCertificateDao.findByName("1").size());
     }
 
     @Test
@@ -105,22 +121,6 @@ class GiftCertificateDaoImplTest {
         assertEquals(0, giftCertificateDao.findByName("not exist").size());
     }
 
-
-    @Test
-    void findByTagId() {
-        assertEquals(4, giftCertificateDao.findByTagId(3).size());
-    }
-
-    @Test
-    void findByTagIdWithNegativeId() {
-        assertEquals(0, giftCertificateDao.findByTagId(-1).size());
-    }
-
-    @Test
-    void findByTagIdWithNotExistId() {
-        assertEquals(0, giftCertificateDao.findByTagId(569).size());
-    }
-
     @Test
     void findByTagName() {
         assertEquals(4, giftCertificateDao.findByTagName("fun").size());
@@ -144,7 +144,7 @@ class GiftCertificateDaoImplTest {
                 22, List.of(new Tag(1, "extreme")));
         giftCertificateDao.add(giftCertificate);
         Optional<GiftCertificate> expected = giftCertificateDao.findById(giftCertificate.getId());
-        List<GiftCertificate> all = giftCertificateDao.findAll();
+        List<GiftCertificate> all = giftCertificateDao.findAll(null);
         System.out.println(all);
 
         giftCertificateDao.delete(giftCertificate.getId());
@@ -155,20 +155,20 @@ class GiftCertificateDaoImplTest {
 
     @Test
     void deleteWithNegativeId() {
-        int expected = giftCertificateDao.findAll().size();
+        int expected = giftCertificateDao.findAll(null).size();
 
         giftCertificateDao.delete(-1);
-        int actual = giftCertificateDao.findAll().size();
+        int actual = giftCertificateDao.findAll(null).size();
 
         assertEquals(expected, actual);
     }
 
     @Test
     void deleteWithNotExist() {
-        int expected = giftCertificateDao.findAll().size();
+        int expected = giftCertificateDao.findAll(null).size();
 
         giftCertificateDao.delete(1200);
-        int actual = giftCertificateDao.findAll().size();
+        int actual = giftCertificateDao.findAll(null).size();
 
         assertEquals(expected, actual);
     }

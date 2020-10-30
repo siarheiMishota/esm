@@ -21,8 +21,8 @@ public class TagServiceImpl implements TagService {
     }
 
     @Override
-    public List<Tag> findAll(Map<String,String> parameters) {
-        return tagDao.findAll(parameters);
+    public List<Tag> findAll() {
+        return tagDao.findAll();
     }
 
     @Override

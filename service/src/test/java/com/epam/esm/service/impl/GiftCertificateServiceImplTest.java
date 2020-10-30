@@ -12,6 +12,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -28,8 +29,8 @@ class GiftCertificateServiceImplTest {
 
     @Test
     void findAll() {
-        given(giftCertificateDao.findAll()).willReturn(getGiftCertificates());
-        assertEquals(getGiftCertificates(), giftCertificateService.findAll());
+        given(giftCertificateDao.findAll(Map.of())).willReturn(getGiftCertificates());
+        assertEquals(getGiftCertificates(), giftCertificateService.findAll(Map.of()));
     }
 
     @Test
@@ -117,24 +118,6 @@ class GiftCertificateServiceImplTest {
     void findByPartDescriptionWithNull() {
         given(giftCertificateDao.findByDescription(null)).willThrow(NullPointerException.class);
         assertThrows(NullPointerException.class, () -> giftCertificateService.findByPartDescription(null));
-    }
-
-    @Test
-    void findByTagId() {
-        given(giftCertificateDao.findByTagId(1)).willReturn(getGiftCertificates());
-        assertEquals(getGiftCertificates(), giftCertificateService.findByTagId(1));
-    }
-
-    @Test
-    void findByTagIdNotExist() {
-        given(giftCertificateDao.findByTagId(100)).willReturn(List.of());
-        assertEquals(List.of(), giftCertificateService.findByTagId(100));
-    }
-
-    @Test
-    void findByTagIdWithNegativeId() {
-        given(giftCertificateDao.findByTagId(-1)).willReturn(List.of());
-        assertEquals(List.of(), giftCertificateService.findByTagId(-1));
     }
 
     @Test

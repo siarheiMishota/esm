@@ -3,10 +3,11 @@ package com.epam.esm.service;
 import com.epam.esm.entity.GiftCertificate;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 public interface GiftCertificateService {
-    List<GiftCertificate> findAll();
+    List<GiftCertificate> findAll(Map<String,String> parameters);
 
     Optional<GiftCertificate> findById(long id);
 
@@ -15,8 +16,6 @@ public interface GiftCertificateService {
     List<GiftCertificate> findByPartName(String partName);
 
     List<GiftCertificate> findByPartDescription(String description);
-
-    List<GiftCertificate> findByTagId(long tagId);
 
     List<GiftCertificate> findByTagName(String name);
 

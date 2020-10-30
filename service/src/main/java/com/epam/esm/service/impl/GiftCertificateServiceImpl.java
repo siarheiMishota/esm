@@ -8,6 +8,7 @@ import com.epam.esm.service.TagService;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Component
@@ -23,8 +24,8 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     }
 
     @Override
-    public List<GiftCertificate> findAll() {
-        return giftCertificateDao.findAll();
+    public List<GiftCertificate> findAll(Map<String,String> parameters) {
+        return giftCertificateDao.findAll(parameters);
     }
 
     @Override
@@ -47,10 +48,6 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
         return giftCertificateDao.findByDescription(description);
     }
 
-    @Override
-    public List<GiftCertificate> findByTagId(long tagId) {
-        return giftCertificateDao.findByTagId(tagId);
-    }
 
     @Override
     public List<GiftCertificate> findByTagName(String name) {

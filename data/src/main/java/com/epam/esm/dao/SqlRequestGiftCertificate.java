@@ -2,11 +2,21 @@ package com.epam.esm.dao;
 
 public final class SqlRequestGiftCertificate {
 
+    public static final String COLUMN_ID=" id ";
+    public static final String COLUMN_NAME=" name ";
+    public static final String COLUMN_DESCRIPTION=" description ";
+
+    public static final String ORDER_BY=" order by ";
+    public static final String DESC=" desc ";
+    public static final String WHERE=" where ";
+    public static final String LIKE=" like ";
+    public static final String OR=" or ";
+
+
     public static final String FIND_ALL = "select id, name, description, price, creation_date, last_update_date, duration from gift_certificates";
     public static final String FIND_BY_ID = "select id, name, description, price, creation_date, last_update_date, duration from gift_certificates where id=?";
-    public static final String FIND_BY_NAME = "select id, name, description, price, creation_date, last_update_date, duration from gift_certificates  where name=?";
-    public static final String FIND_BY_PART_NAME = "select id, name, description, price, creation_date, last_update_date, duration from gift_certificates  where name like ?";
-    public static final String FIND_BY_PART_DESCRIPTION = "select id, name, description, price, creation_date, last_update_date, duration from gift_certificates  where description like ?";
+    public static final String FIND_BY_NAME = "select id, name, description, price, creation_date, last_update_date, duration from gift_certificates  where name like ?";
+    public static final String FIND_BY_DESCRIPTION = "select id, name, description, price, creation_date, last_update_date, duration from gift_certificates  where description like ?";
     public static final String FIND_BY_TAG_NAME = "select gift_certificates.id, gift_certificates.name, description, price, creation_date, last_update_date, duration\n" +
             "from gift_certificates\n" +
             "         join tags_gift_certificates tgc on gift_certificates.id = tgc.gift_certificate_id\n" +

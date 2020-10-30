@@ -22,7 +22,12 @@ public class TagDaoImpl implements TagDao {
         this.jdbcTemplate = jdbcTemplate;
     }
 
+    @Override
     public List<Tag> findAll() {
+//        "select id,name from tags;";
+
+        String fullSelect = FIND_ALL;
+
         return jdbcTemplate.query(FIND_ALL, new BeanPropertyRowMapper<>(Tag.class));
     }
 
@@ -42,7 +47,6 @@ public class TagDaoImpl implements TagDao {
 
     @Override
     public Tag add(Tag tag) {
-
         GeneratedKeyHolder generatedKeyHolder = new GeneratedKeyHolder();
 
         jdbcTemplate.update(
@@ -68,19 +72,4 @@ public class TagDaoImpl implements TagDao {
         return jdbcTemplate.update(UPDATE, tag.getName(), tag.getId());
     }
 
-    //todo
-    private List<String> splitLineOnSortPart(String line) {
-        return Arrays.asList(line.split(","));
-    }
-
-    private Map<String, String> splitSortLineOnParts(String sortLine) {
-        Map<String, String> sortMap = new HashMap<>();
-        int indexOfColon = sortLine.indexOf(":");
-        if (indexOfColon == -1) {
-            sortMap.put(sortLine, "");
-        } else {
-            sortMap.put(sortLine.substring(0, indexOfColon), sortLine.substring(indexOfColon + 1));
-        }
-        return sortMap;
-    }
 }

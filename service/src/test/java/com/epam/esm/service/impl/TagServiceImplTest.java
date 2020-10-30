@@ -10,12 +10,10 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.dao.DuplicateKeyException;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class TagServiceImplTest {
@@ -28,10 +26,10 @@ class TagServiceImplTest {
 
     @Test
     void findAll() {
-        given(tagDao.findAll(Map.of())).willReturn(List.of(new Tag(1, "1"), new Tag(2, "2")));
+        given(tagDao.findAll()).willReturn(List.of(new Tag(1, "1"), new Tag(2, "2")));
 
         List<Tag> expected = List.of(new Tag(1, "1"), new Tag(2, "2"));
-        assertEquals(expected, tagService.findAll(Map.of()));
+        assertEquals(expected, tagService.findAll());
     }
 
     @Test
@@ -104,7 +102,6 @@ class TagServiceImplTest {
     @Test
     void addOnDuplicate() {
         given(tagDao.add(new Tag("adding duplicate tag"))).willThrow(DuplicateKeyException.class);
-
         assertThrows(DuplicateKeyException.class, () -> tagService.add(new Tag("adding duplicate tag")));
     }
 
@@ -125,20 +122,20 @@ class TagServiceImplTest {
 
     @Test
     void update() {
-        given(tagDao.update(new Tag(1,"updated tag"))).willReturn(1);
-        assertTrue(tagService.update(1,"updated tag"));
+        given(tagDao.update(new Tag(1, "updated tag"))).willReturn(1);
+        assertTrue(tagService.update(1, "updated tag"));
     }
 
     @Test
     void updateNotExist() {
-        given(tagDao.update(new Tag(1000,"updated tag"))).willReturn(0);
-        assertFalse(tagService.update(1000,"updated tag"));
+        given(tagDao.update(new Tag(1000, "updated tag"))).willReturn(0);
+        assertFalse(tagService.update(1000, "updated tag"));
     }
 
     @Test
     void updateWithNegativeId() {
-        given(tagDao.update(new Tag(-1,"updated tag"))).willReturn(0);
-        assertFalse(tagService.update(-1,"updated tag"));
+        given(tagDao.update(new Tag(-1, "updated tag"))).willReturn(0);
+        assertFalse(tagService.update(-1, "updated tag"));
     }
 
 }

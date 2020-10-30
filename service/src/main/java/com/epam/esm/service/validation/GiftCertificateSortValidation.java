@@ -1,9 +1,12 @@
 package com.epam.esm.service.validation;
 
+import static com.epam.esm.dao.SqlRequestGiftCertificate.LIKE;
+import static com.epam.esm.dao.SqlRequestGiftCertificate.OR;
+import static com.epam.esm.dao.SqlRequestGiftCertificate.ORDER_BY;
+import static com.epam.esm.dao.SqlRequestGiftCertificate.WHERE;
+
 import java.util.HashMap;
 import java.util.Map;
-
-import static com.epam.esm.dao.SqlRequestGiftCertificate.*;
 
 public class GiftCertificateSortValidation {
 
@@ -25,6 +28,7 @@ public class GiftCertificateSortValidation {
             return new HashMap<>();
         }
 
+        if ()
     }
 
     private String getFullSqlWithParameters(Map<String, String> parameters, String request) {

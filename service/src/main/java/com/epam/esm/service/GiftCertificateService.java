@@ -25,7 +25,11 @@ public interface GiftCertificateService {
 
     boolean update(GiftCertificate giftCertificate);
 
-    void add(GiftCertificate giftCertificate);
+    GiftCertificate add(GiftCertificate giftCertificate);
 
-    Map<String, String> validate(Map<String, String> parameters);
+    Map<String, String> validateRequestLine(Map<String, String> parameters);
+
+    boolean validateDate(String date);
+
+    Map<String, String> validateCreating(GiftCertificate giftCertificate);
 }

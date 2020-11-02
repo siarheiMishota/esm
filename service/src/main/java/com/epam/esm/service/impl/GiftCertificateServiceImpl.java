@@ -72,7 +72,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     }
 
     @Override
-    public void add(GiftCertificate giftCertificate) {
+    public GiftCertificate add(GiftCertificate giftCertificate) {
         giftCertificate.getTags().forEach(tag -> {
             Optional<Tag> optionalTagFromDb = tagService.findByName(tag.getName());
             if (optionalTagFromDb.isPresent()) {
@@ -81,10 +81,21 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
                 tagService.add(tag);
             }
         });
+        return giftCertificateDao.add(giftCertificate);
     }
 
     @Override
-    public Map<String, String> validate(Map<String, String> parameters) {
-        return giftCertificateValidation.validate(parameters);
+    public Map<String, String> validateRequestLine(Map<String, String> parameters) {
+        return giftCertificateValidation.validateRequestLine(parameters);
+    }
+
+    @Override
+    public boolean validateDate(String date) {
+        return giftCertificateValidation.validateDate(date);
+    }
+
+    @Override
+    public Map<String, String> validateCreating(GiftCertificate giftCertificate) {
+        return giftCertificateValidation.validateCreating(giftCertificate);
     }
 }

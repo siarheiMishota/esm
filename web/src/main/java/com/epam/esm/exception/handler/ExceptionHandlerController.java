@@ -1,11 +1,10 @@
 package com.epam.esm.exception.handler;
 
-import com.epam.esm.exception.NotFoundIdException;
-import com.epam.esm.exception.SortParametersException;
-import com.epam.esm.exception.handler.dto.ExceptionDto;
-import com.epam.esm.exception.handler.dto.NotFoundExceptionDto;
+import com.epam.esm.exception.ResourceException;
+import com.epam.esm.exception.handler.dto.ResourceExceptionDto;
 import javax.validation.ConstraintViolationException;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.converter.HttpMessageConversionException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -14,38 +13,29 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 @RestControllerAdvice
 public class ExceptionHandlerController {
 
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    @ExceptionHandler(NotFoundIdException.class)
-    public NotFoundExceptionDto handleNotFoundId(NotFoundIdException e) {
-        return new NotFoundExceptionDto(
-            String.format("Requested resource not found (%s=%d)", e.getNameField(), e.getValue()),
-            e.getHttpStatus().value());
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(ResourceException.class)
+    public ResourceExceptionDto handleNotFoundId(ResourceException e) {
+        return new ResourceExceptionDto(e.getHttpStatus(), e.getErrorMessage());
     }
 
-    @ResponseStatus(HttpStatus.NOT_ACCEPTABLE)
-    @ExceptionHandler({NumberFormatException.class, MethodArgumentTypeMismatchException.class})
-    public NotFoundExceptionDto handleNumberFormatException(NumberFormatException e) {
-        return new NotFoundExceptionDto(String.format("Requested resource isn't correct (id=%s)", e.getMessage()), 404);
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler({NumberFormatException.class, MethodArgumentTypeMismatchException.class,
+        ConstraintViolationException.class})
+    public ResourceExceptionDto handleNumberFormatException(Exception e) {
+        return new ResourceExceptionDto(HttpStatus.BAD_REQUEST, "Id isn't correct");
     }
 
-    @ResponseStatus(HttpStatus.NOT_ACCEPTABLE)
-    @ExceptionHandler(SortParametersException.class)
-    public NotFoundExceptionDto handleSortParametersException(SortParametersException e) {
-        return new NotFoundExceptionDto(
-            String.format("Requested resource isn't correct in sort part (%s=%s)", e.getNameField(), e.getValue()),
-            404);
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(HttpMessageConversionException.class)
+    public ResourceExceptionDto handleHttpMessageConversionException(HttpMessageConversionException e) {
+        return new ResourceExceptionDto(HttpStatus.BAD_REQUEST, "Body's request isn't correct");
     }
 
-    @ResponseStatus(HttpStatus.NOT_ACCEPTABLE)
-    @ExceptionHandler(ConstraintViolationException.class)
-    public NotFoundExceptionDto handleConstrainValidationException(ConstraintViolationException exception) {
-        return new NotFoundExceptionDto(exception.getMessage(), 404);
-
-    }
-
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(Exception.class)
-    public ExceptionDto handleException(Exception e) {
-        return new ExceptionDto(e.getMessage());
+    public ResourceExceptionDto handleException(Exception e) {
+        e.printStackTrace();
+        return new ResourceExceptionDto(HttpStatus.BAD_REQUEST, e.getMessage());
     }
 }

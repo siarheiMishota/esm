@@ -18,6 +18,7 @@ import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 @Component
 public class TagDaoImpl implements TagDao {
@@ -30,10 +31,6 @@ public class TagDaoImpl implements TagDao {
 
     @Override
     public List<Tag> findAll() {
-//        "select id,name from tags;";
-
-        String fullSelect = FIND_ALL;
-
         return jdbcTemplate.query(FIND_ALL, new BeanPropertyRowMapper<>(Tag.class));
     }
 
@@ -56,6 +53,7 @@ public class TagDaoImpl implements TagDao {
             new BeanPropertyRowMapper<>(Tag.class));
     }
 
+    @Transactional
     @Override
     public Tag add(Tag tag) {
         GeneratedKeyHolder generatedKeyHolder = new GeneratedKeyHolder();
@@ -74,11 +72,13 @@ public class TagDaoImpl implements TagDao {
         return tag;
     }
 
+    @Transactional
     @Override
     public void delete(long id) {
         jdbcTemplate.update(DELETE, id);
     }
 
+    @Transactional
     @Override
     public int update(Tag tag) {
         return jdbcTemplate.update(UPDATE, tag.getName(), tag.getId());

@@ -1,8 +1,5 @@
 package com.epam.esm.dao.impl;
 
-import static com.epam.esm.dao.SqlRequestGiftCertificate.AND;
-import static com.epam.esm.dao.SqlRequestGiftCertificate.COLUMN_DESCRIPTION;
-import static com.epam.esm.dao.SqlRequestGiftCertificate.COLUMN_NAME;
 import static com.epam.esm.dao.SqlRequestGiftCertificate.DELETE;
 import static com.epam.esm.dao.SqlRequestGiftCertificate.DELETE_TAG_GIFT_CERTIFICATE;
 import static com.epam.esm.dao.SqlRequestGiftCertificate.FIND_ALL;
@@ -12,10 +9,13 @@ import static com.epam.esm.dao.SqlRequestGiftCertificate.FIND_BY_NAME;
 import static com.epam.esm.dao.SqlRequestGiftCertificate.FIND_BY_TAG_NAME;
 import static com.epam.esm.dao.SqlRequestGiftCertificate.INSERT;
 import static com.epam.esm.dao.SqlRequestGiftCertificate.INSERT_TAG_GIFT_CERTIFICATE;
-import static com.epam.esm.dao.SqlRequestGiftCertificate.LIKE;
-import static com.epam.esm.dao.SqlRequestGiftCertificate.ORDER_BY;
 import static com.epam.esm.dao.SqlRequestGiftCertificate.UPDATE;
-import static com.epam.esm.dao.SqlRequestGiftCertificate.WHERE;
+import static com.epam.esm.dao.StringParameters.AND;
+import static com.epam.esm.dao.StringParameters.COLUMN_DESCRIPTION;
+import static com.epam.esm.dao.StringParameters.COLUMN_NAME;
+import static com.epam.esm.dao.StringParameters.LIKE;
+import static com.epam.esm.dao.StringParameters.ORDER_BY;
+import static com.epam.esm.dao.StringParameters.WHERE;
 
 import com.epam.esm.dao.GiftCertificateDao;
 import com.epam.esm.dao.TagDao;
@@ -23,6 +23,7 @@ import com.epam.esm.entity.GiftCertificate;
 import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -47,9 +48,13 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
         this.tagDao = tagDao;
     }
 
+    public static void main(String[] args) {
+
+    }
+
     @Override
     public List<GiftCertificate> findAll(Map<String, String> parameters) {
-        String fullFind = getFullSqlWithParameters(parameters, FIND_ALL);
+        String fullFind = getFullSqlWithParameters(parameters);
 
         List<GiftCertificate> giftCertificates = jdbcTemplate.query(fullFind,
             new BeanPropertyRowMapper<>(GiftCertificate.class));
@@ -65,13 +70,13 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
         return giftCertificates;
     }
 
-    private String getFullSqlWithParameters(Map<String, String> parameters, String request) {
+    private String getFullSqlWithParameters(Map<String, String> parameters) {
         if (parameters == null) {
-            return request;
+            return FIND_ALL;
         }
 
         boolean whereUse = false;
-        String fullFind = request;
+        String fullFind = FIND_ALL;
 
         if (parameters.containsKey("name")) {
             fullFind = fullFind + WHERE + COLUMN_NAME + LIKE + "'%" + parameters.get("name") + "%'";
@@ -91,7 +96,7 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
             Map<String, String> tokensMap = splitSortLineOnTokens(parameters.get("sort"));
 
             for (Map.Entry<String, String> entryToken : tokensMap.entrySet()) {
-                fullFind = fullFind + entryToken.getKey() + " " + entryToken.getValue() + ",";
+                fullFind += entryToken.getKey() + " " + entryToken.getValue() + ",";
             }
             fullFind = fullFind.substring(0, fullFind.length() - 1);
         }
@@ -133,19 +138,22 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
         return giftCertificates;
     }
 
+    @Transactional
     @Override
     public void delete(long id) {
         jdbcTemplate.update(DELETE, id);
     }
 
+    @Transactional
     @Override
     public int update(GiftCertificate giftCertificate) {
         return jdbcTemplate.update(UPDATE, giftCertificate.getName(), giftCertificate.getDescription(),
-            giftCertificate.getPrice(), giftCertificate.getCreationDate(), giftCertificate.getLastUpdateDate(),
+            giftCertificate.getPrice(), giftCertificate.getCreationDate(), LocalDateTime.now(),
             giftCertificate.getDuration(),
             giftCertificate.getId());
     }
 
+    @Transactional
     @Override
     public GiftCertificate add(GiftCertificate giftCertificate) {
         GeneratedKeyHolder generatedKeyHolder = new GeneratedKeyHolder();
@@ -157,8 +165,8 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
                 preparedStatement.setString(1, giftCertificate.getName());
                 preparedStatement.setString(2, giftCertificate.getDescription());
                 preparedStatement.setBigDecimal(3, giftCertificate.getPrice());
-                preparedStatement.setTimestamp(4, Timestamp.valueOf(giftCertificate.getCreationDate()));
-                preparedStatement.setTimestamp(5, Timestamp.valueOf(giftCertificate.getLastUpdateDate()));
+                preparedStatement.setTimestamp(4, Timestamp.valueOf(LocalDateTime.now()));
+                preparedStatement.setTimestamp(5, Timestamp.valueOf(LocalDateTime.now()));
                 preparedStatement.setInt(6, giftCertificate.getDuration());
                 return preparedStatement;
             }, generatedKeyHolder);
@@ -191,7 +199,6 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
     private void setTagsToGiftCertificate(GiftCertificate giftCertificate) {
         giftCertificate.setTags(tagDao.findByGiftCertificateId(giftCertificate.getId()));
     }
-
 
     private Map<String, String> splitSortLineOnTokens(String line) {
         Map<String, String> sortMap = new HashMap<>();

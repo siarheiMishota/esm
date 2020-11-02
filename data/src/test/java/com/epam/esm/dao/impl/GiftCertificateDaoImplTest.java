@@ -30,7 +30,7 @@ class GiftCertificateDaoImplTest {
 
     @Test
     void findAll() {
-        assertEquals(11, giftCertificateDao.findAll(null).size());
+        assertEquals(11, giftCertificateDao.findAll().size());
     }
 
     @Test
@@ -145,8 +145,6 @@ class GiftCertificateDaoImplTest {
             22, List.of(new Tag(1, "extreme")));
         giftCertificateDao.add(giftCertificate);
         Optional<GiftCertificate> expected = giftCertificateDao.findById(giftCertificate.getId());
-        List<GiftCertificate> all = giftCertificateDao.findAll(null);
-        System.out.println(all);
 
         giftCertificateDao.delete(giftCertificate.getId());
         Optional<GiftCertificate> actual = giftCertificateDao.findById(giftCertificate.getId());
@@ -156,20 +154,20 @@ class GiftCertificateDaoImplTest {
 
     @Test
     void deleteWithNegativeId() {
-        int expected = giftCertificateDao.findAll(null).size();
+        int expected = giftCertificateDao.findAll().size();
 
         giftCertificateDao.delete(-1);
-        int actual = giftCertificateDao.findAll(null).size();
+        int actual = giftCertificateDao.findAll().size();
 
         assertEquals(expected, actual);
     }
 
     @Test
     void deleteWithNotExist() {
-        int expected = giftCertificateDao.findAll(null).size();
+        int expected = giftCertificateDao.findAll().size();
 
         giftCertificateDao.delete(1200);
-        int actual = giftCertificateDao.findAll(null).size();
+        int actual = giftCertificateDao.findAll().size();
 
         assertEquals(expected, actual);
     }

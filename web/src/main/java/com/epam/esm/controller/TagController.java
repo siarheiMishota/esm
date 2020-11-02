@@ -2,16 +2,20 @@ package com.epam.esm.controller;
 
 import com.epam.esm.entity.Tag;
 import com.epam.esm.entity.TagDto;
-import com.epam.esm.exception.NotFoundIdException;
+import com.epam.esm.exception.ResourceException;
 import com.epam.esm.service.TagService;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import javax.validation.constraints.Min;
 import org.springframework.format.annotation.NumberFormat;
+import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -34,24 +38,32 @@ public class TagController {
             .collect(Collectors.toList());
     }
 
-    @GetMapping("/giftCertificates")
-    public List<TagDto> getTagsa() {
-        return tagService.findAll()
-            .stream()
-            .map(tag -> new TagDto(tag.getId(), tag.getName()))
-            .collect(Collectors.toList());
-    }
-
     @GetMapping("/{id}")
     public TagDto getTagById(@PathVariable @Min(1) @NumberFormat long id) {
 
         Optional<Tag> optionalTag = tagService.findById(id);
         if (optionalTag.isEmpty()) {
-            throw new NotFoundIdException("id", id);
+            throw new ResourceException(HttpStatus.BAD_REQUEST,
+                String.format("Requested resource not found (id=%d)", id));
         }
 
         Tag tag = optionalTag.get();
         return new TagDto(tag.getId(), tag.getName());
     }
 
+    @PostMapping
+    public TagDto createTag(@RequestBody TagDto tagDto) {
+        Tag tag = new Tag(tagDto.getName());
+        if (tagService.add(tag)) {
+            return new TagDto(tag.getId(), tag.getName());
+        } else {
+            throw new ResourceException(HttpStatus.BAD_REQUEST, "Tag wasn't added because one is exist");
+        }
+    }
+
+    @DeleteMapping
+    public HttpStatus deleteTag(@RequestBody TagDto tag) {
+        tagService.delete(tag.getId());
+        return HttpStatus.OK;
+    }
 }

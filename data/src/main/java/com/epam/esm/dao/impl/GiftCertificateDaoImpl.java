@@ -1,7 +1,6 @@
 package com.epam.esm.dao.impl;
 
 import static com.epam.esm.dao.SqlRequestGiftCertificate.DELETE;
-import static com.epam.esm.dao.SqlRequestGiftCertificate.DELETE_TAG_GIFT_CERTIFICATE;
 import static com.epam.esm.dao.SqlRequestGiftCertificate.FIND_ALL;
 import static com.epam.esm.dao.SqlRequestGiftCertificate.FIND_BY_DESCRIPTION;
 import static com.epam.esm.dao.SqlRequestGiftCertificate.FIND_BY_ID;
@@ -188,11 +187,6 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
                 preparedStatement.setLong(2, giftCertificateId);
                 return preparedStatement;
             });
-        return numberInvolvedRows != 0;
-    }
-
-    private boolean deleteTagGiftCertificate(long tagId, long giftCertificateId) {
-        int numberInvolvedRows = jdbcTemplate.update(DELETE_TAG_GIFT_CERTIFICATE, tagId, giftCertificateId);
         return numberInvolvedRows != 0;
     }
 

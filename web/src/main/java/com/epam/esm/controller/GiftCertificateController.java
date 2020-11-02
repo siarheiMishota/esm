@@ -6,17 +6,21 @@ import static com.epam.esm.dao.StringParameters.PATTERN_KEY_SORT;
 
 import com.epam.esm.entity.GiftCertificate;
 import com.epam.esm.entity.GiftCertificateDto;
+import com.epam.esm.entity.Tag;
 import com.epam.esm.exception.ResourceException;
 import com.epam.esm.service.GiftCertificateService;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -62,7 +66,7 @@ public class GiftCertificateController {
     }
 
     @PostMapping
-    public GiftCertificateDto createGiftCertificates(@RequestParam GiftCertificateDto giftCertificateDto) {
+    public GiftCertificateDto createGiftCertificates(@RequestBody GiftCertificateDto giftCertificateDto) {
         if (notValidateCreationAndLasUpdateDate(giftCertificateDto)) {
             throw new ResourceException(HttpStatus.BAD_REQUEST, "date isn't correct");
         }
@@ -73,10 +77,12 @@ public class GiftCertificateController {
         if (!incorrectMap.isEmpty()) {
             throw new ResourceException(HttpStatus.BAD_REQUEST, createMessageException(incorrectMap));
         }
-
         giftCertificateService.add(giftCertificate);
-
-        return adaptToDto(giftCertificate);
+        Optional<GiftCertificate> optionalResult = giftCertificateService.findById(giftCertificate.getId());
+        if (optionalResult.isEmpty()) {
+            throw new ResourceException(HttpStatus.BAD_REQUEST, "Gift certificate wasn't added");
+        }
+        return adaptToDto(optionalResult.get());
     }
 
     private String createMessageException(Map<String, String> incorrectMap) {
@@ -99,6 +105,15 @@ public class GiftCertificateController {
         giftCertificate.setCreationDate(LocalDateTime.parse(giftCertificateDto.getCreationDate()));
         giftCertificate.setLastUpdateDate(LocalDateTime.parse(giftCertificateDto.getLastUpdateDate()));
         giftCertificate.setDuration(giftCertificateDto.getDuration());
+
+        List<Tag> tagsDto = giftCertificateDto.getTags();
+        if (tagsDto == null) {
+            giftCertificate.setTags(new ArrayList<>());
+        } else {
+            giftCertificate.setTags(tagsDto.stream()
+                .map(tagDto -> new Tag(tagDto.getId(), tagDto.getName()))
+                .collect(Collectors.toList()));
+        }
         return giftCertificate;
     }
 

@@ -73,14 +73,16 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
 
     @Override
     public GiftCertificate add(GiftCertificate giftCertificate) {
-        giftCertificate.getTags().forEach(tag -> {
-            Optional<Tag> optionalTagFromDb = tagService.findByName(tag.getName());
-            if (optionalTagFromDb.isPresent()) {
-                tag.setId(optionalTagFromDb.get().getId());
-            } else {
-                tagService.add(tag);
-            }
-        });
+        if (giftCertificate.getTags() != null) {
+            giftCertificate.getTags().forEach(tag -> {
+                Optional<Tag> optionalTagFromDb = tagService.findByName(tag.getName());
+                if (optionalTagFromDb.isPresent()) {
+                    tag.setId(optionalTagFromDb.get().getId());
+                } else {
+                    tagService.add(tag);
+                }
+            });
+        }
         return giftCertificateDao.add(giftCertificate);
     }
 

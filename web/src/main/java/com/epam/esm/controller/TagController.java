@@ -46,9 +46,7 @@ public class TagController {
             throw new ResourceException(HttpStatus.BAD_REQUEST,
                 String.format("Requested resource not found (id=%d)", id));
         }
-
-        Tag tag = optionalTag.get();
-        return new TagDto(tag.getId(), tag.getName());
+        return new TagDto(optionalTag.get().getId(), optionalTag.get().getName());
     }
 
     @PostMapping

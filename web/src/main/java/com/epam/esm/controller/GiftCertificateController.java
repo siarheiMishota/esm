@@ -6,6 +6,8 @@ import static com.epam.esm.dao.StringParameters.PATTERN_KEY_SORT;
 
 import com.epam.esm.entity.GiftCertificate;
 import com.epam.esm.entity.GiftCertificateDto;
+import com.epam.esm.entity.GiftCertificateMostChangeDto;
+import com.epam.esm.entity.GiftCertificateParametersDto;
 import com.epam.esm.entity.Tag;
 import com.epam.esm.exception.ResourceException;
 import com.epam.esm.service.GiftCertificateService;
@@ -16,13 +18,18 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import javax.validation.Valid;
+import javax.validation.constraints.Min;
+import org.springframework.format.annotation.NumberFormat;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -36,28 +43,40 @@ public class GiftCertificateController {
     }
 
     @GetMapping()
-    public List<GiftCertificateDto> getGiftCertificates(@RequestParam(required = false) String name,
-                                                        @RequestParam(required = false) String description,
-                                                        @RequestParam(required = false) String sort) {
+    public List<GiftCertificateDto> getGiftCertificates(@Valid GiftCertificateParametersDto giftCertificateParametersDto) {
         Map<String, String> parameterMap = new HashMap<>();
-        parameterMap.put(PATTERN_KEY_NAME, name);
-        parameterMap.put(PATTERN_KEY_DESCRIPTION, description);
-        parameterMap.put(PATTERN_KEY_SORT, sort);
+        if (giftCertificateParametersDto.getName() != null) {
+            parameterMap.put(PATTERN_KEY_NAME, giftCertificateParametersDto.getName());
+        }
+        if (giftCertificateParametersDto.getDescription() != null) {
+            parameterMap.put(PATTERN_KEY_DESCRIPTION, giftCertificateParametersDto.getDescription());
+        }
+        if (giftCertificateParametersDto.getSort() != null) {
+            parameterMap.put(PATTERN_KEY_SORT, giftCertificateParametersDto.getSort());
+        }
 
-        Map<String, String> validatedMap = giftCertificateService.validateRequestLine(parameterMap);
         List<GiftCertificate> giftCertificates;
-
-        if (validatedMap.isEmpty()) {
+        if (parameterMap.isEmpty()) {
             giftCertificates = giftCertificateService.findAll();
         } else {
-            giftCertificates = giftCertificateService.findAll(validatedMap);
+            giftCertificates = giftCertificateService.findAll(parameterMap);
         }
         return adaptListToListDto(giftCertificates);
     }
 
-    @GetMapping("/tags/{tagName}")
-    public List<GiftCertificateDto> getGiftCertificatesByTagName(@PathVariable String tagName) {
-        return adaptListToListDto(giftCertificateService.findByTagName(tagName));
+    @GetMapping("/{id}")
+    public GiftCertificateDto getGiftCertificateById(@PathVariable @Min(1) @NumberFormat long id) {
+        Optional<GiftCertificate> optionalResult = giftCertificateService.findById(id);
+        if (optionalResult.isEmpty()) {
+            throw new ResourceException(HttpStatus.BAD_REQUEST,
+                String.format("Requested resource not found (id=%d)", id));
+        }
+        return adaptToDto(optionalResult.get());
+    }
+
+    @GetMapping("/tags/{id}")
+    public List<GiftCertificateDto> getGiftCertificatesByTagName(@PathVariable long id) {
+        return adaptListToListDto(giftCertificateService.findByTagId(id));
     }
 
     @GetMapping("/tags")
@@ -66,17 +85,9 @@ public class GiftCertificateController {
     }
 
     @PostMapping
-    public GiftCertificateDto createGiftCertificates(@RequestBody GiftCertificateDto giftCertificateDto) {
-        if (notValidateCreationAndLasUpdateDate(giftCertificateDto)) {
-            throw new ResourceException(HttpStatus.BAD_REQUEST, "date isn't correct");
-        }
-
+    public GiftCertificateDto createGiftCertificates(@RequestBody @Valid GiftCertificateDto giftCertificateDto) {
         GiftCertificate giftCertificate = adaptDtoTo(giftCertificateDto);
-        Map<String, String> incorrectMap = giftCertificateService.validateCreating(giftCertificate);
 
-        if (!incorrectMap.isEmpty()) {
-            throw new ResourceException(HttpStatus.BAD_REQUEST, createMessageException(incorrectMap));
-        }
         giftCertificateService.add(giftCertificate);
         Optional<GiftCertificate> optionalResult = giftCertificateService.findById(giftCertificate.getId());
         if (optionalResult.isEmpty()) {
@@ -85,16 +96,33 @@ public class GiftCertificateController {
         return adaptToDto(optionalResult.get());
     }
 
-    private String createMessageException(Map<String, String> incorrectMap) {
-        return incorrectMap.entrySet()
-            .stream()
-            .map(entry -> new StringBuilder().append(entry.getKey()).append(": ").append(entry.getValue()))
-            .collect(Collectors.joining(","));
+    @PutMapping
+    public GiftCertificateDto updateGiftCertificate(@RequestBody @Valid GiftCertificateDto giftCertificateDto) {
+        GiftCertificate giftCertificate = adaptDtoTo(giftCertificateDto);
+        if (giftCertificateService.update(giftCertificate)) {
+            return adaptToDto(giftCertificate);
+        } else {
+            throw new ResourceException(HttpStatus.BAD_REQUEST, "Gift certificate wasn't updated");
+        }
     }
 
-    private boolean notValidateCreationAndLasUpdateDate(GiftCertificateDto giftCertificateDto) {
-        return !giftCertificateService.validateDate(giftCertificateDto.getCreationDate())
-            || !giftCertificateService.validateDate(giftCertificateDto.getLastUpdateDate());
+    @DeleteMapping("/{id}")
+    public HttpStatus deleteGiftCertificate(@PathVariable @Valid @Min(0) long id) {
+        giftCertificateService.delete(id);
+        return HttpStatus.OK;
+    }
+
+    @PatchMapping("/{id}")
+    public GiftCertificateDto updatePartGiftCertificate(
+        @RequestBody GiftCertificateMostChangeDto giftCertificateMostChangeDto, @PathVariable long id) {
+        if (giftCertificateService.updateDescriptionAndPrice(id, giftCertificateMostChangeDto.getDescription(),
+            giftCertificateMostChangeDto.getPrice())) {
+            Optional<GiftCertificate> optionalResult = giftCertificateService.findById(id);
+            if (optionalResult.isPresent()) {
+                return adaptToDto(optionalResult.get());
+            }
+        }
+        throw new ResourceException(HttpStatus.BAD_REQUEST, "Description and price ift certificate wasn't updated");
     }
 
     private GiftCertificate adaptDtoTo(GiftCertificateDto giftCertificateDto) {

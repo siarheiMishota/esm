@@ -6,7 +6,6 @@ import static com.epam.esm.dao.SqlRequestTag.FIND_BY_GIFT_CERTIFICATE_ID;
 import static com.epam.esm.dao.SqlRequestTag.FIND_BY_ID;
 import static com.epam.esm.dao.SqlRequestTag.FIND_BY_NAME;
 import static com.epam.esm.dao.SqlRequestTag.INSERT;
-import static com.epam.esm.dao.SqlRequestTag.UPDATE;
 
 import com.epam.esm.dao.TagDao;
 import com.epam.esm.entity.Tag;
@@ -58,16 +57,18 @@ public class TagDaoImpl implements TagDao {
     public Tag add(Tag tag) {
         GeneratedKeyHolder generatedKeyHolder = new GeneratedKeyHolder();
 
-        jdbcTemplate.update(
-            connection -> {
-                PreparedStatement preparedStatement = connection.prepareStatement(INSERT,
-                    Statement.RETURN_GENERATED_KEYS);
-                preparedStatement.setString(1, tag.getName());
-                return preparedStatement;
-            }, generatedKeyHolder);
-        Number key = generatedKeyHolder.getKey();
-        if (key != null) {
-            tag.setId(key.longValue());
+        if (findByName(tag.getName()).isEmpty()) {
+            jdbcTemplate.update(
+                connection -> {
+                    PreparedStatement preparedStatement = connection.prepareStatement(INSERT,
+                        Statement.RETURN_GENERATED_KEYS);
+                    preparedStatement.setString(1, tag.getName());
+                    return preparedStatement;
+                }, generatedKeyHolder);
+            Number key = generatedKeyHolder.getKey();
+            if (key != null) {
+                tag.setId(key.longValue());
+            }
         }
         return tag;
     }
@@ -77,11 +78,4 @@ public class TagDaoImpl implements TagDao {
     public void delete(long id) {
         jdbcTemplate.update(DELETE, id);
     }
-
-    @Transactional
-    @Override
-    public int update(Tag tag) {
-        return jdbcTemplate.update(UPDATE, tag.getName(), tag.getId());
-    }
-
 }

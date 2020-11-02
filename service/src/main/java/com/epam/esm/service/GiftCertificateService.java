@@ -1,6 +1,7 @@
 package com.epam.esm.service;
 
 import com.epam.esm.entity.GiftCertificate;
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -13,23 +14,13 @@ public interface GiftCertificateService {
 
     Optional<GiftCertificate> findById(long id);
 
-    List<GiftCertificate> findByName(String name);
-
-    List<GiftCertificate> findByPartName(String partName);
-
-    List<GiftCertificate> findByPartDescription(String description);
-
-    List<GiftCertificate> findByTagName(String name);
+    List<GiftCertificate> findByTagId(long id);
 
     void delete(long id);
 
     boolean update(GiftCertificate giftCertificate);
 
+    boolean updateDescriptionAndPrice(long id, String description, BigDecimal price);
+
     GiftCertificate add(GiftCertificate giftCertificate);
-
-    Map<String, String> validateRequestLine(Map<String, String> parameters);
-
-    boolean validateDate(String date);
-
-    Map<String, String> validateCreating(GiftCertificate giftCertificate);
 }

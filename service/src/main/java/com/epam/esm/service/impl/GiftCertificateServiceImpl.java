@@ -5,7 +5,9 @@ import com.epam.esm.entity.GiftCertificate;
 import com.epam.esm.entity.Tag;
 import com.epam.esm.service.GiftCertificateService;
 import com.epam.esm.service.TagService;
-import com.epam.esm.service.validation.GiftCertificateValidation;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -16,14 +18,11 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
 
     private final GiftCertificateDao giftCertificateDao;
     private final TagService tagService;
-    private final GiftCertificateValidation giftCertificateValidation;
 
     public GiftCertificateServiceImpl(GiftCertificateDao giftCertificateDao,
-                                      TagService tagService,
-                                      GiftCertificateValidation giftCertificateValidation) {
+                                      TagService tagService) {
         this.giftCertificateDao = giftCertificateDao;
         this.tagService = tagService;
-        this.giftCertificateValidation = giftCertificateValidation;
     }
 
     @Override
@@ -42,23 +41,8 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     }
 
     @Override
-    public List<GiftCertificate> findByName(String name) {
-        return giftCertificateDao.findByName(name);
-    }
-
-    @Override
-    public List<GiftCertificate> findByPartName(String partName) {
-        return giftCertificateDao.findByName(partName);
-    }
-
-    @Override
-    public List<GiftCertificate> findByPartDescription(String description) {
-        return giftCertificateDao.findByDescription(description);
-    }
-
-    @Override
-    public List<GiftCertificate> findByTagName(String name) {
-        return giftCertificateDao.findByTagName(name);
+    public List<GiftCertificate> findByTagId(long id) {
+        return giftCertificateDao.findByTagId(id);
     }
 
     @Override
@@ -72,7 +56,14 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     }
 
     @Override
+    public boolean updateDescriptionAndPrice(long id, String description, BigDecimal price) {
+        return giftCertificateDao.updateDescriptionAndPrice(id, description, price) != 0;
+    }
+
+    @Override
     public GiftCertificate add(GiftCertificate giftCertificate) {
+        removeDuplicateTags(giftCertificate.getTags());
+
         if (giftCertificate.getTags() != null) {
             giftCertificate.getTags().forEach(tag -> {
                 Optional<Tag> optionalTagFromDb = tagService.findByName(tag.getName());
@@ -86,18 +77,17 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
         return giftCertificateDao.add(giftCertificate);
     }
 
-    @Override
-    public Map<String, String> validateRequestLine(Map<String, String> parameters) {
-        return giftCertificateValidation.validateRequestLine(parameters);
-    }
+    private void removeDuplicateTags(List<Tag> tags) {
+        List<String> uniqueTags = new ArrayList<>();
+        Iterator<Tag> tagIterator = tags.iterator();
 
-    @Override
-    public boolean validateDate(String date) {
-        return giftCertificateValidation.validateDate(date);
-    }
-
-    @Override
-    public Map<String, String> validateCreating(GiftCertificate giftCertificate) {
-        return giftCertificateValidation.validateCreating(giftCertificate);
+        while (tagIterator.hasNext()) {
+            Tag tagNext = tagIterator.next();
+            if (uniqueTags.contains(tagNext.getName())) {
+                tagIterator.remove();
+            } else {
+                uniqueTags.add(tagNext.getName());
+            }
+        }
     }
 }

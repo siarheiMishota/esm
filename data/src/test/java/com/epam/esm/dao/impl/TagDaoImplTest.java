@@ -87,27 +87,6 @@ class TagDaoImplTest {
     }
 
     @Test
-    void update() {
-        Tag tag = new Tag(3, "new tag");
-        int actual = tagDao.update(tag);
-        assertEquals(1, actual);
-
-        tag.setName("love");
-        tagDao.update(tag);
-    }
-
-    @Test
-    void updateWithNull() {
-        assertThrows(NullPointerException.class, () -> tagDao.update(null));
-    }
-
-    @Test
-    void updateWithNotExist() {
-        Tag tag = new Tag(300, "exception tag");
-        assertEquals(0, tagDao.update(tag));
-    }
-
-    @Test
     void delete() {
         Tag tag = new Tag("new tag");
         tagDao.add(tag);
@@ -138,6 +117,4 @@ class TagDaoImplTest {
 
         assertEquals(expected, actual);
     }
-
-
 }

@@ -3,15 +3,31 @@ package com.epam.esm.entity;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
 
 public class GiftCertificateDto {
 
+    @Min(0)
     private long id;
+
+    @Size(max = 50)
     private String name;
+
+    @Size(max = 500)
     private String description;
+
+    @Min(0)
     private BigDecimal price;
+
+    @Pattern(regexp = "\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}")
     private String creationDate;
+
+    @Pattern(regexp = "\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}")
     private String lastUpdateDate;
+
+    @Min(0)
     private int duration;
     private List<Tag> tags;
 
@@ -97,6 +113,6 @@ public class GiftCertificateDto {
     }
 
     public void setTags(List<Tag> tags) {
-         this.tags = tags;
+        this.tags = tags;
     }
 }

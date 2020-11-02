@@ -72,69 +72,18 @@ class GiftCertificateDaoImplTest {
     }
 
     @Test
-    void findByName() {
-        GiftCertificate expected = new GiftCertificate(4, "name 4", "description 4",
-            BigDecimal.valueOf(4),
-            LocalDateTime.of(2020, 10, 22, 0, 03, 22, 917992000),
-            LocalDateTime.of(2020, 10, 22, 0, 03, 22, 917992000),
-            4, List.of(new Tag(1, "extreme")));
-
-        assertEquals(expected, giftCertificateDao.findByName("name 4").get(0));
-    }
-
-    @Test
-    void findByNameWithNull() {
-        assertEquals(0, giftCertificateDao.findByName(null).size());
-    }
-
-    @Test
-    void findByNameWithNameNotExist() {
-        assertEquals(0, giftCertificateDao.findByName("not exist").size());
-    }
-
-    @Test
-    void findByPartName() {
-        assertEquals(3, giftCertificateDao.findByName("1").size());
-    }
-
-    @Test
-    void findByPartNameWithNull() {
-        assertEquals(0, giftCertificateDao.findByName(null).size());
-    }
-
-    @Test
-    void findByPartNameWithNameNotExist() {
-        assertEquals(0, giftCertificateDao.findByName("not exist").size());
-    }
-
-    @Test
-    void findByDescription() {
-        assertEquals(3, giftCertificateDao.findByName("1").size());
-    }
-
-    @Test
-    void findByDescriptionWithNull() {
-        assertEquals(0, giftCertificateDao.findByDescription(null).size());
-    }
-
-    @Test
-    void findByDescriptionWithDescriptionNotExist() {
-        assertEquals(0, giftCertificateDao.findByName("not exist").size());
-    }
-
-    @Test
     void findByTagName() {
-        assertEquals(4, giftCertificateDao.findByTagName("fun").size());
+        assertEquals(4, giftCertificateDao.findByTagId(2).size());
     }
 
     @Test
-    void findByTagNameWithNull() {
-        assertEquals(0, giftCertificateDao.findByTagName(null).size());
+    void findByTagNameWithNegative() {
+        assertEquals(0, giftCertificateDao.findByTagId(-1).size());
     }
 
     @Test
     void findByTagNameWithNotExist() {
-        assertEquals(0, giftCertificateDao.findByTagName("not exist").size());
+        assertEquals(0, giftCertificateDao.findByTagId(1000).size());
     }
 
     @Test

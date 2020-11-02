@@ -49,9 +49,4 @@ public class TagServiceImpl implements TagService {
     public void delete(long id) {
         tagDao.delete(id);
     }
-
-    @Override
-    public boolean update(long id, String newName) {
-        return tagDao.update(new Tag(id, newName)) != 0;
-    }
 }

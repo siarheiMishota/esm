@@ -7,7 +7,6 @@ import com.epam.esm.service.GiftCertificateService;
 import com.epam.esm.service.TagService;
 import com.epam.esm.service.impl.GiftCertificateServiceImpl;
 import com.epam.esm.service.impl.TagServiceImpl;
-import com.epam.esm.service.validation.GiftCertificateValidation;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
@@ -23,13 +22,7 @@ public class ServiceConfiguration {
 
     @Bean
     public GiftCertificateService giftCertificateService(GiftCertificateDao giftCertificateDao,
-                                                         TagService tagService,
-                                                         GiftCertificateValidation giftCertificateValidation) {
-        return new GiftCertificateServiceImpl(giftCertificateDao, tagService, giftCertificateValidation);
-    }
-
-    @Bean
-    public GiftCertificateValidation giftCertificateValidation() {
-        return new GiftCertificateValidation();
+                                                         TagService tagService) {
+        return new GiftCertificateServiceImpl(giftCertificateDao, tagService);
     }
 }

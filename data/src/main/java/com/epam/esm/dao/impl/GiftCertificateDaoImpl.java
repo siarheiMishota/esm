@@ -2,13 +2,12 @@ package com.epam.esm.dao.impl;
 
 import static com.epam.esm.dao.SqlRequestGiftCertificate.DELETE;
 import static com.epam.esm.dao.SqlRequestGiftCertificate.FIND_ALL;
-import static com.epam.esm.dao.SqlRequestGiftCertificate.FIND_BY_DESCRIPTION;
 import static com.epam.esm.dao.SqlRequestGiftCertificate.FIND_BY_ID;
-import static com.epam.esm.dao.SqlRequestGiftCertificate.FIND_BY_NAME;
-import static com.epam.esm.dao.SqlRequestGiftCertificate.FIND_BY_TAG_NAME;
+import static com.epam.esm.dao.SqlRequestGiftCertificate.FIND_BY_TAG_ID;
 import static com.epam.esm.dao.SqlRequestGiftCertificate.INSERT;
 import static com.epam.esm.dao.SqlRequestGiftCertificate.INSERT_TAG_GIFT_CERTIFICATE;
 import static com.epam.esm.dao.SqlRequestGiftCertificate.UPDATE;
+import static com.epam.esm.dao.SqlRequestGiftCertificate.UPDATE_DESCRIPTION_AND_PRICE;
 import static com.epam.esm.dao.StringParameters.AND;
 import static com.epam.esm.dao.StringParameters.COLUMN_DESCRIPTION;
 import static com.epam.esm.dao.StringParameters.COLUMN_NAME;
@@ -19,6 +18,7 @@ import static com.epam.esm.dao.StringParameters.WHERE;
 import com.epam.esm.dao.GiftCertificateDao;
 import com.epam.esm.dao.TagDao;
 import com.epam.esm.entity.GiftCertificate;
+import java.math.BigDecimal;
 import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.sql.Timestamp;
@@ -45,10 +45,6 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
     public GiftCertificateDaoImpl(JdbcTemplate jdbcTemplate, TagDao tagDao) {
         this.jdbcTemplate = jdbcTemplate;
         this.tagDao = tagDao;
-    }
-
-    public static void main(String[] args) {
-
     }
 
     @Override
@@ -84,7 +80,8 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
 
         if (parameters.containsKey("description")) {
             if (!whereUse) {
-                fullFind += WHERE;
+                fullFind += WHERE + " " + COLUMN_DESCRIPTION + " " + LIKE + "'%" + parameters.get("description") + "%'";
+                whereUse = true;
             } else {
                 fullFind = fullFind + AND + COLUMN_DESCRIPTION + LIKE + "'%" + parameters.get("description") + "%'";
             }
@@ -111,27 +108,10 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
         return optionalGiftCertificate;
     }
 
-    @Override
-    public List<GiftCertificate> findByName(String partName) {
-        partName = "%" + partName + "%";
-        List<GiftCertificate> giftCertificates = jdbcTemplate.query(FIND_BY_NAME, new Object[]{partName},
-            new BeanPropertyRowMapper<>(GiftCertificate.class));
-        giftCertificates.forEach(this::setTagsToGiftCertificate);
-        return giftCertificates;
-    }
 
     @Override
-    public List<GiftCertificate> findByDescription(String description) {
-        description = "%" + description + "%";
-        List<GiftCertificate> giftCertificates = jdbcTemplate.query(FIND_BY_DESCRIPTION, new Object[]{description},
-            new BeanPropertyRowMapper<>(GiftCertificate.class));
-        giftCertificates.forEach(this::setTagsToGiftCertificate);
-        return giftCertificates;
-    }
-
-    @Override
-    public List<GiftCertificate> findByTagName(String name) {
-        List<GiftCertificate> giftCertificates = jdbcTemplate.query(FIND_BY_TAG_NAME, new Object[]{name},
+    public List<GiftCertificate> findByTagId(long id) {
+        List<GiftCertificate> giftCertificates = jdbcTemplate.query(FIND_BY_TAG_ID, new Object[]{id},
             new BeanPropertyRowMapper<>(GiftCertificate.class));
         giftCertificates.forEach(this::setTagsToGiftCertificate);
         return giftCertificates;
@@ -147,9 +127,18 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
     @Override
     public int update(GiftCertificate giftCertificate) {
         return jdbcTemplate.update(UPDATE, giftCertificate.getName(), giftCertificate.getDescription(),
-            giftCertificate.getPrice(), giftCertificate.getCreationDate(), LocalDateTime.now(),
-            giftCertificate.getDuration(),
-            giftCertificate.getId());
+            giftCertificate.getPrice(), LocalDateTime.now(), giftCertificate.getDuration(), giftCertificate.getId());
+    }
+
+    @Transactional
+    @Override
+    public int updateDescriptionAndPrice(long id, String description, BigDecimal price) {
+        try {
+            return jdbcTemplate.update(UPDATE_DESCRIPTION_AND_PRICE, description, price, id);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return 1;
     }
 
     @Transactional

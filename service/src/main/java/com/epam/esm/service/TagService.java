@@ -17,6 +17,4 @@ public interface TagService {
     boolean add(Tag tag);
 
     void delete(long id);
-
-    boolean update(long id, String newName);
 }

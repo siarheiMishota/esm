@@ -2,12 +2,12 @@ package com.epam.esm.exception.handler.dto;
 
 import org.springframework.http.HttpStatus;
 
-public class ResourceExceptionDto {
+public class ExceptionDto {
 
     private final HttpStatus httpStatus;
     private final String errorMessage;
 
-    public ResourceExceptionDto(HttpStatus httpStatus, String errorMessage) {
+    public ExceptionDto(HttpStatus httpStatus, String errorMessage) {
         this.httpStatus = httpStatus;
         this.errorMessage = errorMessage;
     }

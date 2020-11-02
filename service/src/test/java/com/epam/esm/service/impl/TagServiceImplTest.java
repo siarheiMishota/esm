@@ -1,7 +1,6 @@
 package com.epam.esm.service.impl;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.BDDMockito.given;
@@ -15,7 +14,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.dao.DuplicateKeyException;
 
 @ExtendWith(MockitoExtension.class)
 class TagServiceImplTest {
@@ -102,12 +100,6 @@ class TagServiceImplTest {
     }
 
     @Test
-    void addOnDuplicate() {
-        given(tagDao.add(new Tag("adding duplicate tag"))).willThrow(DuplicateKeyException.class);
-        assertThrows(DuplicateKeyException.class, () -> tagService.add(new Tag("adding duplicate tag")));
-    }
-
-    @Test
     void addOnNull() {
         given(tagDao.add(null)).willThrow(NullPointerException.class);
 
@@ -116,28 +108,9 @@ class TagServiceImplTest {
 
     @Test
     void delete() {
-        //todo исправить
-//        doNothing().when(tagService).delete(1);
-//        verify(tagService,times(1)).delete(1);
+        given(tagService.findAll()).willReturn(List.of(new Tag(), new Tag(), new Tag()));
+        tagService.delete(4);
+        assertEquals(3, tagService.findAll().size());
 
     }
-
-    @Test
-    void update() {
-        given(tagDao.update(new Tag(1, "updated tag"))).willReturn(1);
-        assertTrue(tagService.update(1, "updated tag"));
-    }
-
-    @Test
-    void updateNotExist() {
-        given(tagDao.update(new Tag(1000, "updated tag"))).willReturn(0);
-        assertFalse(tagService.update(1000, "updated tag"));
-    }
-
-    @Test
-    void updateWithNegativeId() {
-        given(tagDao.update(new Tag(-1, "updated tag"))).willReturn(0);
-        assertFalse(tagService.update(-1, "updated tag"));
-    }
-
 }

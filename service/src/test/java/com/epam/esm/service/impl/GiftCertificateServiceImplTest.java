@@ -2,7 +2,6 @@ package com.epam.esm.service.impl;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.BDDMockito.given;
 
@@ -41,15 +40,15 @@ class GiftCertificateServiceImplTest {
 
     @Test
     void findById() {
-        GiftCertificate giftCertificate1 = new GiftCertificate(1, "name 1", "description 1",
+        GiftCertificate giftCertificate = new GiftCertificate(1, "name 1", "description 1",
             BigDecimal.valueOf(1),
             LocalDateTime.of(2020, 10, 22, 0, 03, 22, 917992000),
             LocalDateTime.of(2020, 10, 22, 0, 03, 22, 917992000),
             1, List.of(new Tag(1, "extreme")));
 
-        given(giftCertificateDao.findById(1)).willReturn(Optional.of(giftCertificate1));
+        given(giftCertificateDao.findById(1)).willReturn(Optional.of(giftCertificate));
 
-        assertEquals(giftCertificate1, giftCertificateService.findById(1).get());
+        assertEquals(giftCertificate, giftCertificateService.findById(1).get());
     }
 
     @Test
@@ -67,81 +66,21 @@ class GiftCertificateServiceImplTest {
     }
 
     @Test
-    void findByName() {
-        GiftCertificate giftCertificate = new GiftCertificate(1, "name 1", "description 1",
-            BigDecimal.valueOf(1),
-            LocalDateTime.of(2020, 10, 22, 0, 03, 22, 917992000),
-            LocalDateTime.of(2020, 10, 22, 0, 03, 22, 917992000),
-            1, List.of(new Tag(1, "extreme")));
-
-        given(giftCertificateDao.findByName("name 1")).willReturn(List.of(giftCertificate));
-        assertEquals(List.of(giftCertificate), giftCertificateService.findByName("name 1"));
+    void findByTagId() {
+        given(giftCertificateDao.findByTagId(1)).willReturn(getGiftCertificates());
+        assertEquals(getGiftCertificates(), giftCertificateService.findByTagId(1));
     }
 
     @Test
-    void findByNameNotExist() {
-        given(giftCertificateDao.findByName("not exist")).willReturn(List.of());
-        assertEquals(List.of(), giftCertificateService.findByName("not exist"));
+    void findByTagIdNotExist() {
+        given(giftCertificateDao.findByTagId(120)).willReturn(List.of());
+        assertEquals(List.of(), giftCertificateService.findByTagId(120));
     }
 
     @Test
-    void findByNameWithNull() {
-        given(giftCertificateDao.findByName(null)).willThrow(NullPointerException.class);
-        assertThrows(NullPointerException.class, () -> giftCertificateService.findByName(null));
-    }
-
-    @Test
-    void findByPartName() {
-        given(giftCertificateDao.findByName("name")).willReturn(getGiftCertificates());
-        assertEquals(3, giftCertificateService.findByPartName("name").size());
-    }
-
-    @Test
-    void findByPartNameNotExist() {
-        given(giftCertificateDao.findByName("not exist")).willReturn(List.of());
-        assertEquals(List.of(), giftCertificateService.findByPartName("not exist"));
-    }
-
-    @Test
-    void findByPartNameWithNull() {
-        given(giftCertificateDao.findByName(null)).willThrow(NullPointerException.class);
-        assertThrows(NullPointerException.class, () -> giftCertificateService.findByPartName(null));
-    }
-
-    @Test
-    void findByPartDescription() {
-        given(giftCertificateDao.findByDescription("description")).willReturn(getGiftCertificates());
-        assertEquals(getGiftCertificates(), giftCertificateService.findByPartDescription("description"));
-    }
-
-    @Test
-    void findByPartDescriptionNotExist() {
-        given(giftCertificateDao.findByDescription("not exist")).willReturn(List.of());
-        assertEquals(List.of(), giftCertificateService.findByPartDescription("not exist"));
-    }
-
-    @Test
-    void findByPartDescriptionWithNull() {
-        given(giftCertificateDao.findByDescription(null)).willThrow(NullPointerException.class);
-        assertThrows(NullPointerException.class, () -> giftCertificateService.findByPartDescription(null));
-    }
-
-    @Test
-    void findByTagName() {
-        given(giftCertificateDao.findByTagName("extreme")).willReturn(getGiftCertificates());
-        assertEquals(getGiftCertificates(), giftCertificateService.findByTagName("extreme"));
-    }
-
-    @Test
-    void findByTagNameNotExist() {
-        given(giftCertificateDao.findByTagName("love")).willReturn(List.of());
-        assertEquals(List.of(), giftCertificateService.findByTagName("love"));
-    }
-
-    @Test
-    void findByTagNameOnNull() {
-        given(giftCertificateDao.findByTagName(null)).willThrow(NullPointerException.class);
-        assertThrows(NullPointerException.class, () -> giftCertificateService.findByTagName(null));
+    void findByTagIdWithNegativeId() {
+        given(giftCertificateDao.findByTagId(-1)).willReturn(List.of());
+        assertEquals(List.of(), giftCertificateService.findByTagId(-1));
     }
 
     @Test

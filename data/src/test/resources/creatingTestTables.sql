@@ -12,10 +12,10 @@ create table gift_certificates
     id               int auto_increment,
     name             varchar(50) not null,
     description      text        not null,
-    price            decimal     not null check ( price > 0 ),
+    price            decimal     not null check ( price >= 0 ),
     creation_date    timestamp   not null,
     last_update_date timestamp   not null,
-    duration         int         not null check ( duration > 0 ),
+    duration         int         not null check ( duration >= 0 ),
 
     primary key (id)
 );

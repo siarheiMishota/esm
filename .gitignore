@@ -31,9 +31,3 @@ hs_err_pid*
 out/
 !**/src/main/**/out/
 !**/src/test/**/out/
-
-### VS Code ###
-.vscode/
-
-gradlew
-gradlew.bat

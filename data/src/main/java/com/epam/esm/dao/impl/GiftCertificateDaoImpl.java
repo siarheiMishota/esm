@@ -136,8 +136,6 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
         return jdbcTemplate.update(UPDATE_DESCRIPTION_AND_PRICE, description, price, id);
     }
 
-    gi
-
     @Transactional
     @Override
 

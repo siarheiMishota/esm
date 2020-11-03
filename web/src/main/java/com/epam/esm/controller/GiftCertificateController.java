@@ -122,7 +122,7 @@ public class GiftCertificateController {
                 return adaptToDto(optionalResult.get());
             }
         }
-        throw new ResourceException(HttpStatus.BAD_REQUEST, "Description and price ift certificate wasn't updated");
+        throw new ResourceException(HttpStatus.BAD_REQUEST, "Description and price of certificate wasn't updated");
     }
 
     private GiftCertificate adaptDtoTo(GiftCertificateDto giftCertificateDto) {

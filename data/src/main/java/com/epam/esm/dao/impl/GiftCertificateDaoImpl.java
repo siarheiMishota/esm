@@ -133,16 +133,14 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
     @Transactional
     @Override
     public int updateDescriptionAndPrice(long id, String description, BigDecimal price) {
-        try {
-            return jdbcTemplate.update(UPDATE_DESCRIPTION_AND_PRICE, description, price, id);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return 1;
+        return jdbcTemplate.update(UPDATE_DESCRIPTION_AND_PRICE, description, price, id);
     }
+
+    gi
 
     @Transactional
     @Override
+
     public GiftCertificate add(GiftCertificate giftCertificate) {
         GeneratedKeyHolder generatedKeyHolder = new GeneratedKeyHolder();
 

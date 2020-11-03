@@ -1,0 +1,34 @@
+plugins {
+    id 'java'
+    id 'war'
+}
+
+group 'com.epam'
+version '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+
+    project.dependencies {
+        implementation(project(':service'))
+        implementation(project(':data'))
+    }
+
+    implementation group: 'org.springframework', name: 'spring-core', version: '5.2.9.RELEASE'
+    implementation group: 'org.springframework', name: 'spring-context', version: '5.2.9.RELEASE'
+    implementation group: 'org.springframework', name: 'spring-context-support', version: '5.2.9.RELEASE'
+    implementation group: 'org.springframework', name: 'spring-webmvc', version: '5.2.9.RELEASE'
+    implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.12.0-rc1'
+    implementation group: 'javax.servlet', name: 'javax.servlet-api', version: '4.0.1'
+    implementation group: 'javax.servlet', name: 'jstl', version: '1.2'
+    implementation group: 'org.hibernate', name: 'hibernate-validator', version: '6.1.6.Final'
+
+    testImplementation group: 'org.springframework', name: 'spring-test', version: '5.2.9.RELEASE'
+    testImplementation group: 'org.mockito', name: 'mockito-core', version: '3.5.13'
+    testImplementation(platform('org.junit:junit-bom:5.7.0'))
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.3.1'
+    testImplementation 'org.junit.jupiter:junit-jupiter-engine:5.3.1'
+}

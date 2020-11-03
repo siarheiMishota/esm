@@ -8,16 +8,12 @@ import com.epam.esm.entity.GiftCertificate;
 import com.epam.esm.entity.GiftCertificateDto;
 import com.epam.esm.entity.GiftCertificateMostChangeDto;
 import com.epam.esm.entity.GiftCertificateParametersDto;
-import com.epam.esm.entity.Tag;
 import com.epam.esm.exception.ResourceException;
 import com.epam.esm.service.GiftCertificateService;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
 import javax.validation.Valid;
 import javax.validation.constraints.Min;
 import org.springframework.format.annotation.NumberFormat;
@@ -37,9 +33,12 @@ import org.springframework.web.bind.annotation.RestController;
 public class GiftCertificateController {
 
     private final GiftCertificateService giftCertificateService;
+    private final GiftCertificateAdapter giftCertificateAdapter;
 
-    public GiftCertificateController(GiftCertificateService giftCertificateService) {
+    public GiftCertificateController(GiftCertificateService giftCertificateService,
+                                     GiftCertificateAdapter giftCertificateAdapter) {
         this.giftCertificateService = giftCertificateService;
+        this.giftCertificateAdapter = giftCertificateAdapter;
     }
 
     @GetMapping()
@@ -61,7 +60,7 @@ public class GiftCertificateController {
         } else {
             giftCertificates = giftCertificateService.findAll(parameterMap);
         }
-        return adaptListToListDto(giftCertificates);
+        return giftCertificateAdapter.adaptListToListDto(giftCertificates);
     }
 
     @GetMapping("/{id}")
@@ -71,36 +70,36 @@ public class GiftCertificateController {
             throw new ResourceException(HttpStatus.BAD_REQUEST,
                 String.format("Requested resource not found (id=%d)", id));
         }
-        return adaptToDto(optionalResult.get());
+        return giftCertificateAdapter.adaptToDto(optionalResult.get());
     }
 
     @GetMapping("/tags/{id}")
-    public List<GiftCertificateDto> getGiftCertificatesByTagName(@PathVariable long id) {
-        return adaptListToListDto(giftCertificateService.findByTagId(id));
+    public List<GiftCertificateDto> getGiftCertificatesByTagId(@PathVariable long id) {
+        return giftCertificateAdapter.adaptListToListDto(giftCertificateService.findByTagId(id));
     }
 
     @GetMapping("/tags")
     public List<GiftCertificateDto> getGiftCertificatesByTagNameWithEmptyTag() {
-        return adaptListToListDto(giftCertificateService.findAll());
+        return giftCertificateAdapter.adaptListToListDto(giftCertificateService.findAll());
     }
 
     @PostMapping
     public GiftCertificateDto createGiftCertificates(@RequestBody @Valid GiftCertificateDto giftCertificateDto) {
-        GiftCertificate giftCertificate = adaptDtoTo(giftCertificateDto);
+        GiftCertificate giftCertificate = giftCertificateAdapter.adaptDtoTo(giftCertificateDto);
 
         giftCertificateService.add(giftCertificate);
         Optional<GiftCertificate> optionalResult = giftCertificateService.findById(giftCertificate.getId());
         if (optionalResult.isEmpty()) {
             throw new ResourceException(HttpStatus.BAD_REQUEST, "Gift certificate wasn't added");
         }
-        return adaptToDto(optionalResult.get());
+        return giftCertificateAdapter.adaptToDto(optionalResult.get());
     }
 
     @PutMapping
     public GiftCertificateDto updateGiftCertificate(@RequestBody @Valid GiftCertificateDto giftCertificateDto) {
-        GiftCertificate giftCertificate = adaptDtoTo(giftCertificateDto);
+        GiftCertificate giftCertificate = giftCertificateAdapter.adaptDtoTo(giftCertificateDto);
         if (giftCertificateService.update(giftCertificate)) {
-            return adaptToDto(giftCertificate);
+            return giftCertificateAdapter.adaptToDto(giftCertificate);
         } else {
             throw new ResourceException(HttpStatus.BAD_REQUEST, "Gift certificate wasn't updated");
         }
@@ -119,48 +118,9 @@ public class GiftCertificateController {
             giftCertificateMostChangeDto.getPrice())) {
             Optional<GiftCertificate> optionalResult = giftCertificateService.findById(id);
             if (optionalResult.isPresent()) {
-                return adaptToDto(optionalResult.get());
+                return giftCertificateAdapter.adaptToDto(optionalResult.get());
             }
         }
         throw new ResourceException(HttpStatus.BAD_REQUEST, "Description and price of certificate wasn't updated");
-    }
-
-    private GiftCertificate adaptDtoTo(GiftCertificateDto giftCertificateDto) {
-        GiftCertificate giftCertificate = new GiftCertificate();
-        giftCertificate.setName(giftCertificateDto.getName());
-        giftCertificate.setDescription(giftCertificateDto.getDescription());
-        giftCertificate.setPrice(giftCertificateDto.getPrice());
-        giftCertificate.setCreationDate(LocalDateTime.parse(giftCertificateDto.getCreationDate()));
-        giftCertificate.setLastUpdateDate(LocalDateTime.parse(giftCertificateDto.getLastUpdateDate()));
-        giftCertificate.setDuration(giftCertificateDto.getDuration());
-
-        List<Tag> tagsDto = giftCertificateDto.getTags();
-        if (tagsDto == null) {
-            giftCertificate.setTags(new ArrayList<>());
-        } else {
-            giftCertificate.setTags(tagsDto.stream()
-                .map(tagDto -> new Tag(tagDto.getId(), tagDto.getName()))
-                .collect(Collectors.toList()));
-        }
-        return giftCertificate;
-    }
-
-    private GiftCertificateDto adaptToDto(GiftCertificate giftCertificate) {
-        GiftCertificateDto giftCertificateDto = new GiftCertificateDto();
-        giftCertificateDto.setId(giftCertificate.getId());
-        giftCertificateDto.setName(giftCertificate.getName());
-        giftCertificateDto.setDescription(giftCertificate.getDescription());
-        giftCertificateDto.setPrice(giftCertificate.getPrice());
-        giftCertificateDto.setCreationDate(giftCertificate.getCreationDate().toString());
-        giftCertificateDto.setLastUpdateDate(giftCertificate.getLastUpdateDate().toString());
-        giftCertificateDto.setDuration(giftCertificate.getDuration());
-        giftCertificateDto.setTags(giftCertificate.getTags());
-        return giftCertificateDto;
-    }
-
-    private List<GiftCertificateDto> adaptListToListDto(List<GiftCertificate> giftCertificates) {
-        return giftCertificates.stream()
-            .map(this::adaptToDto)
-            .collect(Collectors.toList());
     }
 }

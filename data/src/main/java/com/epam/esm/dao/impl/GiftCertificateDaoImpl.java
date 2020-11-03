@@ -31,12 +31,16 @@ import java.util.Optional;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
-import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-@Transactional
-@Component
 public class GiftCertificateDaoImpl implements GiftCertificateDao {
+
+    public static final int NUMBER_FOR_NAME = 1;
+    public static final int NUMBER_FOR_DESCRIPTION = 2;
+    public static final int NUMBER_FOR_PRICE = 3;
+    public static final int NUMBER_FOR_CREATION_DATE = 4;
+    public static final int NUMBER_FOR_LAST_UPDATE_TIME = 5;
+    public static final int NUMBER_FOR_DURATION = 6;
 
     private final JdbcTemplate jdbcTemplate;
 
@@ -138,7 +142,6 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
 
     @Transactional
     @Override
-
     public GiftCertificate add(GiftCertificate giftCertificate) {
         GeneratedKeyHolder generatedKeyHolder = new GeneratedKeyHolder();
 
@@ -146,12 +149,12 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
             connection -> {
                 PreparedStatement preparedStatement = connection.prepareStatement(INSERT,
                     Statement.RETURN_GENERATED_KEYS);
-                preparedStatement.setString(1, giftCertificate.getName());
-                preparedStatement.setString(2, giftCertificate.getDescription());
-                preparedStatement.setBigDecimal(3, giftCertificate.getPrice());
-                preparedStatement.setTimestamp(4, Timestamp.valueOf(LocalDateTime.now()));
-                preparedStatement.setTimestamp(5, Timestamp.valueOf(LocalDateTime.now()));
-                preparedStatement.setInt(6, giftCertificate.getDuration());
+                preparedStatement.setString(NUMBER_FOR_NAME, giftCertificate.getName());
+                preparedStatement.setString(NUMBER_FOR_DESCRIPTION, giftCertificate.getDescription());
+                preparedStatement.setBigDecimal(NUMBER_FOR_PRICE, giftCertificate.getPrice());
+                preparedStatement.setTimestamp(NUMBER_FOR_CREATION_DATE, Timestamp.valueOf(LocalDateTime.now()));
+                preparedStatement.setTimestamp(NUMBER_FOR_LAST_UPDATE_TIME, Timestamp.valueOf(LocalDateTime.now()));
+                preparedStatement.setInt(NUMBER_FOR_DURATION, giftCertificate.getDuration());
                 return preparedStatement;
             }, generatedKeyHolder);
         Number key = generatedKeyHolder.getKey();

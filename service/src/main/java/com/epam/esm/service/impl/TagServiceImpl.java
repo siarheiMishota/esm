@@ -5,9 +5,7 @@ import com.epam.esm.entity.Tag;
 import com.epam.esm.service.TagService;
 import java.util.List;
 import java.util.Optional;
-import org.springframework.stereotype.Component;
 
-@Component
 public class TagServiceImpl implements TagService {
 
     private final TagDao tagDao;

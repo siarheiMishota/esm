@@ -1,5 +1,6 @@
 package com.epam.esm.configuration;
 
+import com.epam.esm.controller.GiftCertificateAdapter;
 import com.epam.esm.service.configuration.ServiceConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -36,5 +37,10 @@ public class WebConfig implements WebMvcConfigurer {
     @Bean
     public MethodValidationPostProcessor methodValidationPostProcessor() {
         return new MethodValidationPostProcessor();
+    }
+
+    @Bean
+    public GiftCertificateAdapter giftCertificateAdapter(){
+        return new GiftCertificateAdapter();
     }
 }

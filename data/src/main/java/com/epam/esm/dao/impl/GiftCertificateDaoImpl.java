@@ -130,7 +130,7 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
 
 
     @Override
-    public List<GiftCertificate> findByTagId(long id) {
+    public List<GiftCertificate> findByTagId(long id) {Gg
         List<GiftCertificate> giftCertificates = jdbcTemplate.query(FIND_BY_TAG_ID, new Object[]{id},
             new BeanPropertyRowMapper<>(GiftCertificate.class));
         giftCertificates.forEach(this::setTagsToGiftCertificate);

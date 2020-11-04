@@ -79,7 +79,7 @@ public class GiftCertificateController {
     }
 
     @GetMapping("/tags")
-    public List<GiftCertificateDto> getGiftCertificatesByTagNameWithEmptyTag() {
+    public List<GiftCertificateDto> getGiftCertificatesByTagIdWithEmptyTag() {
         return giftCertificateAdapter.adaptListToListDto(giftCertificateService.findAll());
     }
 

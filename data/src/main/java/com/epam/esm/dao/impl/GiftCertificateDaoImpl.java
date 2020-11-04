@@ -75,32 +75,48 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
         }
 
         boolean whereUse = false;
-        String fullFind = FIND_ALL;
+        StringBuilder fullFindBuilder = new StringBuilder(FIND_ALL);
 
         if (parameters.containsKey("name")) {
-            fullFind = fullFind + WHERE + COLUMN_NAME + LIKE + "'%" + parameters.get("name") + "%'";
+            fullFindBuilder.append(WHERE)
+                .append(COLUMN_NAME)
+                .append(LIKE)
+                .append("'%")
+                .append(parameters.get("name"))
+                .append("%'");
             whereUse = true;
         }
 
         if (parameters.containsKey("description")) {
             if (!whereUse) {
-                fullFind += WHERE + " " + COLUMN_DESCRIPTION + " " + LIKE + "'%" + parameters.get("description") + "%'";
-                whereUse = true;
+                fullFindBuilder.append(WHERE)
+                    .append(" ")
+                    .append(COLUMN_DESCRIPTION)
+                    .append(" ")
+                    .append(LIKE)
+                    .append("'%")
+                    .append(parameters.get("description"))
+                    .append("%'");
             } else {
-                fullFind = fullFind + AND + COLUMN_DESCRIPTION + LIKE + "'%" + parameters.get("description") + "%'";
+                fullFindBuilder.append(AND)
+                    .append(COLUMN_DESCRIPTION)
+                    .append(LIKE)
+                    .append("'%")
+                    .append(parameters.get("description"))
+                    .append("%'");
             }
         }
 
         if (parameters.containsKey("sort")) {
-            fullFind += ORDER_BY;
+            fullFindBuilder.append(ORDER_BY);
             Map<String, String> tokensMap = splitSortLineOnTokens(parameters.get("sort"));
 
             for (Map.Entry<String, String> entryToken : tokensMap.entrySet()) {
-                fullFind += entryToken.getKey() + " " + entryToken.getValue() + ",";
+                fullFindBuilder.append(entryToken.getKey()).append(" ").append(entryToken.getValue()).append(",");
             }
-            fullFind = fullFind.substring(0, fullFind.length() - 1);
+            fullFindBuilder.deleteCharAt(fullFindBuilder.lastIndexOf(","));
         }
-        return fullFind;
+        return fullFindBuilder.toString();
     }
 
     @Override

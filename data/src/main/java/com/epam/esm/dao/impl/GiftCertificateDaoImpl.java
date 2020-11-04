@@ -13,6 +13,9 @@ import static com.epam.esm.dao.StringParameters.COLUMN_DESCRIPTION;
 import static com.epam.esm.dao.StringParameters.COLUMN_NAME;
 import static com.epam.esm.dao.StringParameters.LIKE;
 import static com.epam.esm.dao.StringParameters.ORDER_BY;
+import static com.epam.esm.dao.StringParameters.PATTERN_KEY_DESCRIPTION;
+import static com.epam.esm.dao.StringParameters.PATTERN_KEY_NAME;
+import static com.epam.esm.dao.StringParameters.PATTERN_KEY_SORT;
 import static com.epam.esm.dao.StringParameters.WHERE;
 
 import com.epam.esm.dao.GiftCertificateDao;
@@ -77,17 +80,17 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
         boolean whereUse = false;
         StringBuilder fullFindBuilder = new StringBuilder(FIND_ALL);
 
-        if (parameters.containsKey("name")) {
+        if (parameters.containsKey(PATTERN_KEY_NAME)) {
             fullFindBuilder.append(WHERE)
                 .append(COLUMN_NAME)
                 .append(LIKE)
                 .append("'%")
-                .append(parameters.get("name"))
+                .append(parameters.get(PATTERN_KEY_NAME))
                 .append("%'");
             whereUse = true;
         }
 
-        if (parameters.containsKey("description")) {
+        if (parameters.containsKey(PATTERN_KEY_DESCRIPTION)) {
             if (!whereUse) {
                 fullFindBuilder.append(WHERE)
                     .append(" ")
@@ -95,21 +98,21 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
                     .append(" ")
                     .append(LIKE)
                     .append("'%")
-                    .append(parameters.get("description"))
+                    .append(parameters.get(PATTERN_KEY_DESCRIPTION))
                     .append("%'");
             } else {
                 fullFindBuilder.append(AND)
                     .append(COLUMN_DESCRIPTION)
                     .append(LIKE)
                     .append("'%")
-                    .append(parameters.get("description"))
+                    .append(parameters.get(PATTERN_KEY_DESCRIPTION))
                     .append("%'");
             }
         }
 
-        if (parameters.containsKey("sort")) {
+        if (parameters.containsKey(PATTERN_KEY_SORT)) {
             fullFindBuilder.append(ORDER_BY);
-            Map<String, String> tokensMap = splitSortLineOnTokens(parameters.get("sort"));
+            Map<String, String> tokensMap = splitSortLineOnTokens(parameters.get(PATTERN_KEY_SORT));
 
             for (Map.Entry<String, String> entryToken : tokensMap.entrySet()) {
                 fullFindBuilder.append(entryToken.getKey()).append(" ").append(entryToken.getValue()).append(",");
@@ -130,7 +133,7 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
 
 
     @Override
-    public List<GiftCertificate> findByTagId(long id) {Gg
+    public List<GiftCertificate> findByTagId(long id) {
         List<GiftCertificate> giftCertificates = jdbcTemplate.query(FIND_BY_TAG_ID, new Object[]{id},
             new BeanPropertyRowMapper<>(GiftCertificate.class));
         giftCertificates.forEach(this::setTagsToGiftCertificate);

@@ -7,6 +7,7 @@ import com.epam.esm.service.TagService;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import javax.validation.Valid;
 import javax.validation.constraints.Min;
 import org.springframework.format.annotation.NumberFormat;
 import org.springframework.http.HttpStatus;
@@ -40,7 +41,6 @@ public class TagController {
 
     @GetMapping("/{id}")
     public TagDto getTagById(@PathVariable @Min(1) @NumberFormat long id) {
-
         Optional<Tag> optionalTag = tagService.findById(id);
         if (optionalTag.isEmpty()) {
             throw new ResourceException(HttpStatus.BAD_REQUEST,
@@ -50,7 +50,7 @@ public class TagController {
     }
 
     @PostMapping
-    public TagDto createTag(@RequestBody TagDto tagDto) {
+    public TagDto createTag(@RequestBody @Valid TagDto tagDto) {
         Tag tag = new Tag(tagDto.getName());
         if (tagService.add(tag)) {
             return new TagDto(tag.getId(), tag.getName());
@@ -60,7 +60,7 @@ public class TagController {
     }
 
     @DeleteMapping
-    public HttpStatus deleteTag(@RequestBody TagDto tag) {
+    public HttpStatus deleteTag(@RequestBody @Valid TagDto tag) {
         tagService.delete(tag.getId());
         return HttpStatus.OK;
     }

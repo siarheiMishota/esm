@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
@@ -13,12 +14,15 @@ public class GiftCertificateDto {
     private long id;
 
     @Size(max = 50)
+    @NotNull
     private String name;
 
     @Size(max = 500)
+    @NotNull
     private String description;
 
     @Min(0)
+    @NotNull
     private BigDecimal price;
 
     @Pattern(regexp = "\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}")
@@ -28,6 +32,7 @@ public class GiftCertificateDto {
     private String lastUpdateDate;
 
     @Min(0)
+    @NotNull
     private int duration;
     private List<Tag> tags;
 

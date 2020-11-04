@@ -58,6 +58,8 @@ class GiftCertificateDaoImplTest {
             4, List.of(new Tag(1, "extreme")));
 
         GiftCertificate actual = giftCertificateDao.findById(4).get();
+        expected.setCreationDate(actual.getCreationDate());
+        expected.setLastUpdateDate(actual.getLastUpdateDate());
         assertEquals(expected, actual);
     }
 

@@ -1,6 +1,7 @@
 package com.epam.esm.dao.impl;
 
 import static com.epam.esm.dao.SqlRequestGiftCertificate.DELETE;
+import static com.epam.esm.dao.SqlRequestGiftCertificate.DELETE_TAG_GIFT_CERTIFICATE_BY_GIFT_CERTIFICATE_ID;
 import static com.epam.esm.dao.SqlRequestGiftCertificate.FIND_ALL;
 import static com.epam.esm.dao.SqlRequestGiftCertificate.FIND_BY_ID;
 import static com.epam.esm.dao.SqlRequestGiftCertificate.FIND_BY_TAG_ID;
@@ -21,6 +22,7 @@ import static com.epam.esm.dao.StringParameters.WHERE;
 import com.epam.esm.dao.GiftCertificateDao;
 import com.epam.esm.dao.TagDao;
 import com.epam.esm.entity.GiftCertificate;
+import com.epam.esm.entity.Tag;
 import java.math.BigDecimal;
 import java.sql.PreparedStatement;
 import java.sql.Statement;
@@ -33,6 +35,7 @@ import java.util.Map;
 import java.util.Optional;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.namedparam.SqlParameterSourceUtils;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -149,8 +152,17 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
     @Transactional
     @Override
     public int update(GiftCertificate giftCertificate) {
-        return jdbcTemplate.update(UPDATE, giftCertificate.getName(), giftCertificate.getDescription(),
+        int update = jdbcTemplate.update(UPDATE, giftCertificate.getName(), giftCertificate.getDescription(),
             giftCertificate.getPrice(), LocalDateTime.now(), giftCertificate.getDuration(), giftCertificate.getId());
+
+        deleteTagGiftCertificateByGiftCertificateId(giftCertificate.getId());
+        tagDao.add(giftCertificate.getTags());
+        giftCertificate.setTags(tagDao.findByGiftCertificateId(giftCertificate.getId()));
+        return update;
+    }
+
+    public void deleteTagGiftCertificateByGiftCertificateId(long id){
+        jdbcTemplate.update(DELETE_TAG_GIFT_CERTIFICATE_BY_GIFT_CERTIFICATE_ID,id);
     }
 
     @Transactional
@@ -180,8 +192,7 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
         if (key != null) {
             giftCertificate.setId(key.longValue());
 
-            giftCertificate.getTags().
-                forEach(tag -> addTagGiftCertificate(tag.getId(), giftCertificate.getId()));
+            tagDao.add(giftCertificate.getTags());
         }
         return giftCertificate;
     }

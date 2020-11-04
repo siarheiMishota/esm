@@ -17,13 +17,9 @@ dependencies {
         implementation(project(':data'))
     }
 
-    implementation group: 'org.springframework', name: 'spring-core', version: '5.2.9.RELEASE'
-    implementation group: 'org.springframework', name: 'spring-context', version: '5.2.9.RELEASE'
-    implementation group: 'org.springframework', name: 'spring-context-support', version: '5.2.9.RELEASE'
     implementation group: 'org.springframework', name: 'spring-webmvc', version: '5.2.9.RELEASE'
     implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.12.0-rc1'
     implementation group: 'javax.servlet', name: 'javax.servlet-api', version: '4.0.1'
-    implementation group: 'javax.servlet', name: 'jstl', version: '1.2'
     implementation group: 'org.hibernate', name: 'hibernate-validator', version: '6.1.6.Final'
 
     testImplementation group: 'org.springframework', name: 'spring-test', version: '5.2.9.RELEASE'

@@ -85,6 +85,11 @@ public class GiftCertificateController {
 
     @PostMapping
     public GiftCertificateDto createGiftCertificates(@RequestBody @Valid GiftCertificateDto giftCertificateDto) {
+        if (nonValidateOnNull(giftCertificateDto)) {
+            throw new ResourceException(HttpStatus.BAD_REQUEST,
+                "Request isn't correct where name or description is empty");
+        }
+
         GiftCertificate giftCertificate = giftCertificateAdapter.adaptDtoTo(giftCertificateDto);
 
         giftCertificateService.add(giftCertificate);
@@ -97,6 +102,11 @@ public class GiftCertificateController {
 
     @PutMapping
     public GiftCertificateDto updateGiftCertificate(@RequestBody @Valid GiftCertificateDto giftCertificateDto) {
+        if (nonValidateOnNull(giftCertificateDto)) {
+            throw new ResourceException(HttpStatus.BAD_REQUEST,
+                "Request isn't correct where name or description is empty");
+        }
+
         GiftCertificate giftCertificate = giftCertificateAdapter.adaptDtoTo(giftCertificateDto);
         if (giftCertificateService.update(giftCertificate)) {
             return giftCertificateAdapter.adaptToDto(giftCertificate);
@@ -106,7 +116,7 @@ public class GiftCertificateController {
     }
 
     @DeleteMapping("/{id}")
-    public HttpStatus deleteGiftCertificate(@PathVariable @Valid @Min(0) long id) {
+    public HttpStatus deleteGiftCertificate(@PathVariable @Min(0) long id) {
         giftCertificateService.delete(id);
         return HttpStatus.OK;
     }
@@ -122,5 +132,13 @@ public class GiftCertificateController {
             }
         }
         throw new ResourceException(HttpStatus.BAD_REQUEST, "Description and price of certificate wasn't updated");
+    }
+
+    private boolean nonValidateOnNull(GiftCertificateDto giftCertificateDto) {
+        if (giftCertificateDto.getName() != null) {
+            return false;
+        }
+
+        return giftCertificateDto.getDescription() == null;
     }
 }

@@ -24,8 +24,8 @@ public final class SqlRequestGiftCertificate {
         + "where id=?;";
     public static final String INSERT_TAG_GIFT_CERTIFICATE = "insert into tags_gift_certificates (tag_id, "
         + "gift_certificate_id) values (?,?);";
-    public static final String DELETE_TAG_GIFT_CERTIFICATE = "delete from tags_gift_certificates where tag_id=? and "
-        + "gift_certificate_id=?";
+    public static final String DELETE_TAG_GIFT_CERTIFICATE_BY_GIFT_CERTIFICATE_ID =
+        "delete from tags_gift_certificates where gift_certificate_id=?";
 
     private SqlRequestGiftCertificate() {
     }

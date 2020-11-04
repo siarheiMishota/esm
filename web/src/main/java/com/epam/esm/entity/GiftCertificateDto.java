@@ -4,8 +4,8 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 import javax.validation.constraints.Min;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
 public class GiftCertificateDto {
@@ -25,10 +25,7 @@ public class GiftCertificateDto {
     @NotNull
     private BigDecimal price;
 
-    @Pattern(regexp = "\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}")
     private String creationDate;
-
-    @Pattern(regexp = "\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}")
     private String lastUpdateDate;
 
     @Min(0)
@@ -69,7 +66,8 @@ public class GiftCertificateDto {
         return name;
     }
 
-    public void setName(String name) {
+    public void setName(
+        String name) {
         this.name = name;
     }
 

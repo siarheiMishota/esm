@@ -33,13 +33,14 @@ public class ExceptionHandlerController {
         return new ExceptionDto(HttpStatus.BAD_REQUEST, "Body's request isn't correct");
     }
 
+
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(BindException.class)
     public ExceptionDto handleBindException(BindException e) {
         return new ExceptionDto(HttpStatus.BAD_REQUEST, e.getMessage());
     }
 
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(Exception.class)
     public ExceptionDto handleException(Exception e) {
         return new ExceptionDto(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());

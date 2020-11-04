@@ -11,7 +11,6 @@ public class GiftCertificateParametersDto {
     @Size(max = 500)
     private String description;
 
-    @Size(max = 100)
     @Pattern(regexp = "(data|name):?(asc|desc|)")
     private String sort;
 

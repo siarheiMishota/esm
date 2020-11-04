@@ -11,7 +11,6 @@ import javax.validation.Valid;
 import javax.validation.constraints.Min;
 import org.springframework.format.annotation.NumberFormat;
 import org.springframework.http.HttpStatus;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -22,7 +21,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/tags")
-@Validated
 public class TagController {
 
     private final TagService tagService;
@@ -51,6 +49,9 @@ public class TagController {
 
     @PostMapping
     public TagDto createTag(@RequestBody @Valid TagDto tagDto) {
+        if (tagDto.getName()==null){
+            throw new ResourceException(HttpStatus.BAD_REQUEST, "Request isn't correct");
+        }
         Tag tag = new Tag(tagDto.getName());
         if (tagService.add(tag)) {
             return new TagDto(tag.getId(), tag.getName());
@@ -59,9 +60,9 @@ public class TagController {
         }
     }
 
-    @DeleteMapping
-    public HttpStatus deleteTag(@RequestBody @Valid TagDto tag) {
-        tagService.delete(tag.getId());
+    @DeleteMapping("/{id}")
+    public HttpStatus deleteTag(@PathVariable @Min(0) long id) {
+        tagService.delete(id);
         return HttpStatus.OK;
     }
 }

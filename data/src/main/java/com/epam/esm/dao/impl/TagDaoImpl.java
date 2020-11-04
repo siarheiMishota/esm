@@ -10,11 +10,13 @@ import static com.epam.esm.dao.SqlRequestTag.INSERT;
 import com.epam.esm.dao.TagDao;
 import com.epam.esm.entity.Tag;
 import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.ParameterizedPreparedStatementSetter;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -69,6 +71,23 @@ public class TagDaoImpl implements TagDao {
             }
         }
         return tag;
+    }
+
+    @Transactional
+    @Override
+    public List<Tag> add(List<Tag> tags) {
+        ParameterizedPreparedStatementSetter<Tag> parameterizedPreparedStatementSetter =
+            new ParameterizedPreparedStatementSetter<>() {
+                @Override
+                public void setValues(PreparedStatement ps, Tag tag) throws SQLException {
+                    ps.setString(1, tag.getName());
+                }
+            };
+        jdbcTemplate.batchUpdate(INSERT, tags, tags.size(), parameterizedPreparedStatementSetter);
+
+        //todo
+
+        return null;
     }
 
     @Transactional

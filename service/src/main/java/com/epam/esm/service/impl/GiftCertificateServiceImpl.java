@@ -36,7 +36,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
      * @return List of GiftCertificates which match the parameters
      */
     @Override
-    public List<GiftCertificate> findAll(Map<String, String> parameters) {
+    public List<GiftCertificate> findAll(Map<String, List<String>> parameters) {
         return giftCertificateDao.findAll(parameters);
     }
 
@@ -48,11 +48,6 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     @Override
     public Optional<GiftCertificate> findById(long id) {
         return giftCertificateDao.findById(id);
-    }
-
-    @Override
-    public List<GiftCertificate> findByTagId(long id) {
-        return giftCertificateDao.findByTagId(id);
     }
 
     @Override

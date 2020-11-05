@@ -47,7 +47,10 @@ public class GiftCertificateUtil {
             .getTags().isEmpty()) {
             giftCertificate.setTags(giftCertificatePatchDto.getTags());
         }
-
         return giftCertificate;
+    }
+
+    public String replaceDateOnLastUpdateDateInLine(String line){
+        return line.replaceAll("date","last_update_date");
     }
 }

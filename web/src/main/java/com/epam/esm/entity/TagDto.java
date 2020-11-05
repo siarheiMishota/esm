@@ -7,7 +7,7 @@ public class TagDto {
 
     private long id;
 
-    @Size(max = 5)
+    @Size(max = 50)
     @NotBlank
     private String name;
 

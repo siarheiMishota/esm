@@ -7,7 +7,7 @@ import java.util.Optional;
 
 public interface GiftCertificateDao {
 
-    List<GiftCertificate> findAll(Map<String, String> parameters);
+    List<GiftCertificate> findAll(Map<String, List<String>> parameters);
 
     List<GiftCertificate> findAll();
 
@@ -16,8 +16,6 @@ public interface GiftCertificateDao {
     GiftCertificate add(GiftCertificate giftCertificate);
 
     int update(GiftCertificate giftCertificate);
-
-    List<GiftCertificate> findByTagId(long id);
 
     void delete(long id);
 }

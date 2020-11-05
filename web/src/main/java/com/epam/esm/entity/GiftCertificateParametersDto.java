@@ -1,32 +1,43 @@
 package com.epam.esm.entity;
 
+import java.util.List;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
 public class GiftCertificateParametersDto {
 
     @Size(max = 50)
-    private String name;
+    private List<String> name;
 
     @Size(max = 500)
-    private String description;
+    private List<String> description;
 
-    @Pattern(regexp = "(data|name):?(asc|desc|)")
+    private String tag;
+
+    @Pattern(regexp = "((date|name)(:asc|:desc|),)*((date|name)(:asc|:desc|))")
     private String sort;
 
-    public String getName() {
+    public String getTag() {
+        return tag;
+    }
+
+    public void setTag(String tag) {
+        this.tag = tag;
+    }
+
+    public List<String> getName() {
         return name;
     }
 
-    public void setName(String name) {
+    public void setName(List<String> name) {
         this.name = name;
     }
 
-    public String getDescription() {
+    public List<String> getDescription() {
         return description;
     }
 
-    public void setDescription(String description) {
+    public void setDescription(List<String> description) {
         this.description = description;
     }
 

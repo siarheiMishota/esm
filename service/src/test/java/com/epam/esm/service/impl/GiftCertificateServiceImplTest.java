@@ -62,24 +62,6 @@ class GiftCertificateServiceImplTest {
     }
 
     @Test
-    void findByTagId() {
-        given(giftCertificateDao.findByTagId(1)).willReturn(getGiftCertificates());
-        assertEquals(getGiftCertificates(), giftCertificateService.findByTagId(1));
-    }
-
-    @Test
-    void findByTagIdNotExist() {
-        given(giftCertificateDao.findByTagId(120)).willReturn(List.of());
-        assertEquals(List.of(), giftCertificateService.findByTagId(120));
-    }
-
-    @Test
-    void findByTagIdWithNegativeId() {
-        given(giftCertificateDao.findByTagId(-1)).willReturn(List.of());
-        assertEquals(List.of(), giftCertificateService.findByTagId(-1));
-    }
-
-    @Test
     void delete() {
         given(giftCertificateDao.findAll()).willReturn(getGiftCertificates());
         giftCertificateService.delete(11);

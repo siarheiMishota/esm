@@ -3,6 +3,7 @@ package com.epam.esm.controller;
 import static com.epam.esm.dao.StringParameters.PATTERN_KEY_DESCRIPTION;
 import static com.epam.esm.dao.StringParameters.PATTERN_KEY_NAME;
 import static com.epam.esm.dao.StringParameters.PATTERN_KEY_SORT;
+import static com.epam.esm.dao.StringParameters.PATTERN_KEY_TAG;
 
 import com.epam.esm.entity.GiftCertificate;
 import com.epam.esm.entity.GiftCertificateDto;
@@ -46,7 +47,7 @@ public class GiftCertificateController {
 
     @GetMapping()
     public List<GiftCertificateDto> getGiftCertificates(@Valid GiftCertificateParametersDto giftCertificateParametersDto) {
-        Map<String, String> parameterMap = new HashMap<>();
+        Map<String, List<String>> parameterMap = new HashMap<>();
         if (giftCertificateParametersDto.getName() != null) {
             parameterMap.put(PATTERN_KEY_NAME, giftCertificateParametersDto.getName());
         }
@@ -54,7 +55,11 @@ public class GiftCertificateController {
             parameterMap.put(PATTERN_KEY_DESCRIPTION, giftCertificateParametersDto.getDescription());
         }
         if (giftCertificateParametersDto.getSort() != null) {
-            parameterMap.put(PATTERN_KEY_SORT, giftCertificateParametersDto.getSort());
+            String sortValue = giftCertificateUtil.replaceDateOnLastUpdateDateInLine(giftCertificateParametersDto.getSort());
+            parameterMap.put(PATTERN_KEY_SORT, List.of(sortValue));
+        }
+        if (giftCertificateParametersDto.getTag()!=null){
+            parameterMap.put(PATTERN_KEY_TAG,List.of(giftCertificateParametersDto.getTag()));
         }
 
         List<GiftCertificate> giftCertificates;
@@ -79,27 +84,6 @@ public class GiftCertificateController {
                 String.format("Requested resource not found (id=%d)", id));
         }
         return giftCertificateAdapter.adaptToDto(optionalResult.get());
-    }
-
-    @GetMapping("/tags/{id}")
-    public List<GiftCertificateDto> getGiftCertificatesByTagId(@PathVariable long id) {
-        if (id < 0) {
-            throw new ResourceException(HttpStatus.BAD_REQUEST,
-                String.format("Tag id is negative (tag id=%d)", id));
-        }
-        List<GiftCertificateDto> result = giftCertificateAdapter.adaptListToListDto(
-            giftCertificateService.findByTagId(id));
-
-        if (result.isEmpty()) {
-            throw new ResourceException(HttpStatus.BAD_REQUEST,
-                String.format("Requested resource not found (tag id=%d)", id));
-        }
-        return result;
-    }
-
-    @GetMapping("/tags")
-    public List<GiftCertificateDto> getGiftCertificatesByTagIdWithEmptyTag() {
-        return giftCertificateAdapter.adaptListToListDto(giftCertificateService.findAll());
     }
 
     @PostMapping

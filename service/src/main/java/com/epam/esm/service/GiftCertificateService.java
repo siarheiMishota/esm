@@ -7,13 +7,11 @@ import java.util.Optional;
 
 public interface GiftCertificateService {
 
-    List<GiftCertificate> findAll(Map<String, String> parameters);
+    List<GiftCertificate> findAll(Map<String, List<String>> parameters);
 
     List<GiftCertificate> findAll();
 
     Optional<GiftCertificate> findById(long id);
-
-    List<GiftCertificate> findByTagId(long id);
 
     void delete(long id);
 

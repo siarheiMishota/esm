@@ -50,7 +50,7 @@ public class GiftCertificateUtil {
         return giftCertificate;
     }
 
-    public String replaceDateOnLastUpdateDateInLine(String line){
-        return line.replaceAll("date","last_update_date");
+    public String replaceDateOnLastUpdateDateInLine(String line) {
+        return line.replaceAll("date", "last_update_date");
     }
 }

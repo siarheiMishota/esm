@@ -55,11 +55,12 @@ public class GiftCertificateController {
             parameterMap.put(PATTERN_KEY_DESCRIPTION, giftCertificateParametersDto.getDescription());
         }
         if (giftCertificateParametersDto.getSort() != null) {
-            String sortValue = giftCertificateUtil.replaceDateOnLastUpdateDateInLine(giftCertificateParametersDto.getSort());
+            String sortValue = giftCertificateUtil.replaceDateOnLastUpdateDateInLine(
+                giftCertificateParametersDto.getSort());
             parameterMap.put(PATTERN_KEY_SORT, List.of(sortValue));
         }
-        if (giftCertificateParametersDto.getTag()!=null){
-            parameterMap.put(PATTERN_KEY_TAG,List.of(giftCertificateParametersDto.getTag()));
+        if (giftCertificateParametersDto.getTag() != null) {
+            parameterMap.put(PATTERN_KEY_TAG, List.of(giftCertificateParametersDto.getTag()));
         }
 
         List<GiftCertificate> giftCertificates;

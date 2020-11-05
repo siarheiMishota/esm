@@ -5,7 +5,6 @@ import com.epam.esm.entity.GiftCertificate;
 import com.epam.esm.entity.Tag;
 import com.epam.esm.service.GiftCertificateService;
 import com.epam.esm.service.TagService;
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -63,12 +62,8 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
 
     @Override
     public boolean update(GiftCertificate giftCertificate) {
+        removeDuplicateTags(giftCertificate.getTags());
         return giftCertificateDao.update(giftCertificate) != 0;
-    }
-
-    @Override
-    public boolean updateDescriptionAndPrice(long id, String description, BigDecimal price) {
-        return giftCertificateDao.updateDescriptionAndPrice(id, description, price) != 0;
     }
 
     @Override

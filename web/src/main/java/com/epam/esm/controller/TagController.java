@@ -49,9 +49,6 @@ public class TagController {
 
     @PostMapping
     public TagDto createTag(@RequestBody @Valid TagDto tagDto) {
-        if (tagDto.getName()==null){
-            throw new ResourceException(HttpStatus.BAD_REQUEST, "Request isn't correct");
-        }
         Tag tag = new Tag(tagDto.getName());
         if (tagService.add(tag)) {
             return new TagDto(tag.getId(), tag.getName());
@@ -61,7 +58,14 @@ public class TagController {
     }
 
     @DeleteMapping("/{id}")
-    public HttpStatus deleteTag(@PathVariable @Min(0) long id) {
+    public HttpStatus deleteTag(@PathVariable long id) {
+        if (id < 0) {
+            throw new ResourceException(HttpStatus.BAD_REQUEST, "Tag wasn't deleted because id is negative");
+        }
+
+        if (tagService.findById(id).isEmpty()) {
+            throw new ResourceException(HttpStatus.BAD_REQUEST, String.format("Id= %d is not exist", id));
+        }
         tagService.delete(id);
         return HttpStatus.OK;
     }

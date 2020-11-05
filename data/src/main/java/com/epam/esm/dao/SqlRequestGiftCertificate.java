@@ -20,8 +20,6 @@ public final class SqlRequestGiftCertificate {
     public static final String DELETE = "delete from gift_certificates where id=?;";
     public static final String UPDATE = "update gift_certificates set name = ? ,description=? ,price=?, "
         + "last_update_date=?, duration=? where id=?;";
-    public static final String UPDATE_DESCRIPTION_AND_PRICE = "update gift_certificates set description=? ,price=? "
-        + "where id=?;";
     public static final String INSERT_TAG_GIFT_CERTIFICATE = "insert into tags_gift_certificates (tag_id, "
         + "gift_certificate_id) values (?,?);";
     public static final String DELETE_TAG_GIFT_CERTIFICATE_BY_GIFT_CERTIFICATE_ID =

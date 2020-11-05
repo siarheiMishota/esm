@@ -6,6 +6,7 @@ import javax.validation.ConstraintViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageConversionException;
 import org.springframework.validation.BindException;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -35,12 +36,12 @@ public class ExceptionHandlerController {
 
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ExceptionHandler(BindException.class)
-    public ExceptionDto handleBindException(BindException e) {
+    @ExceptionHandler({BindException.class, MethodArgumentNotValidException.class})
+    public ExceptionDto handleBindException(Exception e) {
         return new ExceptionDto(HttpStatus.BAD_REQUEST, e.getMessage());
     }
 
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(Exception.class)
     public ExceptionDto handleException(Exception e) {
         return new ExceptionDto(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());

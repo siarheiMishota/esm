@@ -95,7 +95,7 @@ class GiftCertificateServiceImplTest {
 
     @Test
     void updateNotExist() {
-        GiftCertificate giftCertificate =getGiftCertificate();
+        GiftCertificate giftCertificate = getGiftCertificate();
         giftCertificate.setId(100);
 
         given(giftCertificateDao.update(giftCertificate)).willReturn(0);
@@ -123,7 +123,7 @@ class GiftCertificateServiceImplTest {
         return getGiftCertificates().get(0);
     }
 
-        private List<GiftCertificate> getGiftCertificates() {
+    private List<GiftCertificate> getGiftCertificates() {
         GiftCertificate giftCertificate1 = new GiftCertificate(1, "name 1", "description 1",
             BigDecimal.valueOf(1),
             LocalDateTime.of(2020, 10, 22, 0, 3, 22, 917992000),

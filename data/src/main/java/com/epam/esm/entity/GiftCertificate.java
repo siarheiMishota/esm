@@ -2,7 +2,6 @@ package com.epam.esm.entity;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 public class GiftCertificate {
@@ -19,13 +18,13 @@ public class GiftCertificate {
     public GiftCertificate() {
     }
 
-    public GiftCertificate(String name,
+    public GiftCertificate(long id,
+                           String name,
                            String description,
                            BigDecimal price,
                            LocalDateTime creationDate,
-                           LocalDateTime lastUpdateDate,
-                           int duration,
-                           List<Tag> tags) {
+                           LocalDateTime lastUpdateDate, int duration, List<Tag> tags) {
+        this.id = id;
         this.name = name;
         this.description = description;
         this.price = price;
@@ -35,15 +34,11 @@ public class GiftCertificate {
         this.tags = tags;
     }
 
-    public GiftCertificate(long id,
-                           String name,
+    public GiftCertificate(String name,
                            String description,
                            BigDecimal price,
                            LocalDateTime creationDate,
-                           LocalDateTime lastUpdateDate,
-                           int duration,
-                           List<Tag> tags) {
-        this.id = id;
+                           LocalDateTime lastUpdateDate, int duration, List<Tag> tags) {
         this.name = name;
         this.description = description;
         this.price = price;
@@ -167,15 +162,14 @@ public class GiftCertificate {
 
     @Override
     public String toString() {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("uuuu-MM-dd'T'HH:mm:ss.SSSSSSSSS");
         return new StringBuilder()
-            .append("main.java.com.epam.esm.entity.GiftCertificate( id= ")
+            .append("GiftCertificate( id= ")
             .append(id).append(", name= ")
             .append(name).append(", description= ")
             .append(description).append(", price= ")
             .append(price).append(", creation date= ")
-            .append(creationDate.format(formatter)).append(", last update date= ")
-            .append(lastUpdateDate.format(formatter)).append(", duration= ")
+            .append(creationDate).append(", last update date= ")
+            .append(lastUpdateDate).append(", duration= ")
             .append(duration).append(", tags( ")
             .append(tags).append("); ")
             .toString();

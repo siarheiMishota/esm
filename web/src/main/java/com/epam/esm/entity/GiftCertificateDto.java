@@ -14,11 +14,11 @@ public class GiftCertificateDto {
     private long id;
 
     @Size(max = 50)
-    @NotNull
+    @NotBlank
     private String name;
 
     @Size(max = 500)
-    @NotNull
+    @NotBlank
     private String description;
 
     @Min(0)
@@ -29,7 +29,6 @@ public class GiftCertificateDto {
     private String lastUpdateDate;
 
     @Min(0)
-    @NotNull
     private int duration;
     private List<Tag> tags;
 

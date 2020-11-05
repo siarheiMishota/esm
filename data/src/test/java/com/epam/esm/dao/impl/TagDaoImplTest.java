@@ -11,7 +11,6 @@ import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DuplicateKeyException;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
@@ -77,13 +76,13 @@ class TagDaoImplTest {
 
     @Test
     void addDuplicate() {
-        assertThrows(DuplicateKeyException.class, () -> tagDao.add(new Tag("relax")));
+        assertEquals(new Tag(4, "relax"), tagDao.add(new Tag("relax")));
 
     }
 
     @Test()
     void addWithNull() {
-//        assertThrows(NullPointerException.class, () -> tagDao.add(null));
+        assertThrows(NullPointerException.class, () -> tagDao.add(null));
     }
 
     @Test

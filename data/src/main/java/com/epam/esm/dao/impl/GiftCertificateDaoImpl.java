@@ -8,7 +8,6 @@ import static com.epam.esm.dao.SqlRequestGiftCertificate.FIND_BY_TAG_ID;
 import static com.epam.esm.dao.SqlRequestGiftCertificate.INSERT;
 import static com.epam.esm.dao.SqlRequestGiftCertificate.INSERT_TAG_GIFT_CERTIFICATE;
 import static com.epam.esm.dao.SqlRequestGiftCertificate.UPDATE;
-import static com.epam.esm.dao.SqlRequestGiftCertificate.UPDATE_DESCRIPTION_AND_PRICE;
 import static com.epam.esm.dao.StringParameters.AND;
 import static com.epam.esm.dao.StringParameters.COLUMN_DESCRIPTION;
 import static com.epam.esm.dao.StringParameters.COLUMN_NAME;
@@ -22,8 +21,6 @@ import static com.epam.esm.dao.StringParameters.WHERE;
 import com.epam.esm.dao.GiftCertificateDao;
 import com.epam.esm.dao.TagDao;
 import com.epam.esm.entity.GiftCertificate;
-import com.epam.esm.entity.Tag;
-import java.math.BigDecimal;
 import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.sql.Timestamp;
@@ -35,7 +32,6 @@ import java.util.Map;
 import java.util.Optional;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.namedparam.SqlParameterSourceUtils;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -155,20 +151,31 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
         int update = jdbcTemplate.update(UPDATE, giftCertificate.getName(), giftCertificate.getDescription(),
             giftCertificate.getPrice(), LocalDateTime.now(), giftCertificate.getDuration(), giftCertificate.getId());
 
+        if (update == 0) {
+            return 0;
+        }
+
         deleteTagGiftCertificateByGiftCertificateId(giftCertificate.getId());
-        tagDao.add(giftCertificate.getTags());
+
+        giftCertificate.getTags().
+            forEach(tagDao::add);
+
+        giftCertificate.getTags()
+            .forEach(tag -> addTagGiftCertificate(tag.getId(), giftCertificate.getId()));
+
+        Optional<GiftCertificate> optionalFromDb = findById(giftCertificate.getId());
+        if (optionalFromDb.isEmpty()) {
+            return 0;
+        }
+
         giftCertificate.setTags(tagDao.findByGiftCertificateId(giftCertificate.getId()));
+        giftCertificate.setCreationDate(optionalFromDb.get().getCreationDate());
+        giftCertificate.setLastUpdateDate(optionalFromDb.get().getLastUpdateDate());
         return update;
     }
 
-    public void deleteTagGiftCertificateByGiftCertificateId(long id){
-        jdbcTemplate.update(DELETE_TAG_GIFT_CERTIFICATE_BY_GIFT_CERTIFICATE_ID,id);
-    }
-
-    @Transactional
-    @Override
-    public int updateDescriptionAndPrice(long id, String description, BigDecimal price) {
-        return jdbcTemplate.update(UPDATE_DESCRIPTION_AND_PRICE, description, price, id);
+    public void deleteTagGiftCertificateByGiftCertificateId(long id) {
+        jdbcTemplate.update(DELETE_TAG_GIFT_CERTIFICATE_BY_GIFT_CERTIFICATE_ID, id);
     }
 
     @Transactional
@@ -192,7 +199,8 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
         if (key != null) {
             giftCertificate.setId(key.longValue());
 
-            tagDao.add(giftCertificate.getTags());
+            giftCertificate.getTags().
+                forEach(tag -> addTagGiftCertificate(tag.getId(), giftCertificate.getId()));
         }
         return giftCertificate;
     }

@@ -1,7 +1,9 @@
 package com.epam.esm.configuration;
 
 import com.epam.esm.controller.GiftCertificateAdapter;
+import com.epam.esm.service.GiftCertificateService;
 import com.epam.esm.service.configuration.ServiceConfiguration;
+import com.epam.esm.util.GiftCertificateUtil;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -40,7 +42,12 @@ public class WebConfig implements WebMvcConfigurer {
     }
 
     @Bean
-    public GiftCertificateAdapter giftCertificateAdapter(){
+    public GiftCertificateAdapter giftCertificateAdapter() {
         return new GiftCertificateAdapter();
+    }
+
+    @Bean
+    public GiftCertificateUtil giftCertificateUtil(GiftCertificateService giftCertificateService) {
+        return new GiftCertificateUtil(giftCertificateService);
     }
 }

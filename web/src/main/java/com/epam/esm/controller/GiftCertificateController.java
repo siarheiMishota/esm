@@ -6,16 +6,16 @@ import static com.epam.esm.dao.StringParameters.PATTERN_KEY_SORT;
 
 import com.epam.esm.entity.GiftCertificate;
 import com.epam.esm.entity.GiftCertificateDto;
-import com.epam.esm.entity.GiftCertificateMostChangeDto;
 import com.epam.esm.entity.GiftCertificateParametersDto;
+import com.epam.esm.entity.GiftCertificatePatchDto;
 import com.epam.esm.exception.ResourceException;
 import com.epam.esm.service.GiftCertificateService;
+import com.epam.esm.util.GiftCertificateUtil;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import javax.validation.Valid;
-import javax.validation.constraints.Min;
 import org.springframework.format.annotation.NumberFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -34,11 +34,14 @@ public class GiftCertificateController {
 
     private final GiftCertificateService giftCertificateService;
     private final GiftCertificateAdapter giftCertificateAdapter;
+    private final GiftCertificateUtil giftCertificateUtil;
 
     public GiftCertificateController(GiftCertificateService giftCertificateService,
-                                     GiftCertificateAdapter giftCertificateAdapter) {
+                                     GiftCertificateAdapter giftCertificateAdapter,
+                                     GiftCertificateUtil giftCertificateUtil) {
         this.giftCertificateService = giftCertificateService;
         this.giftCertificateAdapter = giftCertificateAdapter;
+        this.giftCertificateUtil = giftCertificateUtil;
     }
 
     @GetMapping()
@@ -64,7 +67,12 @@ public class GiftCertificateController {
     }
 
     @GetMapping("/{id}")
-    public GiftCertificateDto getGiftCertificateById(@PathVariable @Min(1) @NumberFormat long id) {
+    public GiftCertificateDto getGiftCertificateById(@PathVariable @NumberFormat long id) {
+        if (id < 0) {
+            throw new ResourceException(HttpStatus.BAD_REQUEST,
+                String.format("Id is negative (id=%d)", id));
+        }
+
         Optional<GiftCertificate> optionalResult = giftCertificateService.findById(id);
         if (optionalResult.isEmpty()) {
             throw new ResourceException(HttpStatus.BAD_REQUEST,
@@ -75,7 +83,18 @@ public class GiftCertificateController {
 
     @GetMapping("/tags/{id}")
     public List<GiftCertificateDto> getGiftCertificatesByTagId(@PathVariable long id) {
-        return giftCertificateAdapter.adaptListToListDto(giftCertificateService.findByTagId(id));
+        if (id < 0) {
+            throw new ResourceException(HttpStatus.BAD_REQUEST,
+                String.format("Tag id is negative (tag id=%d)", id));
+        }
+        List<GiftCertificateDto> result = giftCertificateAdapter.adaptListToListDto(
+            giftCertificateService.findByTagId(id));
+
+        if (result.isEmpty()) {
+            throw new ResourceException(HttpStatus.BAD_REQUEST,
+                String.format("Requested resource not found (tag id=%d)", id));
+        }
+        return result;
     }
 
     @GetMapping("/tags")
@@ -85,11 +104,6 @@ public class GiftCertificateController {
 
     @PostMapping
     public GiftCertificateDto createGiftCertificates(@RequestBody @Valid GiftCertificateDto giftCertificateDto) {
-        if (nonValidateOnNull(giftCertificateDto)) {
-            throw new ResourceException(HttpStatus.BAD_REQUEST,
-                "Request isn't correct where name or description is empty");
-        }
-
         GiftCertificate giftCertificate = giftCertificateAdapter.adaptDtoTo(giftCertificateDto);
 
         giftCertificateService.add(giftCertificate);
@@ -100,12 +114,14 @@ public class GiftCertificateController {
         return giftCertificateAdapter.adaptToDto(optionalResult.get());
     }
 
-    @PutMapping
-    public GiftCertificateDto updateGiftCertificate(@RequestBody @Valid GiftCertificateDto giftCertificateDto) {
-        if (nonValidateOnNull(giftCertificateDto)) {
+    @PutMapping("/{id}")
+    public GiftCertificateDto updateGiftCertificate(@PathVariable long id,
+                                                    @RequestBody @Valid GiftCertificateDto giftCertificateDto) {
+        if (id < 0) {
             throw new ResourceException(HttpStatus.BAD_REQUEST,
-                "Request isn't correct where name or description is empty");
+                "Gift certificate wasn't updated because id is negative");
         }
+        giftCertificateDto.setId(id);
 
         GiftCertificate giftCertificate = giftCertificateAdapter.adaptDtoTo(giftCertificateDto);
         if (giftCertificateService.update(giftCertificate)) {
@@ -116,29 +132,34 @@ public class GiftCertificateController {
     }
 
     @DeleteMapping("/{id}")
-    public HttpStatus deleteGiftCertificate(@PathVariable @Min(0) long id) {
+    public HttpStatus deleteGiftCertificate(@PathVariable long id) {
+        if (id < 0) {
+            throw new ResourceException(HttpStatus.BAD_REQUEST,
+                "Gift certificate wasn't deleted because id is negative");
+        }
+
+        if (giftCertificateService.findById(id).isEmpty()) {
+            throw new ResourceException(HttpStatus.BAD_REQUEST, String.format("Id= %d is not exist", id));
+        }
         giftCertificateService.delete(id);
         return HttpStatus.OK;
     }
 
     @PatchMapping("/{id}")
     public GiftCertificateDto updatePartGiftCertificate(
-        @RequestBody GiftCertificateMostChangeDto giftCertificateMostChangeDto, @PathVariable long id) {
-        if (giftCertificateService.updateDescriptionAndPrice(id, giftCertificateMostChangeDto.getDescription(),
-            giftCertificateMostChangeDto.getPrice())) {
-            Optional<GiftCertificate> optionalResult = giftCertificateService.findById(id);
-            if (optionalResult.isPresent()) {
-                return giftCertificateAdapter.adaptToDto(optionalResult.get());
-            }
+        @RequestBody GiftCertificatePatchDto giftCertificatePatchDto, @PathVariable long id) {
+        if (id < 0) {
+            throw new ResourceException(HttpStatus.BAD_REQUEST,
+                "Part of gift certificate wasn't updated because id is negative");
         }
-        throw new ResourceException(HttpStatus.BAD_REQUEST, "Description and price of certificate wasn't updated");
-    }
+        giftCertificatePatchDto.setId(id);
 
-    private boolean nonValidateOnNull(GiftCertificateDto giftCertificateDto) {
-        if (giftCertificateDto.getName() != null) {
-            return false;
+        GiftCertificate giftCertificate = giftCertificateUtil.fillNotNullFieldInGiftCertificate(
+            giftCertificatePatchDto);
+
+        if (giftCertificateService.update(giftCertificate)) {
+            return giftCertificateAdapter.adaptToDto(giftCertificate);
         }
-
-        return giftCertificateDto.getDescription() == null;
+        throw new ResourceException(HttpStatus.BAD_REQUEST, "Gift certificate wasn't updated from patch");
     }
 }

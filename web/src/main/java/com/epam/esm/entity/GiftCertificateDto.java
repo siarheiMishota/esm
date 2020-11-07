@@ -29,7 +29,8 @@ public class GiftCertificateDto {
     private String lastUpdateDate;
 
     @Min(0)
-    private int duration;
+    @NotNull
+    private Integer duration;
     private List<Tag> tags;
 
     public GiftCertificateDto() {

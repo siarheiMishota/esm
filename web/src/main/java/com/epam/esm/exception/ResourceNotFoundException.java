@@ -2,17 +2,17 @@ package com.epam.esm.exception;
 
 import com.epam.esm.entity.CodeOfEntity;
 
-public class ResourceException extends RuntimeException {
+public class ResourceNotFoundException extends RuntimeException {
 
     private final String errorMessage;
     private final CodeOfEntity codeOfEntity;
 
-    public ResourceException(String errorMessage, CodeOfEntity codeOfEntity) {
+    public ResourceNotFoundException(String errorMessage, CodeOfEntity codeOfEntity) {
         this.errorMessage = errorMessage;
         this.codeOfEntity = codeOfEntity;
     }
 
-    public ResourceException(String message, String errorMessage, CodeOfEntity codeOfEntity) {
+    public ResourceNotFoundException(String message, String errorMessage, CodeOfEntity codeOfEntity) {
         super(message);
         this.errorMessage = errorMessage;
         this.codeOfEntity = codeOfEntity;
@@ -25,5 +25,4 @@ public class ResourceException extends RuntimeException {
     public CodeOfEntity getCodeOfEntity() {
         return codeOfEntity;
     }
-
 }

@@ -1,5 +1,6 @@
 package com.epam.esm.controller;
 
+import com.epam.esm.entity.CodeOfEntity;
 import com.epam.esm.entity.Tag;
 import com.epam.esm.entity.TagDto;
 import com.epam.esm.exception.ResourceException;
@@ -41,8 +42,7 @@ public class TagController {
     public TagDto getTagById(@PathVariable @Min(1) @NumberFormat long id) {
         Optional<Tag> optionalTag = tagService.findById(id);
         if (optionalTag.isEmpty()) {
-            throw new ResourceException(HttpStatus.BAD_REQUEST,
-                String.format("Requested resource not found (id=%d)", id));
+            throw new ResourceException(String.format("Requested resource not found (id=%d)", id), CodeOfEntity.TAG);
         }
         return new TagDto(optionalTag.get().getId(), optionalTag.get().getName());
     }
@@ -53,18 +53,18 @@ public class TagController {
         if (tagService.add(tag)) {
             return new TagDto(tag.getId(), tag.getName());
         } else {
-            throw new ResourceException(HttpStatus.BAD_REQUEST, "Tag wasn't added because one is exist");
+            throw new ResourceException("Tag wasn't added because one is exist", CodeOfEntity.TAG);
         }
     }
 
     @DeleteMapping("/{id}")
     public HttpStatus deleteTag(@PathVariable long id) {
         if (id < 0) {
-            throw new ResourceException(HttpStatus.BAD_REQUEST, "Tag wasn't deleted because id is negative");
+            throw new ResourceException("Tag wasn't deleted because id is negative", CodeOfEntity.TAG);
         }
 
         if (tagService.findById(id).isEmpty()) {
-            throw new ResourceException(HttpStatus.BAD_REQUEST, String.format("Id= %d is not exist", id));
+            throw new ResourceException(String.format("Id= %d is not exist", id), CodeOfEntity.TAG);
         }
         tagService.delete(id);
         return HttpStatus.OK;

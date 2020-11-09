@@ -11,8 +11,18 @@ public class GiftCertificateParametersDto {
     @Size(max = 500)
     private String description;
 
-    @Pattern(regexp = "(data|name):?(asc|desc|)")
+    private String tag;
+
+    @Pattern(regexp = "((date|name)(:asc|:desc|),)*((date|name)(:asc|:desc|))")
     private String sort;
+
+    public String getTag() {
+        return tag;
+    }
+
+    public void setTag(String tag) {
+        this.tag = tag;
+    }
 
     public String getName() {
         return name;

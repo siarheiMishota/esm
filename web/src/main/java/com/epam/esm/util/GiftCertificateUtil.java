@@ -1,11 +1,11 @@
 package com.epam.esm.util;
 
+import com.epam.esm.entity.CodeOfEntity;
 import com.epam.esm.entity.GiftCertificate;
 import com.epam.esm.entity.GiftCertificatePatchDto;
 import com.epam.esm.exception.ResourceException;
 import com.epam.esm.service.GiftCertificateService;
 import java.util.Optional;
-import org.springframework.http.HttpStatus;
 
 
 public class GiftCertificateUtil {
@@ -21,8 +21,8 @@ public class GiftCertificateUtil {
             giftCertificatePatchDto.getId());
 
         if (optionalGiftCertificate.isEmpty()) {
-            throw new ResourceException(HttpStatus.BAD_REQUEST,
-                "Gift certificate wasn't updated because id isn't found");
+            throw new ResourceException("Gift certificate wasn't updated because id isn't found",
+                CodeOfEntity.GIFT_CERTIFICATE);
         }
 
         GiftCertificate giftCertificate = optionalGiftCertificate.get();
@@ -47,7 +47,10 @@ public class GiftCertificateUtil {
             .getTags().isEmpty()) {
             giftCertificate.setTags(giftCertificatePatchDto.getTags());
         }
-
         return giftCertificate;
+    }
+
+    public String replaceDateOnLastUpdateDateInLine(String line) {
+        return line.replaceAll("date", "last_update_date");
     }
 }

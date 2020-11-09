@@ -13,8 +13,6 @@ public interface GiftCertificateService {
 
     Optional<GiftCertificate> findById(long id);
 
-    List<GiftCertificate> findByTagId(long id);
-
     void delete(long id);
 
     boolean update(GiftCertificate giftCertificate);

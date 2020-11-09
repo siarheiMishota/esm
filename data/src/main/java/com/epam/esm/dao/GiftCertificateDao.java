@@ -17,7 +17,5 @@ public interface GiftCertificateDao {
 
     int update(GiftCertificate giftCertificate);
 
-    List<GiftCertificate> findByTagId(long id);
-
     void delete(long id);
 }

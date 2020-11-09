@@ -4,18 +4,20 @@ import static com.epam.esm.dao.SqlRequestGiftCertificate.DELETE;
 import static com.epam.esm.dao.SqlRequestGiftCertificate.DELETE_TAG_GIFT_CERTIFICATE_BY_GIFT_CERTIFICATE_ID;
 import static com.epam.esm.dao.SqlRequestGiftCertificate.FIND_ALL;
 import static com.epam.esm.dao.SqlRequestGiftCertificate.FIND_BY_ID;
-import static com.epam.esm.dao.SqlRequestGiftCertificate.FIND_BY_TAG_ID;
 import static com.epam.esm.dao.SqlRequestGiftCertificate.INSERT;
 import static com.epam.esm.dao.SqlRequestGiftCertificate.INSERT_TAG_GIFT_CERTIFICATE;
+import static com.epam.esm.dao.SqlRequestGiftCertificate.JOIN_TAG;
 import static com.epam.esm.dao.SqlRequestGiftCertificate.UPDATE;
 import static com.epam.esm.dao.StringParameters.AND;
 import static com.epam.esm.dao.StringParameters.COLUMN_DESCRIPTION;
 import static com.epam.esm.dao.StringParameters.COLUMN_NAME;
+import static com.epam.esm.dao.StringParameters.COLUMN_NAME_FOR_TAG;
 import static com.epam.esm.dao.StringParameters.LIKE;
 import static com.epam.esm.dao.StringParameters.ORDER_BY;
 import static com.epam.esm.dao.StringParameters.PATTERN_KEY_DESCRIPTION;
 import static com.epam.esm.dao.StringParameters.PATTERN_KEY_NAME;
 import static com.epam.esm.dao.StringParameters.PATTERN_KEY_SORT;
+import static com.epam.esm.dao.StringParameters.PATTERN_KEY_TAG;
 import static com.epam.esm.dao.StringParameters.WHERE;
 
 import com.epam.esm.dao.GiftCertificateDao;
@@ -75,50 +77,102 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
         if (parameters == null) {
             return FIND_ALL;
         }
-
         boolean whereUse = false;
         StringBuilder fullFindBuilder = new StringBuilder(FIND_ALL);
 
-        if (parameters.containsKey(PATTERN_KEY_NAME)) {
-            fullFindBuilder.append(WHERE)
-                .append(COLUMN_NAME)
-                .append(LIKE)
-                .append("'%")
-                .append(parameters.get(PATTERN_KEY_NAME))
-                .append("%'");
-            whereUse = true;
-        }
+        whereUse = fillInForTag(parameters, whereUse, fullFindBuilder);
+        whereUse = fillInForName(parameters, whereUse, fullFindBuilder);
 
+        fillInForDescription(parameters, whereUse, fullFindBuilder);
+        fillInForSort(parameters, fullFindBuilder);
+        return fullFindBuilder.toString();
+    }
+
+    private void fillInForSort(Map<String, String> parameters, StringBuilder fullFindBuilder) {
+        if (parameters.containsKey(PATTERN_KEY_SORT)) {
+            String sort = parameters.get(PATTERN_KEY_SORT);
+            if (!sort.isEmpty()) {
+                fullFindBuilder.append(ORDER_BY);
+                Map<String, String> tokensMap = splitSortLineOnTokens(sort);
+
+                tokensMap.forEach((key, value) -> fullFindBuilder.append(key)
+                    .append(" ")
+                    .append(value.equals(PATTERN_KEY_NAME) ? COLUMN_NAME : value)
+                    .append(","));
+                fullFindBuilder.deleteCharAt(fullFindBuilder.lastIndexOf(","));
+            }
+        }
+    }
+
+    private void fillInForDescription(Map<String, String> parameters,
+                                      boolean whereUse,
+                                      StringBuilder fullFindBuilder) {
         if (parameters.containsKey(PATTERN_KEY_DESCRIPTION)) {
             if (!whereUse) {
-                fullFindBuilder.append(WHERE)
-                    .append(" ")
-                    .append(COLUMN_DESCRIPTION)
-                    .append(" ")
-                    .append(LIKE)
-                    .append("'%")
-                    .append(parameters.get(PATTERN_KEY_DESCRIPTION))
-                    .append("%'");
+                fullFindBuilder.append(WHERE);
             } else {
-                fullFindBuilder.append(AND)
-                    .append(COLUMN_DESCRIPTION)
-                    .append(LIKE)
-                    .append("'%")
-                    .append(parameters.get(PATTERN_KEY_DESCRIPTION))
-                    .append("%'");
+                fullFindBuilder.append(AND);
             }
+
+            String description = parameters.get(PATTERN_KEY_DESCRIPTION);
+            fullFindBuilder.append(" ")
+                .append(COLUMN_DESCRIPTION)
+                .append(" ")
+                .append(LIKE)
+                .append("'%")
+                .append(description)
+                .append("%'")
+                .append(AND)
+                .append(" ");
+            fullFindBuilder.delete(fullFindBuilder.lastIndexOf(AND), fullFindBuilder.length());
         }
+    }
 
-        if (parameters.containsKey(PATTERN_KEY_SORT)) {
-            fullFindBuilder.append(ORDER_BY);
-            Map<String, String> tokensMap = splitSortLineOnTokens(parameters.get(PATTERN_KEY_SORT));
-
-            for (Map.Entry<String, String> entryToken : tokensMap.entrySet()) {
-                fullFindBuilder.append(entryToken.getKey()).append(" ").append(entryToken.getValue()).append(",");
+    private boolean fillInForName(Map<String, String> parameters,
+                                  boolean whereUse,
+                                  StringBuilder fullFindBuilder) {
+        if (parameters.containsKey(PATTERN_KEY_NAME)) {
+            if (!whereUse) {
+                fullFindBuilder.append(WHERE).append(" ");
+            } else {
+                fullFindBuilder.append(AND).append(" ");
             }
-            fullFindBuilder.deleteCharAt(fullFindBuilder.lastIndexOf(","));
+
+            String name = parameters.get(PATTERN_KEY_NAME);
+            fullFindBuilder.append(COLUMN_NAME)
+                .append(LIKE)
+                .append("'%")
+                .append(name)
+                .append("%'")
+                .append(AND)
+                .append(" ");
+            fullFindBuilder.delete(fullFindBuilder.lastIndexOf(AND), fullFindBuilder.length());
+
+            whereUse = true;
         }
-        return fullFindBuilder.toString();
+        return whereUse;
+    }
+
+    private boolean fillInForTag(Map<String, String> parameters,
+                                 boolean whereUse,
+                                 StringBuilder fullFindBuilder) {
+        if (parameters.containsKey(PATTERN_KEY_TAG)) {
+            String tag = parameters.get(PATTERN_KEY_TAG);
+            fullFindBuilder.append(" ").append(JOIN_TAG)
+                .append(" ")
+                .append(WHERE)
+                .append(" ")
+                .append(COLUMN_NAME_FOR_TAG)
+                .append(" = '")
+                .append(tag)
+                .append("' ")
+                .append(AND)
+                .append(" ");
+            fullFindBuilder.delete(fullFindBuilder.lastIndexOf(AND), fullFindBuilder.length());
+            whereUse = true;
+
+        }
+        return whereUse;
     }
 
     @Override
@@ -128,15 +182,6 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
 
         optionalGiftCertificate.ifPresent(certificate -> setTagsToGiftCertificate(optionalGiftCertificate.get()));
         return optionalGiftCertificate;
-    }
-
-
-    @Override
-    public List<GiftCertificate> findByTagId(long id) {
-        List<GiftCertificate> giftCertificates = jdbcTemplate.query(FIND_BY_TAG_ID, new Object[]{id},
-            new BeanPropertyRowMapper<>(GiftCertificate.class));
-        giftCertificates.forEach(this::setTagsToGiftCertificate);
-        return giftCertificates;
     }
 
     @Transactional

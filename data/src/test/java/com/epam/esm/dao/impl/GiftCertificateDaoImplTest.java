@@ -35,17 +35,17 @@ class GiftCertificateDaoImplTest {
 
     @Test
     void findAllWithParametersNameAndSort() {
-        Map<String, String> stringStringMap = new HashMap<>();
-        stringStringMap.put("name", "name");
-        stringStringMap.put("sort", "price:desc,name");
+        Map<String, List<String>> stringStringMap = new HashMap<>();
+        stringStringMap.put("name", List.of("name"));
+        stringStringMap.put("sort", List.of("price:desc,name"));
         assertEquals(11, giftCertificateDao.findAll(stringStringMap).size());
     }
 
     @Test
     void findAllWithParametersNameAndSortException() {
-        Map<String, String> stringStringMap = new HashMap<>();
-        stringStringMap.put("name", "name");
-        stringStringMap.put("sort", "price:descss,name");
+        Map<String, List<String>> stringStringMap = new HashMap<>();
+        stringStringMap.put("name", List.of("name"));
+        stringStringMap.put("sort", List.of("price:descss,name"));
         assertThrows(BadSqlGrammarException.class, () -> giftCertificateDao.findAll(stringStringMap).size());
     }
 
@@ -71,21 +71,6 @@ class GiftCertificateDaoImplTest {
     @Test
     void findByIdWithNegativeId() {
         assertEquals(Optional.empty(), giftCertificateDao.findById(-400));
-    }
-
-    @Test
-    void findByTagName() {
-        assertEquals(4, giftCertificateDao.findByTagId(2).size());
-    }
-
-    @Test
-    void findByTagNameWithNegative() {
-        assertEquals(0, giftCertificateDao.findByTagId(-1).size());
-    }
-
-    @Test
-    void findByTagNameWithNotExist() {
-        assertEquals(0, giftCertificateDao.findByTagId(1000).size());
     }
 
     @Test

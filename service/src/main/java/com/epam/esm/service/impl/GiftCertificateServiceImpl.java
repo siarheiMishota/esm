@@ -51,11 +51,6 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     }
 
     @Override
-    public List<GiftCertificate> findByTagId(long id) {
-        return giftCertificateDao.findByTagId(id);
-    }
-
-    @Override
     public void delete(long id) {
         giftCertificateDao.delete(id);
     }

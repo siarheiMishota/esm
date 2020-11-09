@@ -36,7 +36,7 @@ public class TagServiceImpl implements TagService {
 
     @Override
     public boolean add(Tag tag) {
-        if (tag==null){
+        if (tag == null) {
             return false;
         }
         if (tagDao.findByName(tag.getName()).isEmpty()) {

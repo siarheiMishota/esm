@@ -35,17 +35,17 @@ class GiftCertificateDaoImplTest {
 
     @Test
     void findAllWithParametersNameAndSort() {
-        Map<String, List<String>> stringStringMap = new HashMap<>();
-        stringStringMap.put("name", List.of("name"));
-        stringStringMap.put("sort", List.of("price:desc,name"));
+        Map<String, String> stringStringMap = new HashMap<>();
+        stringStringMap.put("name", "name");
+        stringStringMap.put("sort", "price:desc,name");
         assertEquals(11, giftCertificateDao.findAll(stringStringMap).size());
     }
 
     @Test
     void findAllWithParametersNameAndSortException() {
-        Map<String, List<String>> stringStringMap = new HashMap<>();
-        stringStringMap.put("name", List.of("name"));
-        stringStringMap.put("sort", List.of("price:descss,name"));
+        Map<String, String> stringStringMap = new HashMap<>();
+        stringStringMap.put("name", "name");
+        stringStringMap.put("sort", "price:descss,name");
         assertThrows(BadSqlGrammarException.class, () -> giftCertificateDao.findAll(stringStringMap).size());
     }
 

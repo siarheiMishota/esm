@@ -17,12 +17,12 @@ import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.jdbc.BadSqlGrammarException;
-import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 @ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes = DaoConfigurationTest.class)
+@SpringBootTest(classes = DaoConfigurationTest.class)
 class GiftCertificateDaoImplTest {
 
     @Autowired
@@ -53,8 +53,8 @@ class GiftCertificateDaoImplTest {
     void findById() {
         GiftCertificate expected = new GiftCertificate(4, "name 4", "description 4",
             BigDecimal.valueOf(4),
-            LocalDateTime.of(2020, 10, 22, 0, 03, 22, 917992000),
-            LocalDateTime.of(2020, 10, 22, 0, 03, 22, 917992000),
+            LocalDateTime.of(2020, 10, 22, 0, 3, 22, 917992000),
+            LocalDateTime.of(2020, 10, 22, 0, 3, 22, 917992000),
             4, List.of(new Tag(1, "extreme")));
 
         GiftCertificate actual = giftCertificateDao.findById(4).get();
@@ -76,8 +76,8 @@ class GiftCertificateDaoImplTest {
     @Test
     void delete() {
         GiftCertificate giftCertificate = new GiftCertificate("new name", "new description", BigDecimal.valueOf(200),
-            LocalDateTime.of(2020, 10, 22, 0, 03, 22, 917992000),
-            LocalDateTime.of(2020, 10, 22, 0, 03, 22, 917992000),
+            LocalDateTime.of(2020, 10, 22, 0, 3, 22, 917992000),
+            LocalDateTime.of(2020, 10, 22, 0, 3, 22, 917992000),
             22, List.of(new Tag(1, "extreme")));
         giftCertificateDao.add(giftCertificate);
         Optional<GiftCertificate> expected = giftCertificateDao.findById(giftCertificate.getId());
@@ -112,8 +112,8 @@ class GiftCertificateDaoImplTest {
     void update() {
         GiftCertificate giftCertificate = new GiftCertificate(4, "update name 4", "update description 4",
             BigDecimal.valueOf(200),
-            LocalDateTime.of(2000, 10, 22, 0, 03, 22, 917992000),
-            LocalDateTime.of(2000, 10, 22, 0, 03, 22, 917992000),
+            LocalDateTime.of(2000, 10, 22, 0, 3, 22, 917992000),
+            LocalDateTime.of(2000, 10, 22, 0, 3, 22, 917992000),
             9, List.of(new Tag(1, "extreme")));
         int actual = giftCertificateDao.update(giftCertificate);
         assertEquals(1, actual);
@@ -121,8 +121,8 @@ class GiftCertificateDaoImplTest {
         giftCertificate.setName("name 4");
         giftCertificate.setDescription("description 4");
         giftCertificate.setPrice(BigDecimal.valueOf(4));
-        giftCertificate.setCreationDate(LocalDateTime.of(2020, 10, 22, 0, 03, 22, 917992000));
-        giftCertificate.setLastUpdateDate(LocalDateTime.of(2020, 10, 22, 0, 03, 22, 917992000));
+        giftCertificate.setCreationDate(LocalDateTime.of(2020, 10, 22, 0, 3, 22, 917992000));
+        giftCertificate.setLastUpdateDate(LocalDateTime.of(2020, 10, 22, 0, 3, 22, 917992000));
         giftCertificate.setDuration(4);
         giftCertificateDao.update(giftCertificate);
     }
@@ -136,8 +136,8 @@ class GiftCertificateDaoImplTest {
     void updateWithNotExist() {
         GiftCertificate giftCertificate = new GiftCertificate(40000, "update name 4", "update description 4",
             BigDecimal.valueOf(200),
-            LocalDateTime.of(2000, 10, 22, 0, 03, 22, 917992000),
-            LocalDateTime.of(2000, 10, 22, 0, 03, 22, 917992000),
+            LocalDateTime.of(2000, 10, 22, 0, 3, 22, 917992000),
+            LocalDateTime.of(2000, 10, 22, 0, 3, 22, 917992000),
             9, List.of(new Tag(1, "extreme")));
         assertEquals(0, giftCertificateDao.update(giftCertificate));
     }
@@ -145,8 +145,8 @@ class GiftCertificateDaoImplTest {
     @Test
     void add() {
         GiftCertificate giftCertificate = new GiftCertificate("new name", "new description", BigDecimal.valueOf(200),
-            LocalDateTime.of(2020, 10, 22, 0, 03, 22, 917992000),
-            LocalDateTime.of(2020, 10, 22, 0, 03, 22, 917992000),
+            LocalDateTime.of(2020, 10, 22, 0, 3, 22, 917992000),
+            LocalDateTime.of(2020, 10, 22, 0, 3, 22, 917992000),
             22, List.of(new Tag(1, "extreme")));
         long expected = giftCertificate.getId();
         giftCertificateDao.add(giftCertificate);

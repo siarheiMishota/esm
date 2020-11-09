@@ -15,19 +15,19 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.boot.test.context.SpringBootTest;
 
-@ExtendWith(MockitoExtension.class)
+@SpringBootTest(classes = MockitoExtension.class)
 class GiftCertificateServiceImplTest {
 
     @Mock
     private GiftCertificateDao giftCertificateDao;
 
     @Mock
-    private TagService tagService;
+    TagService tagService;
 
     @InjectMocks
     private GiftCertificateServiceImpl giftCertificateService;

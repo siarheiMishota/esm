@@ -7,7 +7,7 @@ import java.util.Optional;
 
 public interface GiftCertificateService {
 
-    List<GiftCertificate> findAll(Map<String, List<String>> parameters);
+    List<GiftCertificate> findAll(Map<String, String> parameters);
 
     List<GiftCertificate> findAll();
 

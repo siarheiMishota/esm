@@ -50,7 +50,7 @@ public class GiftCertificateController {
 
     @GetMapping()
     public List<GiftCertificateDto> getGiftCertificates(@Valid GiftCertificateParametersDto giftCertificateParametersDto) {
-        Map<String, List<String>> parameterMap = new HashMap<>();
+        Map<String, String> parameterMap = new HashMap<>();
         if (giftCertificateParametersDto.getName() != null) {
             parameterMap.put(PATTERN_KEY_NAME, giftCertificateParametersDto.getName());
         }
@@ -60,10 +60,10 @@ public class GiftCertificateController {
         if (giftCertificateParametersDto.getSort() != null) {
             String sortValue = giftCertificateUtil.replaceDateOnLastUpdateDateInLine(
                 giftCertificateParametersDto.getSort());
-            parameterMap.put(PATTERN_KEY_SORT, List.of(sortValue));
+            parameterMap.put(PATTERN_KEY_SORT, sortValue);
         }
         if (giftCertificateParametersDto.getTag() != null) {
-            parameterMap.put(PATTERN_KEY_TAG, List.of(giftCertificateParametersDto.getTag()));
+            parameterMap.put(PATTERN_KEY_TAG, giftCertificateParametersDto.getTag());
         }
 
         List<GiftCertificate> giftCertificates;
@@ -71,6 +71,9 @@ public class GiftCertificateController {
             giftCertificates = giftCertificateService.findAll();
         } else {
             giftCertificates = giftCertificateService.findAll(parameterMap);
+            if (giftCertificates.isEmpty()) {
+                throw new ResourceNotFoundException("Requested resource not found ", CodeOfEntity.GIFT_CERTIFICATE);
+            }
         }
         return giftCertificateAdapter.adaptListToListDto(giftCertificates);
     }
@@ -83,7 +86,7 @@ public class GiftCertificateController {
 
         Optional<GiftCertificate> optionalResult = giftCertificateService.findById(id);
         if (optionalResult.isEmpty()) {
-            throw new ResourceException(
+            throw new ResourceNotFoundException(
                 String.format("Requested resource not found (id=%d)", id), CodeOfEntity.GIFT_CERTIFICATE);
         }
         return giftCertificateAdapter.adaptToDto(optionalResult.get());
@@ -96,7 +99,7 @@ public class GiftCertificateController {
         giftCertificateService.add(giftCertificate);
         Optional<GiftCertificate> optionalResult = giftCertificateService.findById(giftCertificate.getId());
         if (optionalResult.isEmpty()) {
-            throw new ResourceException("Gift certificate wasn't added", CodeOfEntity.GIFT_CERTIFICATE);
+            throw new ResourceNotFoundException("Gift certificate wasn't added", CodeOfEntity.GIFT_CERTIFICATE);
         }
         return giftCertificateAdapter.adaptToDto(optionalResult.get());
     }
@@ -126,7 +129,8 @@ public class GiftCertificateController {
         }
 
         if (giftCertificateService.findById(id).isEmpty()) {
-            throw new ResourceException(String.format("Id= %d is not exist", id), CodeOfEntity.GIFT_CERTIFICATE);
+            throw new ResourceNotFoundException(String.format("Id= %d is not exist", id),
+                CodeOfEntity.GIFT_CERTIFICATE);
         }
         giftCertificateService.delete(id);
         return HttpStatus.OK;

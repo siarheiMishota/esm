@@ -1,16 +1,15 @@
 package com.epam.esm.entity;
 
-import java.util.List;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
 public class GiftCertificateParametersDto {
 
     @Size(max = 50)
-    private List<String> name;
+    private String name;
 
     @Size(max = 500)
-    private List<String> description;
+    private String description;
 
     private String tag;
 
@@ -25,19 +24,19 @@ public class GiftCertificateParametersDto {
         this.tag = tag;
     }
 
-    public List<String> getName() {
+    public String getName() {
         return name;
     }
 
-    public void setName(List<String> name) {
+    public void setName(String name) {
         this.name = name;
     }
 
-    public List<String> getDescription() {
+    public String getDescription() {
         return description;
     }
 
-    public void setDescription(List<String> description) {
+    public void setDescription(String description) {
         this.description = description;
     }
 

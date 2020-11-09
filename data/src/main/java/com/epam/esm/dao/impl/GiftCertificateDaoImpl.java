@@ -56,7 +56,7 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
     }
 
     @Override
-    public List<GiftCertificate> findAll(Map<String, List<String>> parameters) {
+    public List<GiftCertificate> findAll(Map<String, String> parameters) {
         String fullFind = getFullSqlWithParameters(parameters);
 
         List<GiftCertificate> giftCertificates = jdbcTemplate.query(fullFind,
@@ -73,7 +73,7 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
         return giftCertificates;
     }
 
-    private String getFullSqlWithParameters(Map<String, List<String>> parameters) {
+    private String getFullSqlWithParameters(Map<String, String> parameters) {
         if (parameters == null) {
             return FIND_ALL;
         }
@@ -88,12 +88,12 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
         return fullFindBuilder.toString();
     }
 
-    private void fillInForSort(Map<String, List<String>> parameters, StringBuilder fullFindBuilder) {
+    private void fillInForSort(Map<String, String> parameters, StringBuilder fullFindBuilder) {
         if (parameters.containsKey(PATTERN_KEY_SORT)) {
-            List<String> sorts = parameters.get(PATTERN_KEY_SORT);
-            if (!sorts.isEmpty()) {
+            String sort = parameters.get(PATTERN_KEY_SORT);
+            if (!sort.isEmpty()) {
                 fullFindBuilder.append(ORDER_BY);
-                Map<String, String> tokensMap = splitSortLineOnTokens(sorts.get(0));
+                Map<String, String> tokensMap = splitSortLineOnTokens(sort);
 
                 tokensMap.forEach((key, value) -> fullFindBuilder.append(key)
                     .append(" ")
@@ -104,7 +104,7 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
         }
     }
 
-    private void fillInForDescription(Map<String, List<String>> parameters,
+    private void fillInForDescription(Map<String, String> parameters,
                                       boolean whereUse,
                                       StringBuilder fullFindBuilder) {
         if (parameters.containsKey(PATTERN_KEY_DESCRIPTION)) {
@@ -114,8 +114,8 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
                 fullFindBuilder.append(AND);
             }
 
-            List<String> descriptions = parameters.get(PATTERN_KEY_DESCRIPTION);
-            descriptions.forEach(description -> fullFindBuilder.append(" ")
+            String description = parameters.get(PATTERN_KEY_DESCRIPTION);
+            fullFindBuilder.append(" ")
                 .append(COLUMN_DESCRIPTION)
                 .append(" ")
                 .append(LIKE)
@@ -123,12 +123,12 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
                 .append(description)
                 .append("%'")
                 .append(AND)
-                .append(" "));
+                .append(" ");
             fullFindBuilder.delete(fullFindBuilder.lastIndexOf(AND), fullFindBuilder.length());
         }
     }
 
-    private boolean fillInForName(Map<String, List<String>> parameters,
+    private boolean fillInForName(Map<String, String> parameters,
                                   boolean whereUse,
                                   StringBuilder fullFindBuilder) {
         if (parameters.containsKey(PATTERN_KEY_NAME)) {
@@ -138,14 +138,14 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
                 fullFindBuilder.append(AND).append(" ");
             }
 
-            List<String> names = parameters.get(PATTERN_KEY_NAME);
-            names.forEach(name -> fullFindBuilder.append(COLUMN_NAME)
+            String name = parameters.get(PATTERN_KEY_NAME);
+            fullFindBuilder.append(COLUMN_NAME)
                 .append(LIKE)
                 .append("'%")
                 .append(name)
                 .append("%'")
                 .append(AND)
-                .append(" "));
+                .append(" ");
             fullFindBuilder.delete(fullFindBuilder.lastIndexOf(AND), fullFindBuilder.length());
 
             whereUse = true;
@@ -153,25 +153,24 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
         return whereUse;
     }
 
-    private boolean fillInForTag(Map<String, List<String>> parameters,
+    private boolean fillInForTag(Map<String, String> parameters,
                                  boolean whereUse,
                                  StringBuilder fullFindBuilder) {
         if (parameters.containsKey(PATTERN_KEY_TAG)) {
-            List<String> tags = parameters.get(PATTERN_KEY_TAG);
-            if (!tags.isEmpty()) {
-                fullFindBuilder.append(" ").append(JOIN_TAG)
-                    .append(" ")
-                    .append(WHERE)
-                    .append(" ")
-                    .append(COLUMN_NAME_FOR_TAG)
-                    .append(" = '")
-                    .append(tags.get(0))
-                    .append("' ")
-                    .append(AND)
-                    .append(" ");
-                fullFindBuilder.delete(fullFindBuilder.lastIndexOf(AND), fullFindBuilder.length());
-                whereUse = true;
-            }
+            String tag = parameters.get(PATTERN_KEY_TAG);
+            fullFindBuilder.append(" ").append(JOIN_TAG)
+                .append(" ")
+                .append(WHERE)
+                .append(" ")
+                .append(COLUMN_NAME_FOR_TAG)
+                .append(" = '")
+                .append(tag)
+                .append("' ")
+                .append(AND)
+                .append(" ");
+            fullFindBuilder.delete(fullFindBuilder.lastIndexOf(AND), fullFindBuilder.length());
+            whereUse = true;
+
         }
         return whereUse;
     }

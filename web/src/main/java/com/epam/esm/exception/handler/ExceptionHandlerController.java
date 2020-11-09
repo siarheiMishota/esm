@@ -5,7 +5,6 @@ import com.epam.esm.exception.ResourceException;
 import com.epam.esm.exception.ResourceNotFoundException;
 import com.epam.esm.exception.handler.dto.ExceptionDto;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.converter.HttpMessageConversionException;
 import org.springframework.validation.BindException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -30,12 +29,6 @@ public class ExceptionHandlerController {
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ExceptionHandler(NumberFormatException.class)
-    public ExceptionDto handleNumberFormatException(Exception e) {
-        return new ExceptionDto("a", "a");
-    }
-
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
     public ExceptionDto handleMethodArgumentTypeMismatchException(MethodArgumentTypeMismatchException e) {
         String exceptionMessage = new StringBuilder().append(e.getParameter().getParameterName())
@@ -44,12 +37,6 @@ public class ExceptionHandlerController {
             .append(" ")
             .append("notCorrect").toString();
         return new ExceptionDto(exceptionMessage, HttpStatus.BAD_REQUEST.value() + CodeOfEntity.DEFAULT.getCode());
-    }
-
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ExceptionHandler(HttpMessageConversionException.class)
-    public ExceptionDto handleHttpMessageConversionException(HttpMessageConversionException e) {
-        return new ExceptionDto("", "");
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
@@ -82,6 +69,7 @@ public class ExceptionHandlerController {
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(Exception.class)
     public ExceptionDto handleException(Exception e) {
-        return new ExceptionDto("internal server error", "50000");
+        return new ExceptionDto("internal server error",
+            HttpStatus.INTERNAL_SERVER_ERROR.value() + CodeOfEntity.DEFAULT.getCode());
     }
 }

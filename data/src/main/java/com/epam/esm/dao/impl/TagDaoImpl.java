@@ -9,7 +9,7 @@ import static com.epam.esm.dao.sqlRequest.SqlRequestTag.INSERT;
 import com.epam.esm.dao.TagDao;
 import com.epam.esm.dao.sqlRequest.SqlRequestUser;
 import com.epam.esm.entity.Tag;
-import com.epam.esm.util.FillInRequest;
+import com.epam.esm.util.FillingInParameters;
 import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.util.HashMap;
@@ -25,11 +25,11 @@ import org.springframework.transaction.annotation.Transactional;
 public class TagDaoImpl implements TagDao {
 
     private final JdbcTemplate jdbcTemplate;
-    private final FillInRequest fillInRequest;
+    private final FillingInParameters fillingInParameters;
 
-    public TagDaoImpl(JdbcTemplate jdbcTemplate, FillInRequest fillInRequest) {
+    public TagDaoImpl(JdbcTemplate jdbcTemplate, FillingInParameters fillingInParameters) {
         this.jdbcTemplate = jdbcTemplate;
-        this.fillInRequest = fillInRequest;
+        this.fillingInParameters = fillingInParameters;
     }
 
     @Override
@@ -41,7 +41,7 @@ public class TagDaoImpl implements TagDao {
     public List<Tag> findAll(Map<String, String> parametersMap) {
         StringBuilder stringRequestBuilder = new StringBuilder();
         stringRequestBuilder.append(SqlRequestUser.FIND_ALL);
-        fillInRequest.fillInLimitAndOffset(parametersMap, stringRequestBuilder);
+        fillingInParameters.fillInLimitAndOffset(parametersMap, stringRequestBuilder);
 
         return jdbcTemplate.query(stringRequestBuilder.toString(),
             new BeanPropertyRowMapper<>(Tag.class));

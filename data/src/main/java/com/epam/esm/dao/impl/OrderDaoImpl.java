@@ -15,7 +15,7 @@ import com.epam.esm.entity.GiftCertificate;
 import com.epam.esm.entity.Order;
 import com.epam.esm.exception.EntityDuplicateException;
 import com.epam.esm.exception.EntityIntegrityViolationException;
-import com.epam.esm.util.FillInRequest;
+import com.epam.esm.util.FillingInParameters;
 import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.util.HashMap;
@@ -34,14 +34,14 @@ public class OrderDaoImpl implements OrderDao {
     private static final int NUMBER_FOR_ID_GIFT_CERTIFICATE = 2;
     private static final int NUMBER_FOR_ID_USER = 3;
     private final JdbcTemplate jdbcTemplate;
-    private final FillInRequest fillInRequest;
+    private final FillingInParameters fillingInParameters;
     private final GiftCertificateDao giftCertificateDao;
 
     public OrderDaoImpl(JdbcTemplate jdbcTemplate,
-                        FillInRequest fillInRequest,
+                        FillingInParameters fillingInParameters,
                         GiftCertificateDao giftCertificateDao) {
         this.jdbcTemplate = jdbcTemplate;
-        this.fillInRequest = fillInRequest;
+        this.fillingInParameters = fillingInParameters;
         this.giftCertificateDao = giftCertificateDao;
     }
 
@@ -54,7 +54,7 @@ public class OrderDaoImpl implements OrderDao {
     public List<Order> findAll(Map<String, String> parametersMap) {
         StringBuilder stringRequestBuilder = new StringBuilder();
         stringRequestBuilder.append(FIND_ALL);
-        fillInRequest.fillInLimitAndOffset(parametersMap, stringRequestBuilder);
+        fillingInParameters.fillInLimitAndOffset(parametersMap, stringRequestBuilder);
         List<Order> orders = jdbcTemplate.query(stringRequestBuilder.toString(),
             new BeanPropertyRowMapper<>(Order.class));
 
@@ -127,7 +127,7 @@ public class OrderDaoImpl implements OrderDao {
             throw new EntityDuplicateException(e,
                 String.format("Order wasn't updated because id= %s gift certificate is busy ",
                     order.getGiftCertificate().getId()), CodeOfEntity.ORDER);
-        }catch (DataIntegrityViolationException e) {
+        } catch (DataIntegrityViolationException e) {
             throw new EntityIntegrityViolationException(e,
                 "Order wasn't updated because gift certificate or user is not exist",
                 CodeOfEntity.ORDER);

@@ -10,9 +10,9 @@ public class SqlRequestUser {
 
     public static final String INSERT = "insert into users (name, email, password)\n"
         + "values (?,?,?);";
-    public static final String UPDATE="update users\n"
+    public static final String UPDATE = "update users\n"
         + "set name=?,\n"
         + "    email=?,\n"
         + "    password=? where id=?";
-    public static final String DELETE="delete from users where id=?;";
+    public static final String DELETE = "delete from users where id=?;";
 }

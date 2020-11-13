@@ -7,7 +7,8 @@ import com.epam.esm.entity.PaginationDto;
 import java.util.Map;
 
 public class PaginationUtil {
-    public void fillInMapFromPaginationDto(PaginationDto paginationDto, Map<String,String> parameterMap){
+
+    public void fillInMapFromPaginationDto(PaginationDto paginationDto, Map<String, String> parameterMap) {
         if (paginationDto.getLimit() != 0) {
             parameterMap.put(PATTERN_LIMIT, "" + paginationDto.getLimit());
         }

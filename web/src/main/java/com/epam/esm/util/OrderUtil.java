@@ -18,7 +18,7 @@ public class OrderUtil {
     }
 
     public Order fillNotNullFieldInOrder(OrderPatchDto orderPatchDto, long userId) {
-        Optional<Order> optionalOrder = orderService.findByUserIdAndId(userId,            orderPatchDto.getId());
+        Optional<Order> optionalOrder = orderService.findByUserIdAndId(userId, orderPatchDto.getId());
 
         if (optionalOrder.isEmpty()) {
             throw new ResourceNotFoundException("Order wasn't updated because id isn't found",
@@ -27,11 +27,11 @@ public class OrderUtil {
 
         Order order = optionalOrder.get();
 
-        if (orderPatchDto.getCost().compareTo(BigDecimal.ZERO)>0){
+        if (orderPatchDto.getCost().compareTo(BigDecimal.ZERO) > 0) {
             order.setCost(orderPatchDto.getCost());
         }
-        if (orderPatchDto.getIdGiftCertificate()>0){
-            GiftCertificate giftCertificate=new GiftCertificate();
+        if (orderPatchDto.getIdGiftCertificate() > 0) {
+            GiftCertificate giftCertificate = new GiftCertificate();
             giftCertificate.setId(orderPatchDto.getIdGiftCertificate());
             order.setGiftCertificate(giftCertificate);
         }

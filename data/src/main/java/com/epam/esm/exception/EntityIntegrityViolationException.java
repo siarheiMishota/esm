@@ -3,6 +3,7 @@ package com.epam.esm.exception;
 import com.epam.esm.entity.CodeOfEntity;
 
 public class EntityIntegrityViolationException extends RuntimeException {
+
     private final String message;
     private final CodeOfEntity codeOfEntity;
 

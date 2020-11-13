@@ -13,7 +13,7 @@ import com.epam.esm.entity.CodeOfEntity;
 import com.epam.esm.entity.Order;
 import com.epam.esm.entity.User;
 import com.epam.esm.exception.EntityDuplicateException;
-import com.epam.esm.util.FillInRequest;
+import com.epam.esm.util.FillingInParameters;
 import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.util.HashMap;
@@ -31,12 +31,12 @@ public class UserDaoImpl implements UserDao {
     private static final int NUMBER_FOR_EMAIL = 2;
     private static final int NUMBER_FOR_PASSWORD = 3;
     private final JdbcTemplate jdbcTemplate;
-    private final FillInRequest fillInRequest;
+    private final FillingInParameters fillingInParameters;
     private final OrderDao orderDao;
 
-    public UserDaoImpl(JdbcTemplate jdbcTemplate, FillInRequest fillInRequest, OrderDao orderDao) {
+    public UserDaoImpl(JdbcTemplate jdbcTemplate, FillingInParameters fillingInParameters, OrderDao orderDao) {
         this.jdbcTemplate = jdbcTemplate;
-        this.fillInRequest = fillInRequest;
+        this.fillingInParameters = fillingInParameters;
         this.orderDao = orderDao;
     }
 
@@ -49,7 +49,7 @@ public class UserDaoImpl implements UserDao {
     public List<User> findAll(Map<String, String> parameters) {
         StringBuilder stringRequestBuilder = new StringBuilder();
         stringRequestBuilder.append(FIND_ALL);
-        fillInRequest.fillInLimitAndOffset(parameters, stringRequestBuilder);
+        fillingInParameters.fillInLimitAndOffset(parameters, stringRequestBuilder);
 
         List<User> users = jdbcTemplate.query(stringRequestBuilder.toString(),
             new BeanPropertyRowMapper<>(User.class));

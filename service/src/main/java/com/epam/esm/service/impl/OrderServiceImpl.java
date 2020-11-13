@@ -40,16 +40,16 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public Optional<Order> findByUserIdAndId(long userId, long id) {
-        return orderDao.findByUserIdAndId(userId,id);
+        return orderDao.findByUserIdAndId(userId, id);
 
     }
 
     @Override
-    public Order add(Order order,long userId) {
-        if (userService.findById(userId).isEmpty()){
+    public Order add(Order order, long userId) {
+        if (userService.findById(userId).isEmpty()) {
             return order;
         }
-        return orderDao.add(order,userId);
+        return orderDao.add(order, userId);
     }
 
     @Override

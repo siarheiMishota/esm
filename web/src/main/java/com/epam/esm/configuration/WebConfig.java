@@ -58,12 +58,12 @@ public class WebConfig implements WebMvcConfigurer {
     }
 
     @Bean
-    public OrderAdapter orderAdapter(){
+    public OrderAdapter orderAdapter() {
         return new OrderAdapter();
     }
 
     @Bean
-    public TagAdapter tagAdapter(){
+    public TagAdapter tagAdapter() {
         return new TagAdapter();
     }
 
@@ -73,12 +73,12 @@ public class WebConfig implements WebMvcConfigurer {
     }
 
     @Bean
-    public PaginationUtil paginationUtil(){
+    public PaginationUtil paginationUtil() {
         return new PaginationUtil();
     }
 
     @Bean
-    public OrderUtil orderUtil(OrderService orderService){
+    public OrderUtil orderUtil(OrderService orderService) {
         return new OrderUtil(orderService);
     }
 }

@@ -14,7 +14,7 @@ import com.epam.esm.dao.TagDao;
 import com.epam.esm.entity.CodeOfEntity;
 import com.epam.esm.entity.GiftCertificate;
 import com.epam.esm.exception.EntityDuplicateException;
-import com.epam.esm.util.FillInRequest;
+import com.epam.esm.util.FillingInParameters;
 import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.time.LocalDateTime;
@@ -39,14 +39,14 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
 
     private final JdbcTemplate jdbcTemplate;
     private final TagDao tagDao;
-    private final FillInRequest fillInRequest;
+    private final FillingInParameters fillingInParameters;
 
     public GiftCertificateDaoImpl(JdbcTemplate jdbcTemplate,
                                   TagDao tagDao,
-                                  FillInRequest fillInRequest) {
+                                  FillingInParameters fillingInParameters) {
         this.jdbcTemplate = jdbcTemplate;
         this.tagDao = tagDao;
-        this.fillInRequest = fillInRequest;
+        this.fillingInParameters = fillingInParameters;
     }
 
     @Override
@@ -71,12 +71,12 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
         boolean whereUse = false;
         StringBuilder fullFindBuilder = new StringBuilder(FIND_ALL);
 
-        whereUse = fillInRequest.fillInForTag(parameters, whereUse, fullFindBuilder);
-        whereUse = fillInRequest.fillInForName(parameters, whereUse, fullFindBuilder);
+        whereUse = fillingInParameters.fillInForTag(parameters, whereUse, fullFindBuilder);
+        whereUse = fillingInParameters.fillInForName(parameters, whereUse, fullFindBuilder);
 
-        fillInRequest.fillInForDescription(parameters, whereUse, fullFindBuilder);
-        fillInRequest.fillInForSort(parameters, fullFindBuilder);
-        fillInRequest.fillInLimitAndOffset(parameters, fullFindBuilder);
+        fillingInParameters.fillInForDescription(parameters, whereUse, fullFindBuilder);
+        fillingInParameters.fillInForSort(parameters, fullFindBuilder);
+        fillingInParameters.fillInLimitAndOffset(parameters, fullFindBuilder);
         return fullFindBuilder.toString();
     }
 

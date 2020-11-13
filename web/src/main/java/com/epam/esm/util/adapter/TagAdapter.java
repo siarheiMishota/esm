@@ -7,20 +7,20 @@ import java.util.stream.Collectors;
 
 public class TagAdapter {
 
-    public TagDto adaptToDto(Tag tag){
-        TagDto tagDto=new TagDto();
+    public TagDto adaptToDto(Tag tag) {
+        TagDto tagDto = new TagDto();
         tagDto.setId(tag.getId());
         tagDto.setName(tag.getName());
         return tagDto;
     }
 
-    public Tag adaptDtoTo(TagDto tagDto){
-        Tag tag=new Tag();
+    public Tag adaptDtoTo(TagDto tagDto) {
+        Tag tag = new Tag();
         tag.setName(tagDto.getName());
         return tag;
     }
 
-    public List<TagDto> adaptListToListDto(List<Tag> tags){
+    public List<TagDto> adaptListToListDto(List<Tag> tags) {
         return tags.stream()
             .map(this::adaptToDto)
             .collect(Collectors.toList());

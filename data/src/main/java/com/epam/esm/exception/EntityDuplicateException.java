@@ -2,7 +2,7 @@ package com.epam.esm.exception;
 
 import com.epam.esm.entity.CodeOfEntity;
 
-public class EntityDuplicateException extends RuntimeException{
+public class EntityDuplicateException extends RuntimeException {
 
     private final String message;
     private final CodeOfEntity codeOfEntity;

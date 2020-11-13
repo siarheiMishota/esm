@@ -7,7 +7,7 @@ public class PaginationDto {
 
     @Min(0)
     @Max(100)
-    private  int limit;
+    private int limit;
 
     @Min(0)
     private int offset;

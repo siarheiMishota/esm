@@ -23,7 +23,8 @@ public class GiftCertificateUtil {
         this.giftCertificateService = giftCertificateService;
     }
 
-    public void fillInMapFromPaginationDto(GiftCertificateParametersDto giftCertificateParametersDto, Map<String, String> parameterMap) {
+    public void fillInMapFromPaginationDto(GiftCertificateParametersDto giftCertificateParametersDto,
+                                           Map<String, String> parameterMap) {
         if (giftCertificateParametersDto.getName() != null) {
             parameterMap.put(PATTERN_KEY_NAME, giftCertificateParametersDto.getName());
         }

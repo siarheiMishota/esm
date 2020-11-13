@@ -21,7 +21,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
-public class FillInRequest {
+public class FillingInParameters {
 
     public void fillInForSort(Map<String, String> parameters, StringBuilder fullFindBuilder) {
         if (parameters.containsKey(PATTERN_KEY_SORT)) {

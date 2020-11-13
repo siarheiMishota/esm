@@ -52,8 +52,8 @@ public class GiftCertificateController {
     public List<GiftCertificateDto> getGiftCertificates(@Valid PaginationDto paginationDto,
                                                         @Valid GiftCertificateParametersDto giftCertificateParametersDto) {
         Map<String, String> parameterMap = new HashMap<>();
-        giftCertificateUtil.fillInMapFromPaginationDto(giftCertificateParametersDto,parameterMap);
-        paginationUtil.fillInMapFromPaginationDto(paginationDto,parameterMap);
+        giftCertificateUtil.fillInMapFromPaginationDto(giftCertificateParametersDto, parameterMap);
+        paginationUtil.fillInMapFromPaginationDto(paginationDto, parameterMap);
 
         List<GiftCertificate> giftCertificates;
         if (parameterMap.isEmpty()) {

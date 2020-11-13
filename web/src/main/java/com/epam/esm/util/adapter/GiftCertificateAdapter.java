@@ -1,4 +1,4 @@
-package com.epam.esm.controller;
+package com.epam.esm.util.adapter;
 
 import com.epam.esm.entity.GiftCertificate;
 import com.epam.esm.entity.GiftCertificateDto;

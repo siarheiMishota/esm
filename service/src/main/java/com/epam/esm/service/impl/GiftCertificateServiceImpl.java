@@ -64,7 +64,6 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     @Override
     public GiftCertificate add(GiftCertificate giftCertificate) {
         removeDuplicateTags(giftCertificate.getTags());
-
         if (giftCertificate.getTags() != null) {
             giftCertificate.getTags().forEach(tag -> {
                 Optional<Tag> optionalTagFromDb = tagService.findByName(tag.getName());

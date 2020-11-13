@@ -23,7 +23,7 @@ class TagDaoImplTest {
 
     @Test
     void findAll() {
-        assertEquals(5, tagDao.findAll().size());
+        assertEquals(50, tagDao.findAll().size());
     }
 
     @Test

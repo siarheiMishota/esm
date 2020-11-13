@@ -1,9 +1,15 @@
 package com.epam.esm.configuration;
 
-import com.epam.esm.controller.GiftCertificateAdapter;
 import com.epam.esm.service.GiftCertificateService;
+import com.epam.esm.service.OrderService;
 import com.epam.esm.service.configuration.ServiceConfiguration;
 import com.epam.esm.util.GiftCertificateUtil;
+import com.epam.esm.util.OrderUtil;
+import com.epam.esm.util.PaginationUtil;
+import com.epam.esm.util.adapter.GiftCertificateAdapter;
+import com.epam.esm.util.adapter.OrderAdapter;
+import com.epam.esm.util.adapter.TagAdapter;
+import com.epam.esm.util.adapter.UserAdapter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -47,7 +53,32 @@ public class WebConfig implements WebMvcConfigurer {
     }
 
     @Bean
+    public UserAdapter userAdapter(OrderAdapter orderAdapter) {
+        return new UserAdapter(orderAdapter);
+    }
+
+    @Bean
+    public OrderAdapter orderAdapter(){
+        return new OrderAdapter();
+    }
+
+    @Bean
+    public TagAdapter tagAdapter(){
+        return new TagAdapter();
+    }
+
+    @Bean
     public GiftCertificateUtil giftCertificateUtil(GiftCertificateService giftCertificateService) {
         return new GiftCertificateUtil(giftCertificateService);
+    }
+
+    @Bean
+    public PaginationUtil paginationUtil(){
+        return new PaginationUtil();
+    }
+
+    @Bean
+    public OrderUtil orderUtil(OrderService orderService){
+        return new OrderUtil(orderService);
     }
 }

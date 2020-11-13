@@ -12,8 +12,8 @@ repositories {
 
 dependencies {
     project.dependencies {
-        implementation(project(':service'))
         implementation(project(':data'))
+        implementation(project(':service'))
     }
 
     implementation group: 'org.springframework.boot', name: 'spring-boot-starter-web', version: '2.3.5.RELEASE'

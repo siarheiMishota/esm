@@ -1,18 +1,22 @@
 package com.epam.esm.dao.impl;
 
-import static com.epam.esm.dao.SqlRequestTag.DELETE;
-import static com.epam.esm.dao.SqlRequestTag.FIND_ALL;
-import static com.epam.esm.dao.SqlRequestTag.FIND_BY_GIFT_CERTIFICATE_ID;
-import static com.epam.esm.dao.SqlRequestTag.FIND_BY_ID;
-import static com.epam.esm.dao.SqlRequestTag.FIND_BY_NAME;
-import static com.epam.esm.dao.SqlRequestTag.INSERT;
+import static com.epam.esm.dao.sqlRequest.SqlRequestTag.DELETE;
+import static com.epam.esm.dao.sqlRequest.SqlRequestTag.FIND_BY_GIFT_CERTIFICATE_ID;
+import static com.epam.esm.dao.sqlRequest.SqlRequestTag.FIND_BY_ID;
+import static com.epam.esm.dao.sqlRequest.SqlRequestTag.FIND_BY_NAME;
+import static com.epam.esm.dao.sqlRequest.SqlRequestTag.INSERT;
 
 import com.epam.esm.dao.TagDao;
+import com.epam.esm.dao.sqlRequest.SqlRequestUser;
 import com.epam.esm.entity.Tag;
+import com.epam.esm.util.FillInRequest;
 import java.sql.PreparedStatement;
 import java.sql.Statement;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -21,16 +25,29 @@ import org.springframework.transaction.annotation.Transactional;
 public class TagDaoImpl implements TagDao {
 
     private final JdbcTemplate jdbcTemplate;
+    private final FillInRequest fillInRequest;
 
-    public TagDaoImpl(JdbcTemplate jdbcTemplate) {
+    public TagDaoImpl(JdbcTemplate jdbcTemplate, FillInRequest fillInRequest) {
         this.jdbcTemplate = jdbcTemplate;
+        this.fillInRequest = fillInRequest;
     }
 
     @Override
     public List<Tag> findAll() {
-        return jdbcTemplate.query(FIND_ALL, new BeanPropertyRowMapper<>(Tag.class));
+        return findAll(new HashMap<>());
     }
 
+    @Override
+    public List<Tag> findAll(Map<String, String> parametersMap) {
+        StringBuilder stringRequestBuilder = new StringBuilder();
+        stringRequestBuilder.append(SqlRequestUser.FIND_ALL);
+        fillInRequest.fillInLimitAndOffset(parametersMap, stringRequestBuilder);
+
+        return jdbcTemplate.query(stringRequestBuilder.toString(),
+            new BeanPropertyRowMapper<>(Tag.class));
+    }
+
+    @Override
     public Optional<Tag> findById(long id) {
         return jdbcTemplate.query(FIND_BY_ID, new Object[]{id}, new BeanPropertyRowMapper<>(Tag.class))
             .stream()
@@ -53,10 +70,8 @@ public class TagDaoImpl implements TagDao {
     @Transactional
     @Override
     public Tag add(Tag tag) {
-        GeneratedKeyHolder generatedKeyHolder = new GeneratedKeyHolder();
-
-        Optional<Tag> optionalTagByName = findByName(tag.getName());
-        if (optionalTagByName.isEmpty()) {
+        try {
+            GeneratedKeyHolder generatedKeyHolder = new GeneratedKeyHolder();
             jdbcTemplate.update(
                 connection -> {
                     PreparedStatement preparedStatement = connection.prepareStatement(INSERT,
@@ -68,8 +83,8 @@ public class TagDaoImpl implements TagDao {
             if (key != null) {
                 tag.setId(key.longValue());
             }
-        } else {
-            tag.setId(optionalTagByName.get().getId());
+        } catch (DuplicateKeyException e) {
+            findByName(tag.getName()).ifPresent(value -> tag.setId(value.getId()));
         }
         return tag;
     }

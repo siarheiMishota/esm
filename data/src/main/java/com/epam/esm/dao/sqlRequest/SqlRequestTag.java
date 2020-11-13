@@ -1,8 +1,8 @@
-package com.epam.esm.dao;
+package com.epam.esm.dao.sqlRequest;
 
 public final class SqlRequestTag {
 
-    public static final String BASE_QUERY = "select id,name from tags ";
+    private static final String BASE_QUERY = "select id,name from tags ";
     public static final String FIND_ALL = BASE_QUERY;
     public static final String FIND_BY_ID = BASE_QUERY + "where id=?;";
     public static final String FIND_BY_NAME = BASE_QUERY + "where name=?;";

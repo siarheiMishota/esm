@@ -4,6 +4,7 @@ import com.epam.esm.dao.TagDao;
 import com.epam.esm.entity.Tag;
 import com.epam.esm.service.TagService;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 public class TagServiceImpl implements TagService {
@@ -17,6 +18,11 @@ public class TagServiceImpl implements TagService {
     @Override
     public List<Tag> findAll() {
         return tagDao.findAll();
+    }
+
+    @Override
+    public List<Tag> findAll(Map<String, String> parametersMap) {
+        return tagDao.findAll(parametersMap);
     }
 
     @Override
@@ -39,11 +45,7 @@ public class TagServiceImpl implements TagService {
         if (tag == null) {
             return false;
         }
-        if (tagDao.findByName(tag.getName()).isEmpty()) {
-            tagDao.add(tag);
-            return true;
-        }
-        return false;
+        return tagDao.add(tag) != null;
     }
 
     @Override

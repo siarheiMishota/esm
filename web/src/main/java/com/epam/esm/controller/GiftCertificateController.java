@@ -1,19 +1,17 @@
 package com.epam.esm.controller;
 
-import static com.epam.esm.dao.StringParameters.PATTERN_KEY_DESCRIPTION;
-import static com.epam.esm.dao.StringParameters.PATTERN_KEY_NAME;
-import static com.epam.esm.dao.StringParameters.PATTERN_KEY_SORT;
-import static com.epam.esm.dao.StringParameters.PATTERN_KEY_TAG;
-
 import com.epam.esm.entity.CodeOfEntity;
 import com.epam.esm.entity.GiftCertificate;
 import com.epam.esm.entity.GiftCertificateDto;
 import com.epam.esm.entity.GiftCertificateParametersDto;
 import com.epam.esm.entity.GiftCertificatePatchDto;
+import com.epam.esm.entity.PaginationDto;
 import com.epam.esm.exception.ResourceException;
 import com.epam.esm.exception.ResourceNotFoundException;
 import com.epam.esm.service.GiftCertificateService;
 import com.epam.esm.util.GiftCertificateUtil;
+import com.epam.esm.util.PaginationUtil;
+import com.epam.esm.util.adapter.GiftCertificateAdapter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -21,7 +19,6 @@ import java.util.Optional;
 import javax.validation.Valid;
 import javax.validation.constraints.Min;
 import org.springframework.format.annotation.NumberFormat;
-import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -39,32 +36,24 @@ public class GiftCertificateController {
     private final GiftCertificateService giftCertificateService;
     private final GiftCertificateAdapter giftCertificateAdapter;
     private final GiftCertificateUtil giftCertificateUtil;
+    private final PaginationUtil paginationUtil;
 
     public GiftCertificateController(GiftCertificateService giftCertificateService,
                                      GiftCertificateAdapter giftCertificateAdapter,
-                                     GiftCertificateUtil giftCertificateUtil) {
+                                     GiftCertificateUtil giftCertificateUtil,
+                                     PaginationUtil paginationUtil) {
         this.giftCertificateService = giftCertificateService;
         this.giftCertificateAdapter = giftCertificateAdapter;
         this.giftCertificateUtil = giftCertificateUtil;
+        this.paginationUtil = paginationUtil;
     }
 
     @GetMapping()
-    public List<GiftCertificateDto> getGiftCertificates(@Valid GiftCertificateParametersDto giftCertificateParametersDto) {
+    public List<GiftCertificateDto> getGiftCertificates(@Valid PaginationDto paginationDto,
+                                                        @Valid GiftCertificateParametersDto giftCertificateParametersDto) {
         Map<String, String> parameterMap = new HashMap<>();
-        if (giftCertificateParametersDto.getName() != null) {
-            parameterMap.put(PATTERN_KEY_NAME, giftCertificateParametersDto.getName());
-        }
-        if (giftCertificateParametersDto.getDescription() != null) {
-            parameterMap.put(PATTERN_KEY_DESCRIPTION, giftCertificateParametersDto.getDescription());
-        }
-        if (giftCertificateParametersDto.getSort() != null) {
-            String sortValue = giftCertificateUtil.replaceDateOnLastUpdateDateInLine(
-                giftCertificateParametersDto.getSort());
-            parameterMap.put(PATTERN_KEY_SORT, sortValue);
-        }
-        if (giftCertificateParametersDto.getTag() != null) {
-            parameterMap.put(PATTERN_KEY_TAG, giftCertificateParametersDto.getTag());
-        }
+        giftCertificateUtil.fillInMapFromPaginationDto(giftCertificateParametersDto,parameterMap);
+        paginationUtil.fillInMapFromPaginationDto(paginationDto,parameterMap);
 
         List<GiftCertificate> giftCertificates;
         if (parameterMap.isEmpty()) {
@@ -122,7 +111,7 @@ public class GiftCertificateController {
     }
 
     @DeleteMapping("/{id}")
-    public HttpStatus deleteGiftCertificate(@PathVariable long id) {
+    public void deleteGiftCertificate(@PathVariable long id) {
         if (id < 0) {
             throw new ResourceException(
                 "Gift certificate wasn't deleted because id is negative", CodeOfEntity.GIFT_CERTIFICATE);
@@ -133,7 +122,6 @@ public class GiftCertificateController {
                 CodeOfEntity.GIFT_CERTIFICATE);
         }
         giftCertificateService.delete(id);
-        return HttpStatus.OK;
     }
 
     @PatchMapping("/{id}")

@@ -74,6 +74,32 @@ class GiftCertificateDaoImplTest {
     }
 
     @Test
+    public void findByOrderId() {
+        GiftCertificate expected = new GiftCertificate(4, "name 4", "description 4",
+            BigDecimal.valueOf(4),
+            LocalDateTime.of(2020, 10, 22, 0, 3, 22, 917992000),
+            LocalDateTime.of(2020, 10, 22, 0, 3, 22, 917992000),
+            4, List.of(new Tag(1, "extreme")));
+
+        GiftCertificate actual = giftCertificateDao.findByOrderId(4).get();
+        expected.setCreationDate(actual.getCreationDate());
+        expected.setLastUpdateDate(actual.getLastUpdateDate());
+        assertEquals(expected, actual);
+    }
+
+
+    @Test
+    void findByOrderIdWithIdNotExist() {
+        assertEquals(Optional.empty(), giftCertificateDao.findByOrderId(4000));
+    }
+
+    @Test
+    void findByOrderIdWithNegativeId() {
+        assertEquals(Optional.empty(), giftCertificateDao.findByOrderId(-1));
+    }
+
+
+    @Test
     void delete() {
         GiftCertificate giftCertificate = new GiftCertificate("new name", "new description", BigDecimal.valueOf(200),
             LocalDateTime.of(2020, 10, 22, 0, 3, 22, 917992000),

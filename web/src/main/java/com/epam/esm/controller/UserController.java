@@ -8,7 +8,7 @@ import com.epam.esm.exception.ResourceException;
 import com.epam.esm.exception.ResourceNotFoundException;
 import com.epam.esm.service.UserService;
 import com.epam.esm.util.PaginationUtil;
-import com.epam.esm.util.adapter.UserAdapter;
+import com.epam.esm.util.converter.UserConverter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -27,12 +27,12 @@ import org.springframework.web.bind.annotation.RestController;
 public class UserController {
 
     private final UserService userService;
-    private final UserAdapter userAdapter;
+    private final UserConverter userConverter;
     private final PaginationUtil paginationUtil;
 
-    public UserController(UserService userService, UserAdapter userAdapter, PaginationUtil paginationUtil) {
+    public UserController(UserService userService, UserConverter userConverter, PaginationUtil paginationUtil) {
         this.userService = userService;
-        this.userAdapter = userAdapter;
+        this.userConverter = userConverter;
         this.paginationUtil = paginationUtil;
     }
 
@@ -41,16 +41,11 @@ public class UserController {
         Map<String, String> parameterMap = new HashMap<>();
         paginationUtil.fillInMapFromPaginationDto(paginationDto, parameterMap);
 
-        List<User> users;
-        if (parameterMap.isEmpty()) {
-            users = userService.findAll();
-        } else {
-            users = userService.findAll(parameterMap);
-            if (users.isEmpty()) {
-                throw new ResourceNotFoundException("Requested resource not found ", CodeOfEntity.USER);
-            }
+        List<User> users = userService.findAll(parameterMap);
+        if (users.isEmpty()) {
+            throw new ResourceNotFoundException("Requested resource not found ", CodeOfEntity.USER);
         }
-        return userAdapter.adaptListToListDto(users);
+        return userConverter.convertListToListDto(users);
     }
 
     @GetMapping("/{id}")
@@ -64,14 +59,14 @@ public class UserController {
             throw new ResourceNotFoundException(
                 String.format("Requested resource not found (id=%d)", id), CodeOfEntity.USER);
         }
-        return userAdapter.adaptToDto(optionalResult.get());
+        return userConverter.convertToDto(optionalResult.get());
     }
 
     @PostMapping
     public UserDto createUser(@RequestBody @Valid UserDto userDto) {
-        User user = userAdapter.adaptDtoTo(userDto);
+        User user = userConverter.convertFromDto(userDto);
         userService.add(user);
-        return userAdapter.adaptToDto(user);
+        return userConverter.convertToDto(user);
     }
 
     @DeleteMapping("/{id}")

@@ -18,10 +18,6 @@ public class OrderServiceImpl implements OrderService {
         this.userService = userService;
     }
 
-    @Override
-    public List<Order> findAll() {
-        return orderDao.findAll();
-    }
 
     @Override
     public List<Order> findAll(Map<String, String> parameters) {

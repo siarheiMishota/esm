@@ -9,10 +9,9 @@ import static com.epam.esm.dao.sqlRequest.SqlRequestTag.INSERT;
 import com.epam.esm.dao.TagDao;
 import com.epam.esm.dao.sqlRequest.SqlRequestUser;
 import com.epam.esm.entity.Tag;
-import com.epam.esm.util.FillingInParameters;
+import com.epam.esm.util.PaginationParameter;
 import java.sql.PreparedStatement;
 import java.sql.Statement;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -25,23 +24,18 @@ import org.springframework.transaction.annotation.Transactional;
 public class TagDaoImpl implements TagDao {
 
     private final JdbcTemplate jdbcTemplate;
-    private final FillingInParameters fillingInParameters;
+    private final PaginationParameter paginationParameter;
 
-    public TagDaoImpl(JdbcTemplate jdbcTemplate, FillingInParameters fillingInParameters) {
+    public TagDaoImpl(JdbcTemplate jdbcTemplate, PaginationParameter paginationParameter) {
         this.jdbcTemplate = jdbcTemplate;
-        this.fillingInParameters = fillingInParameters;
+        this.paginationParameter = paginationParameter;
     }
 
     @Override
-    public List<Tag> findAll() {
-        return findAll(new HashMap<>());
-    }
-
-    @Override
-    public List<Tag> findAll(Map<String, String> parametersMap) {
+    public List<Tag> findAll(Map<String, String> paginationParametersMap) {
         StringBuilder stringRequestBuilder = new StringBuilder();
         stringRequestBuilder.append(SqlRequestUser.FIND_ALL);
-        fillingInParameters.fillInLimitAndOffset(parametersMap, stringRequestBuilder);
+        paginationParameter.fillInLimitAndOffset(paginationParametersMap, stringRequestBuilder);
 
         return jdbcTemplate.query(stringRequestBuilder.toString(),
             new BeanPropertyRowMapper<>(Tag.class));

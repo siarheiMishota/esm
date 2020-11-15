@@ -1,4 +1,4 @@
-package com.epam.esm.util.adapter;
+package com.epam.esm.util.converter;
 
 import com.epam.esm.entity.GiftCertificate;
 import com.epam.esm.entity.GiftCertificateDto;
@@ -7,9 +7,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class GiftCertificateAdapter {
+public class GiftCertificateConverter {
 
-    public GiftCertificate adaptDtoTo(GiftCertificateDto giftCertificateDto) {
+    public GiftCertificate convertFromDto(GiftCertificateDto giftCertificateDto) {
         GiftCertificate giftCertificate = new GiftCertificate();
         giftCertificate.setId(giftCertificateDto.getId());
         giftCertificate.setName(giftCertificateDto.getName());
@@ -28,7 +28,7 @@ public class GiftCertificateAdapter {
         return giftCertificate;
     }
 
-    public GiftCertificateDto adaptToDto(GiftCertificate giftCertificate) {
+    public GiftCertificateDto convertToDto(GiftCertificate giftCertificate) {
         GiftCertificateDto giftCertificateDto = new GiftCertificateDto();
         giftCertificateDto.setId(giftCertificate.getId());
         giftCertificateDto.setName(giftCertificate.getName());
@@ -41,9 +41,9 @@ public class GiftCertificateAdapter {
         return giftCertificateDto;
     }
 
-    public List<GiftCertificateDto> adaptListToListDto(List<GiftCertificate> giftCertificates) {
+    public List<GiftCertificateDto> convertListToListDto(List<GiftCertificate> giftCertificates) {
         return giftCertificates.stream()
-            .map(this::adaptToDto)
+            .map(this::convertToDto)
             .collect(Collectors.toList());
     }
 }

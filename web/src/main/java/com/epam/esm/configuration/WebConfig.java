@@ -1,15 +1,13 @@
 package com.epam.esm.configuration;
 
 import com.epam.esm.service.GiftCertificateService;
-import com.epam.esm.service.OrderService;
 import com.epam.esm.service.configuration.ServiceConfiguration;
 import com.epam.esm.util.GiftCertificateUtil;
-import com.epam.esm.util.OrderUtil;
 import com.epam.esm.util.PaginationUtil;
-import com.epam.esm.util.adapter.GiftCertificateAdapter;
-import com.epam.esm.util.adapter.OrderAdapter;
-import com.epam.esm.util.adapter.TagAdapter;
-import com.epam.esm.util.adapter.UserAdapter;
+import com.epam.esm.util.converter.GiftCertificateConverter;
+import com.epam.esm.util.converter.OrderConverter;
+import com.epam.esm.util.converter.TagConverter;
+import com.epam.esm.util.converter.UserConverter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -48,23 +46,23 @@ public class WebConfig implements WebMvcConfigurer {
     }
 
     @Bean
-    public GiftCertificateAdapter giftCertificateAdapter() {
-        return new GiftCertificateAdapter();
+    public GiftCertificateConverter giftCertificateAdapter() {
+        return new GiftCertificateConverter();
     }
 
     @Bean
-    public UserAdapter userAdapter(OrderAdapter orderAdapter) {
-        return new UserAdapter(orderAdapter);
+    public UserConverter userAdapter(OrderConverter orderConverter) {
+        return new UserConverter(orderConverter);
     }
 
     @Bean
-    public OrderAdapter orderAdapter() {
-        return new OrderAdapter();
+    public OrderConverter orderAdapter() {
+        return new OrderConverter();
     }
 
     @Bean
-    public TagAdapter tagAdapter() {
-        return new TagAdapter();
+    public TagConverter tagAdapter() {
+        return new TagConverter();
     }
 
     @Bean
@@ -77,8 +75,4 @@ public class WebConfig implements WebMvcConfigurer {
         return new PaginationUtil();
     }
 
-    @Bean
-    public OrderUtil orderUtil(OrderService orderService) {
-        return new OrderUtil(orderService);
-    }
 }

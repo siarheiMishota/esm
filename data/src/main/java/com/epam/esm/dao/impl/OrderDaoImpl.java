@@ -15,10 +15,9 @@ import com.epam.esm.entity.GiftCertificate;
 import com.epam.esm.entity.Order;
 import com.epam.esm.exception.EntityDuplicateException;
 import com.epam.esm.exception.EntityIntegrityViolationException;
-import com.epam.esm.util.FillingInParameters;
+import com.epam.esm.util.PaginationParameter;
 import java.sql.PreparedStatement;
 import java.sql.Statement;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -34,27 +33,22 @@ public class OrderDaoImpl implements OrderDao {
     private static final int NUMBER_FOR_ID_GIFT_CERTIFICATE = 2;
     private static final int NUMBER_FOR_ID_USER = 3;
     private final JdbcTemplate jdbcTemplate;
-    private final FillingInParameters fillingInParameters;
     private final GiftCertificateDao giftCertificateDao;
+    private final PaginationParameter paginationParameter;
 
     public OrderDaoImpl(JdbcTemplate jdbcTemplate,
-                        FillingInParameters fillingInParameters,
-                        GiftCertificateDao giftCertificateDao) {
+                        GiftCertificateDao giftCertificateDao,
+                        PaginationParameter paginationParameter) {
         this.jdbcTemplate = jdbcTemplate;
-        this.fillingInParameters = fillingInParameters;
         this.giftCertificateDao = giftCertificateDao;
+        this.paginationParameter = paginationParameter;
     }
 
     @Override
-    public List<Order> findAll() {
-        return findAll(new HashMap<>());
-    }
-
-    @Override
-    public List<Order> findAll(Map<String, String> parametersMap) {
+    public List<Order> findAll(Map<String, String> paginationParametersMap) {
         StringBuilder stringRequestBuilder = new StringBuilder();
         stringRequestBuilder.append(FIND_ALL);
-        fillingInParameters.fillInLimitAndOffset(parametersMap, stringRequestBuilder);
+        paginationParameter.fillInLimitAndOffset(paginationParametersMap, stringRequestBuilder);
         List<Order> orders = jdbcTemplate.query(stringRequestBuilder.toString(),
             new BeanPropertyRowMapper<>(Order.class));
 
@@ -108,7 +102,7 @@ public class OrderDaoImpl implements OrderDao {
             }
         } catch (DuplicateKeyException e) {
             throw new EntityDuplicateException(e,
-                String.format("Order wasn't added because id= %s gift certificate is busy ",
+                String.format("Order wasn't added because id= %s gift certificate is exist ",
                     order.getGiftCertificate().getId()), CodeOfEntity.ORDER);
         } catch (DataIntegrityViolationException e) {
             throw new EntityIntegrityViolationException(e,
@@ -125,7 +119,7 @@ public class OrderDaoImpl implements OrderDao {
 
         } catch (DuplicateKeyException e) {
             throw new EntityDuplicateException(e,
-                String.format("Order wasn't updated because id= %s gift certificate is busy ",
+                String.format("Order wasn't updated because id= %s gift certificate is exist ",
                     order.getGiftCertificate().getId()), CodeOfEntity.ORDER);
         } catch (DataIntegrityViolationException e) {
             throw new EntityIntegrityViolationException(e,

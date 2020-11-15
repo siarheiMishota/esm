@@ -13,10 +13,9 @@ import com.epam.esm.entity.CodeOfEntity;
 import com.epam.esm.entity.Order;
 import com.epam.esm.entity.User;
 import com.epam.esm.exception.EntityDuplicateException;
-import com.epam.esm.util.FillingInParameters;
+import com.epam.esm.util.PaginationParameter;
 import java.sql.PreparedStatement;
 import java.sql.Statement;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -31,25 +30,22 @@ public class UserDaoImpl implements UserDao {
     private static final int NUMBER_FOR_EMAIL = 2;
     private static final int NUMBER_FOR_PASSWORD = 3;
     private final JdbcTemplate jdbcTemplate;
-    private final FillingInParameters fillingInParameters;
     private final OrderDao orderDao;
+    private final PaginationParameter paginationParameter;
 
-    public UserDaoImpl(JdbcTemplate jdbcTemplate, FillingInParameters fillingInParameters, OrderDao orderDao) {
+    public UserDaoImpl(JdbcTemplate jdbcTemplate,
+                       OrderDao orderDao,
+                       PaginationParameter paginationParameter) {
         this.jdbcTemplate = jdbcTemplate;
-        this.fillingInParameters = fillingInParameters;
         this.orderDao = orderDao;
+        this.paginationParameter = paginationParameter;
     }
 
     @Override
-    public List<User> findAll() {
-        return findAll(new HashMap<>());
-    }
-
-    @Override
-    public List<User> findAll(Map<String, String> parameters) {
+    public List<User> findAll(Map<String, String> parametersMap) {
         StringBuilder stringRequestBuilder = new StringBuilder();
         stringRequestBuilder.append(FIND_ALL);
-        fillingInParameters.fillInLimitAndOffset(parameters, stringRequestBuilder);
+        paginationParameter.fillInLimitAndOffset(parametersMap, stringRequestBuilder);
 
         List<User> users = jdbcTemplate.query(stringRequestBuilder.toString(),
             new BeanPropertyRowMapper<>(User.class));
@@ -94,7 +90,7 @@ public class UserDaoImpl implements UserDao {
                 user.setId(key.longValue());
             }
         } catch (DuplicateKeyException e) {
-            throw new EntityDuplicateException(e, "User wasn't added because email is busy " + user.getEmail(),
+            throw new EntityDuplicateException(e, "User wasn't added because email is exist " + user.getEmail(),
                 CodeOfEntity.USER);
         }
         return user;
@@ -105,7 +101,7 @@ public class UserDaoImpl implements UserDao {
         try {
             return jdbcTemplate.update(UPDATE, user.getName(), user.getEmail(), user.getPassword(), user.getId());
         } catch (DuplicateKeyException e) {
-            throw new EntityDuplicateException(e, "User wasn't updated because email is busy  " + user.getEmail(),
+            throw new EntityDuplicateException(e, "User wasn't updated because email is exist  " + user.getEmail(),
                 CodeOfEntity.USER);
         }
     }

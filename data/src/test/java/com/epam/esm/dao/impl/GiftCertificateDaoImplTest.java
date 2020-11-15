@@ -29,11 +29,6 @@ class GiftCertificateDaoImplTest {
     private GiftCertificateDao giftCertificateDao;
 
     @Test
-    void findAll() {
-        assertEquals(11, giftCertificateDao.findAll().size());
-    }
-
-    @Test
     void findAllWithParametersNameAndSort() {
         Map<String, String> stringStringMap = new HashMap<>();
         stringStringMap.put("name", "name");
@@ -116,20 +111,20 @@ class GiftCertificateDaoImplTest {
 
     @Test
     void deleteWithNegativeId() {
-        int expected = giftCertificateDao.findAll().size();
+        int expected = giftCertificateDao.findAll(new HashMap<>()).size();
 
         giftCertificateDao.delete(-1);
-        int actual = giftCertificateDao.findAll().size();
+        int actual = giftCertificateDao.findAll(new HashMap<>()).size();
 
         assertEquals(expected, actual);
     }
 
     @Test
     void deleteWithNotExist() {
-        int expected = giftCertificateDao.findAll().size();
+        int expected = giftCertificateDao.findAll(new HashMap<>()).size();
 
         giftCertificateDao.delete(1200);
-        int actual = giftCertificateDao.findAll().size();
+        int actual = giftCertificateDao.findAll(new HashMap<>()).size();
 
         assertEquals(expected, actual);
     }

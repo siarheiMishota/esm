@@ -8,7 +8,7 @@ import com.epam.esm.exception.ResourceException;
 import com.epam.esm.exception.ResourceNotFoundException;
 import com.epam.esm.service.TagService;
 import com.epam.esm.util.PaginationUtil;
-import com.epam.esm.util.adapter.TagAdapter;
+import com.epam.esm.util.converter.TagConverter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -29,12 +29,12 @@ import org.springframework.web.bind.annotation.RestController;
 public class TagController {
 
     private final TagService tagService;
-    private final TagAdapter tagAdapter;
+    private final TagConverter tagConverter;
     private final PaginationUtil paginationUtil;
 
-    public TagController(TagService tagService, TagAdapter tagAdapter, PaginationUtil paginationUtil) {
+    public TagController(TagService tagService, TagConverter tagConverter, PaginationUtil paginationUtil) {
         this.tagService = tagService;
-        this.tagAdapter = tagAdapter;
+        this.tagConverter = tagConverter;
         this.paginationUtil = paginationUtil;
     }
 
@@ -43,17 +43,12 @@ public class TagController {
         Map<String, String> parameterMap = new HashMap<>();
         paginationUtil.fillInMapFromPaginationDto(paginationDto, parameterMap);
 
-        List<Tag> tags;
-        if (parameterMap.isEmpty()) {
-            tags = tagService.findAll();
-        } else {
-            tags = tagService.findAll(parameterMap);
-            if (tags.isEmpty()) {
-                throw new ResourceNotFoundException("Requested resource not found ", CodeOfEntity.USER);
-            }
+        List<Tag> tags = tagService.findAll(parameterMap);
+        if (tags.isEmpty()) {
+            throw new ResourceNotFoundException("Requested resource not found ", CodeOfEntity.USER);
         }
 
-        return tagAdapter.adaptListToListDto(tags);
+        return tagConverter.convertListToListDto(tags);
     }
 
     @GetMapping("/{id}")
@@ -62,16 +57,16 @@ public class TagController {
         if (optionalTag.isEmpty()) {
             throw new ResourceException(String.format("Requested resource not found (id=%d)", id), CodeOfEntity.TAG);
         }
-        return tagAdapter.adaptToDto(optionalTag.get());
+        return tagConverter.convertToDto(optionalTag.get());
     }
 
     @PostMapping
     public TagDto createTag(@RequestBody @Valid TagDto tagDto) {
-        Tag tag = tagAdapter.adaptDtoTo(tagDto);
+        Tag tag = tagConverter.convertFromDto(tagDto);
         if (!tagService.add(tag)) {
             throw new ResourceException("Tag wasn't added because one is exist", CodeOfEntity.TAG);
         }
-        return tagAdapter.adaptToDto(tag);
+        return tagConverter.convertToDto(tag);
 
     }
 

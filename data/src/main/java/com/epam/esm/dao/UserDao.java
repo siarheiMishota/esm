@@ -7,9 +7,7 @@ import java.util.Optional;
 
 public interface UserDao {
 
-    List<User> findAll();
-
-    List<User> findAll(Map<String, String> parametersMap);
+    List<User> findAll(Map<String, String> paginationParametersMap);
 
     Optional<User> findById(long id);
 

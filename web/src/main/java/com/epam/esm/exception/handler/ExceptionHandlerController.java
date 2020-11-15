@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.BindException;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -37,7 +38,7 @@ public class ExceptionHandlerController {
     public ExceptionDto handleMethodArgumentTypeMismatchException(MethodArgumentTypeMismatchException e) {
         String exceptionMessage = new StringBuilder().append(e.getParameter().getParameterName())
             .append("=")
-            .append(e.getValue().toString())
+            .append(e.getValue())
             .append(" ")
             .append("notCorrect").toString();
         return new ExceptionDto(exceptionMessage, HttpStatus.BAD_REQUEST.value() + CodeOfEntity.DEFAULT.getCode());
@@ -46,23 +47,26 @@ public class ExceptionHandlerController {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(BindException.class)
     public ExceptionDto handleBindException(BindException e) {
-        String messageError = e.getBindingResult().getFieldErrors().stream()
-            .map(fieldError -> fieldError.getField() + " = " + fieldError.getRejectedValue())
-            .collect(Collectors.joining(" and ", "(", ")"));
+        String messageError = getMessageFromBindingResult(e.getBindingResult());
 
         return new ExceptionDto(messageError + " not correct",
             HttpStatus.BAD_REQUEST.value() + CodeOfEntity.DEFAULT.getCode());
     }
 
+
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ExceptionDto handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
-        String messageError = e.getBindingResult().getFieldErrors().stream()
-            .map(fieldError -> fieldError.getField() + " = " + fieldError.getDefaultMessage())
-            .collect(Collectors.joining(" and ", "(", ")"));
+        String messageError = getMessageFromBindingResult(e.getBindingResult());
 
         return new ExceptionDto(messageError,
             HttpStatus.BAD_REQUEST.value() + CodeOfEntity.DEFAULT.getCode());
+    }
+
+    private String getMessageFromBindingResult(BindingResult bindingResult) {
+        return bindingResult.getFieldErrors().stream()
+            .map(fieldError -> fieldError.getField() + " = " + fieldError.getRejectedValue())
+            .collect(Collectors.joining(" and ", "(", ")"));
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
@@ -72,11 +76,11 @@ public class ExceptionHandlerController {
             HttpStatus.BAD_REQUEST.value() + CodeOfEntity.DEFAULT.getCode());
     }
 
-    @ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY)
+    @ResponseStatus(HttpStatus.CONFLICT)
     @ExceptionHandler(EntityDuplicateException.class)
     public ExceptionDto handleEntityDuplicateException(EntityDuplicateException e) {
         return new ExceptionDto(e.getMessage(),
-            HttpStatus.UNPROCESSABLE_ENTITY.value() + e.getCodeOfEntity().getCode());
+            HttpStatus.CONFLICT.value() + e.getCodeOfEntity().getCode());
     }
 
     @ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY)

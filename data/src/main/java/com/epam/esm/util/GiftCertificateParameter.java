@@ -10,18 +10,14 @@ import static com.epam.esm.dao.StringParameters.PATTERN_KEY_DESCRIPTION;
 import static com.epam.esm.dao.StringParameters.PATTERN_KEY_NAME;
 import static com.epam.esm.dao.StringParameters.PATTERN_KEY_SORT;
 import static com.epam.esm.dao.StringParameters.PATTERN_KEY_TAG;
-import static com.epam.esm.dao.StringParameters.PATTERN_LIMIT;
-import static com.epam.esm.dao.StringParameters.PATTERN_OFFSET;
 import static com.epam.esm.dao.StringParameters.WHERE;
-import static com.epam.esm.dao.impl.GiftCertificateDaoImpl.DEFAULT_VALUE_OF_LIMIT;
-import static com.epam.esm.dao.impl.GiftCertificateDaoImpl.DEFAULT_VALUE_OF_OFFSET;
 import static com.epam.esm.dao.sqlRequest.SqlRequestGiftCertificate.JOIN_TAG;
 
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
-public class FillingInParameters {
+public class GiftCertificateParameter {
 
     public void fillInForSort(Map<String, String> parameters, StringBuilder fullFindBuilder) {
         if (parameters.containsKey(PATTERN_KEY_SORT)) {
@@ -108,22 +104,6 @@ public class FillingInParameters {
 
         }
         return whereUse;
-    }
-
-    public void fillInLimitAndOffset(Map<String, String> parameters, StringBuilder fullFindBuilder) {
-        String valueOfLimit;
-        String valueOfOffset;
-        valueOfLimit = parameters.getOrDefault(PATTERN_LIMIT, DEFAULT_VALUE_OF_LIMIT);
-        fullFindBuilder.append(" ").append(PATTERN_LIMIT)
-            .append(" ")
-            .append(valueOfLimit)
-            .append(" ");
-
-        valueOfOffset = parameters.getOrDefault(PATTERN_OFFSET, DEFAULT_VALUE_OF_OFFSET);
-        fullFindBuilder.append(" ").append(PATTERN_OFFSET)
-            .append(" ")
-            .append(valueOfOffset)
-            .append(" ");
     }
 
     private Map<String, String> splitSortLineOnTokens(String line) {

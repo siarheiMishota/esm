@@ -7,9 +7,7 @@ import java.util.Optional;
 
 public interface GiftCertificateDao {
 
-    List<GiftCertificate> findAll(Map<String, String> parameters);
-
-    List<GiftCertificate> findAll();
+    List<GiftCertificate> findAll(Map<String, String> parametersMap);
 
     Optional<GiftCertificate> findById(long id);
 

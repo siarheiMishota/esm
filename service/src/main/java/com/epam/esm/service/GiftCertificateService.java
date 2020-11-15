@@ -9,8 +9,6 @@ public interface GiftCertificateService {
 
     List<GiftCertificate> findAll(Map<String, String> parameters);
 
-    List<GiftCertificate> findAll();
-
     Optional<GiftCertificate> findById(long id);
 
     void delete(long id);

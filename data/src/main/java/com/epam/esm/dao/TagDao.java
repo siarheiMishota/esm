@@ -7,9 +7,7 @@ import java.util.Optional;
 
 public interface TagDao {
 
-    List<Tag> findAll();
-
-    List<Tag> findAll(Map<String, String> parametersMap);
+    List<Tag> findAll(Map<String, String> paginationParametersMap);
 
     Optional<Tag> findById(long id);
 

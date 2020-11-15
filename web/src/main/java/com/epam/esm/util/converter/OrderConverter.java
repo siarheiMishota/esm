@@ -1,4 +1,4 @@
-package com.epam.esm.util.adapter;
+package com.epam.esm.util.converter;
 
 import com.epam.esm.entity.GiftCertificate;
 import com.epam.esm.entity.Order;
@@ -6,9 +6,9 @@ import com.epam.esm.entity.OrderDto;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class OrderAdapter {
+public class OrderConverter {
 
-    public Order adaptDtoTo(OrderDto orderDto) {
+    public Order convertFromDto(OrderDto orderDto) {
         Order order = new Order();
         order.setCost(orderDto.getCost());
         GiftCertificate giftCertificate = new GiftCertificate();
@@ -17,7 +17,7 @@ public class OrderAdapter {
         return order;
     }
 
-    public OrderDto adaptToDto(Order order) {
+    public OrderDto convertToDto(Order order) {
         OrderDto orderDto = new OrderDto();
         orderDto.setId(order.getId());
         orderDto.setCost(order.getCost());
@@ -26,9 +26,9 @@ public class OrderAdapter {
         return orderDto;
     }
 
-    public List<OrderDto> adaptListToListDto(List<Order> orders) {
+    public List<OrderDto> convertListToListDto(List<Order> orders) {
         return orders.stream()
-            .map(this::adaptToDto)
+            .map(this::convertToDto)
             .collect(Collectors.toList());
     }
 }

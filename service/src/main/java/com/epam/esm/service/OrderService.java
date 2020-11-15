@@ -7,8 +7,6 @@ import java.util.Optional;
 
 public interface OrderService {
 
-    List<Order> findAll();
-
     List<Order> findAll(Map<String, String> parameters);
 
     Optional<Order> findById(long id);

@@ -14,11 +14,11 @@ import com.epam.esm.dao.TagDao;
 import com.epam.esm.entity.CodeOfEntity;
 import com.epam.esm.entity.GiftCertificate;
 import com.epam.esm.exception.EntityDuplicateException;
-import com.epam.esm.util.FillingInParameters;
+import com.epam.esm.util.GiftCertificateParameter;
+import com.epam.esm.util.PaginationParameter;
 import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.time.LocalDateTime;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -34,24 +34,22 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
     public static final int NUMBER_FOR_DESCRIPTION = 2;
     public static final int NUMBER_FOR_PRICE = 3;
     public static final int NUMBER_FOR_DURATION = 4;
-    public static final String DEFAULT_VALUE_OF_LIMIT = "50";
-    public static final String DEFAULT_VALUE_OF_OFFSET = "0";
+    public static final String DEFAULT_LIMIT = "50";
+    public static final String DEFAULT_OFFSET = "0";
 
     private final JdbcTemplate jdbcTemplate;
     private final TagDao tagDao;
-    private final FillingInParameters fillingInParameters;
+    private final GiftCertificateParameter giftCertificateParameter;
+    private final PaginationParameter paginationParameter;
 
     public GiftCertificateDaoImpl(JdbcTemplate jdbcTemplate,
                                   TagDao tagDao,
-                                  FillingInParameters fillingInParameters) {
+                                  GiftCertificateParameter giftCertificateParameter,
+                                  PaginationParameter paginationParameter) {
         this.jdbcTemplate = jdbcTemplate;
         this.tagDao = tagDao;
-        this.fillingInParameters = fillingInParameters;
-    }
-
-    @Override
-    public List<GiftCertificate> findAll() {
-        return findAll(new HashMap<>());
+        this.giftCertificateParameter = giftCertificateParameter;
+        this.paginationParameter = paginationParameter;
     }
 
     @Override
@@ -71,12 +69,12 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
         boolean whereUse = false;
         StringBuilder fullFindBuilder = new StringBuilder(FIND_ALL);
 
-        whereUse = fillingInParameters.fillInForTag(parameters, whereUse, fullFindBuilder);
-        whereUse = fillingInParameters.fillInForName(parameters, whereUse, fullFindBuilder);
+        whereUse = giftCertificateParameter.fillInForTag(parameters, whereUse, fullFindBuilder);
+        whereUse = giftCertificateParameter.fillInForName(parameters, whereUse, fullFindBuilder);
 
-        fillingInParameters.fillInForDescription(parameters, whereUse, fullFindBuilder);
-        fillingInParameters.fillInForSort(parameters, fullFindBuilder);
-        fillingInParameters.fillInLimitAndOffset(parameters, fullFindBuilder);
+        giftCertificateParameter.fillInForDescription(parameters, whereUse, fullFindBuilder);
+        giftCertificateParameter.fillInForSort(parameters, fullFindBuilder);
+        paginationParameter.fillInLimitAndOffset(parameters, fullFindBuilder);
         return fullFindBuilder.toString();
     }
 
@@ -133,7 +131,7 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
             giftCertificate.setLastUpdateDate(optionalFromDb.get().getLastUpdateDate());
             return update;
         } catch (DuplicateKeyException e) {
-            throw new EntityDuplicateException(e, "Gift certificate wasn't updated because gift certificate is busy",
+            throw new EntityDuplicateException(e, "Gift certificate wasn't updated because gift certificate is exist",
                 CodeOfEntity.GIFT_CERTIFICATE);
         }
     }
@@ -157,7 +155,7 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
                     preparedStatement.setInt(NUMBER_FOR_DURATION, giftCertificate.getDuration());
                     return preparedStatement;
                 }, generatedKeyHolder);
-            Number key = generatedKeyHolder.getKey();
+            Number key = (Number) generatedKeyHolder.getKeys().get("id");
             if (key != null) {
                 giftCertificate.setId(key.longValue());
 
@@ -165,7 +163,7 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
                     forEach(tag -> addTagGiftCertificate(tag.getId(), giftCertificate.getId()));
             }
         } catch (DuplicateKeyException e) {
-            throw new EntityDuplicateException(e, "Gift certificate wasn't added because gift certificate is busy",
+            throw new EntityDuplicateException(e, "Gift certificate wasn't added because gift certificate is exist",
                 CodeOfEntity.GIFT_CERTIFICATE);
         }
         return giftCertificate;

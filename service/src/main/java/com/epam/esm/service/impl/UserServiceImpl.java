@@ -19,11 +19,6 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<User> findAll() {
-        return userDao.findAll();
-    }
-
-    @Override
     public List<User> findAll(Map<String, String> parametersMap) {
         return userDao.findAll(parametersMap);
     }

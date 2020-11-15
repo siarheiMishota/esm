@@ -8,7 +8,8 @@ import com.epam.esm.dao.impl.GiftCertificateDaoImpl;
 import com.epam.esm.dao.impl.OrderDaoImpl;
 import com.epam.esm.dao.impl.TagDaoImpl;
 import com.epam.esm.dao.impl.UserDaoImpl;
-import com.epam.esm.util.FillingInParameters;
+import com.epam.esm.util.GiftCertificateParameter;
+import com.epam.esm.util.PaginationParameter;
 import javax.sql.DataSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -32,31 +33,39 @@ public class DaoConfigurationTest {
     }
 
     @Bean
-    public TagDao tagDao(JdbcTemplate jdbcTemplate, FillingInParameters fillingInParameters) {
-        return new TagDaoImpl(jdbcTemplate, fillingInParameters);
+    public TagDao tagDao(JdbcTemplate jdbcTemplate, PaginationParameter paginationParameter) {
+        return new TagDaoImpl(jdbcTemplate, paginationParameter);
     }
 
     @Bean
     public GiftCertificateDao giftCertificateDao(JdbcTemplate jdbcTemplate,
                                                  TagDao tagDao,
-                                                 FillingInParameters fillingInParameters) {
-        return new GiftCertificateDaoImpl(jdbcTemplate, tagDao, fillingInParameters);
+                                                 GiftCertificateParameter giftCertificateParameter,
+                                                 PaginationParameter paginationParameter) {
+        return new GiftCertificateDaoImpl(jdbcTemplate, tagDao, giftCertificateParameter, paginationParameter);
     }
 
     @Bean
-    public UserDao userDao(JdbcTemplate jdbcTemplate, FillingInParameters fillingInParameters, OrderDao orderDao) {
-        return new UserDaoImpl(jdbcTemplate, fillingInParameters, orderDao);
+    public UserDao userDao(JdbcTemplate jdbcTemplate,
+                           OrderDao orderDao,
+                           PaginationParameter paginationParameter) {
+        return new UserDaoImpl(jdbcTemplate, orderDao, paginationParameter);
     }
 
     @Bean
     public OrderDao orderDao(JdbcTemplate jdbcTemplate,
-                             FillingInParameters fillingInParameters,
-                             GiftCertificateDao giftCertificateDao) {
-        return new OrderDaoImpl(jdbcTemplate, fillingInParameters, giftCertificateDao);
+                             GiftCertificateDao giftCertificateDao,
+                             PaginationParameter paginationParameter) {
+        return new OrderDaoImpl(jdbcTemplate, giftCertificateDao, paginationParameter);
     }
 
     @Bean
-    public FillingInParameters fillInRequest() {
-        return new FillingInParameters();
+    public GiftCertificateParameter fillInRequest() {
+        return new GiftCertificateParameter();
+    }
+
+    @Bean
+    public PaginationParameter paginationParameter() {
+        return new PaginationParameter();
     }
 }

@@ -7,9 +7,7 @@ import java.util.Optional;
 
 public interface OrderDao {
 
-    List<Order> findAll();
-
-    List<Order> findAll(Map<String, String> parametersMap);
+    List<Order> findAll(Map<String, String> paginationParametersMap);
 
     Optional<Order> findById(long id);
 

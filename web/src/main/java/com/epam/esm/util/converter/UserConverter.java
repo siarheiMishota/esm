@@ -1,28 +1,28 @@
-package com.epam.esm.util.adapter;
+package com.epam.esm.util.converter;
 
 import com.epam.esm.entity.User;
 import com.epam.esm.entity.UserDto;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class UserAdapter {
+public class UserConverter {
 
-    private final OrderAdapter orderAdapter;
+    private final OrderConverter orderConverter;
 
-    public UserAdapter(OrderAdapter orderAdapter) {
-        this.orderAdapter = orderAdapter;
+    public UserConverter(OrderConverter orderConverter) {
+        this.orderConverter = orderConverter;
     }
 
-    public UserDto adaptToDto(User user) {
+    public UserDto convertToDto(User user) {
         UserDto userDto = new UserDto();
         userDto.setId(user.getId());
         userDto.setName(user.getName());
         userDto.setEmail(user.getEmail());
-        userDto.setOrders(orderAdapter.adaptListToListDto(user.getOrders()));
+        userDto.setOrders(orderConverter.convertListToListDto(user.getOrders()));
         return userDto;
     }
 
-    public User adaptDtoTo(UserDto userDto) {
+    public User convertFromDto(UserDto userDto) {
         User user = new User();
         user.setName(userDto.getName());
         user.setEmail(userDto.getEmail());
@@ -30,9 +30,9 @@ public class UserAdapter {
         return user;
     }
 
-    public List<UserDto> adaptListToListDto(List<User> users) {
+    public List<UserDto> convertListToListDto(List<User> users) {
         return users.stream()
-            .map(this::adaptToDto)
+            .map(this::convertToDto)
             .collect(Collectors.toList());
     }
 }

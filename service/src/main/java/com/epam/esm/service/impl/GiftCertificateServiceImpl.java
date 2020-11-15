@@ -41,11 +41,6 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     }
 
     @Override
-    public List<GiftCertificate> findAll() {
-        return giftCertificateDao.findAll();
-    }
-
-    @Override
     public Optional<GiftCertificate> findById(long id) {
         return giftCertificateDao.findById(id);
     }

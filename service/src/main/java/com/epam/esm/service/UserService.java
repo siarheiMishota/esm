@@ -7,8 +7,6 @@ import java.util.Optional;
 
 public interface UserService {
 
-    List<User> findAll();
-
     List<User> findAll(Map<String, String> parametersMap);
 
     Optional<User> findById(long id);

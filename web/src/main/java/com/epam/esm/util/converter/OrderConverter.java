@@ -10,7 +10,6 @@ public class OrderConverter {
 
     public Order convertFromDto(OrderDto orderDto) {
         Order order = new Order();
-        order.setCost(orderDto.getCost());
         GiftCertificate giftCertificate = new GiftCertificate();
         giftCertificate.setId(orderDto.getIdGiftCertificate());
         order.setGiftCertificate(giftCertificate);

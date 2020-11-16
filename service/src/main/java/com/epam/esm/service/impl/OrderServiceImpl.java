@@ -2,6 +2,7 @@ package com.epam.esm.service.impl;
 
 import com.epam.esm.dao.OrderDao;
 import com.epam.esm.entity.Order;
+import com.epam.esm.service.GiftCertificateService;
 import com.epam.esm.service.OrderService;
 import com.epam.esm.service.UserService;
 import java.util.List;
@@ -12,12 +13,15 @@ public class OrderServiceImpl implements OrderService {
 
     private final OrderDao orderDao;
     private final UserService userService;
+    private final GiftCertificateService giftCertificateService;
 
-    public OrderServiceImpl(OrderDao orderDao, UserService userService) {
+    public OrderServiceImpl(OrderDao orderDao,
+                            UserService userService,
+                            GiftCertificateService giftCertificateService) {
         this.orderDao = orderDao;
         this.userService = userService;
+        this.giftCertificateService = giftCertificateService;
     }
-
 
     @Override
     public List<Order> findAll(Map<String, String> parameters) {
@@ -42,6 +46,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public Order add(Order order, long userId) {
+
         if (userService.findById(userId).isEmpty()) {
             return order;
         }

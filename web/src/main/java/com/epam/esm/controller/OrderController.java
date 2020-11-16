@@ -4,11 +4,13 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 import com.epam.esm.entity.CodeOfEntity;
+import com.epam.esm.entity.GiftCertificate;
 import com.epam.esm.entity.Order;
 import com.epam.esm.entity.OrderDto;
 import com.epam.esm.entity.PaginationDto;
 import com.epam.esm.exception.ResourceException;
 import com.epam.esm.exception.ResourceNotFoundException;
+import com.epam.esm.service.GiftCertificateService;
 import com.epam.esm.service.OrderService;
 import com.epam.esm.util.PaginationUtil;
 import com.epam.esm.util.converter.OrderConverter;
@@ -33,13 +35,16 @@ public class OrderController {
     private final OrderService orderService;
     private final OrderConverter orderConverter;
     private final PaginationUtil paginationUtil;
+    private final GiftCertificateService giftCertificateService;
 
     public OrderController(OrderService orderService,
                            OrderConverter orderConverter,
-                           PaginationUtil paginationUtil) {
+                           PaginationUtil paginationUtil,
+                           GiftCertificateService giftCertificateService) {
         this.orderService = orderService;
         this.orderConverter = orderConverter;
         this.paginationUtil = paginationUtil;
+        this.giftCertificateService = giftCertificateService;
     }
 
     @GetMapping("/orders")
@@ -123,6 +128,7 @@ public class OrderController {
         }
 
         Order order = orderConverter.convertFromDto(orderDto);
+        setCostOrder(order);
         orderService.add(order, userId);
 
         Optional<Order> optionalResult = orderService.findById(order.getId());
@@ -132,6 +138,19 @@ public class OrderController {
         OrderDto result = orderConverter.convertToDto(optionalResult.get());
         result.add(linkTo(methodOn(OrderController.class).getOrders(new PaginationDto())).withRel("orders"));
         return EntityModel.of(result);
+    }
+
+    private void setCostOrder(Order order) {
+        Optional<GiftCertificate> optionalGiftCertificate = giftCertificateService.findById(
+            order.getGiftCertificate().getId());
+
+        if (optionalGiftCertificate.isEmpty()) {
+            throw new ResourceException(
+                String.format("Requested resource isn't exist (giftCertificateId=%d)",
+                    order.getGiftCertificate().getId()), CodeOfEntity.GIFT_CERTIFICATE);
+        }
+
+        order.setCost(optionalGiftCertificate.get().getPrice());
     }
 
     @PutMapping("/users/{userId}/orders/{id}")
@@ -148,6 +167,7 @@ public class OrderController {
         }
         Order order = orderConverter.convertFromDto(orderDto);
         order.setId(id);
+        setCostOrder(order);
 
         Optional<Order> optionalResult = orderService.findByUserIdAndId(userId, id);
         if (optionalResult.isEmpty()) {

@@ -1,5 +1,8 @@
 package com.epam.esm.controller;
 
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+
 import com.epam.esm.entity.CodeOfEntity;
 import com.epam.esm.entity.PaginationDto;
 import com.epam.esm.entity.Tag;
@@ -16,6 +19,9 @@ import java.util.Optional;
 import javax.validation.Valid;
 import javax.validation.constraints.Min;
 import org.springframework.format.annotation.NumberFormat;
+import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.Link;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -39,34 +45,45 @@ public class TagController {
     }
 
     @GetMapping
-    public List<TagDto> getTags(@Valid PaginationDto paginationDto) {
+    public CollectionModel<TagDto> getTags(@Valid PaginationDto paginationDto) {
         Map<String, String> parameterMap = new HashMap<>();
         paginationUtil.fillInMapFromPaginationDto(paginationDto, parameterMap);
 
         List<Tag> tags = tagService.findAll(parameterMap);
+
         if (tags.isEmpty()) {
-            throw new ResourceNotFoundException("Requested resource not found ", CodeOfEntity.USER);
+            throw new ResourceNotFoundException("Requested resource not found ", CodeOfEntity.TAG);
         }
 
-        return tagConverter.convertListToListDto(tags);
+        List<TagDto> tagDtos = tagConverter.convertListToListDto(tags);
+        tagDtos.forEach(
+            tagDto -> tagDto.add(linkTo(methodOn(TagController.class).getTagById(tagDto.getId())).withSelfRel()));
+
+        Link link = linkTo(TagController.class).withSelfRel();
+        return CollectionModel.of(tagDtos, link);
     }
 
     @GetMapping("/{id}")
-    public TagDto getTagById(@PathVariable @Min(1) @NumberFormat long id) {
+    public EntityModel<TagDto> getTagById(@PathVariable @Min(1) @NumberFormat long id) {
         Optional<Tag> optionalTag = tagService.findById(id);
         if (optionalTag.isEmpty()) {
             throw new ResourceException(String.format("Requested resource not found (id=%d)", id), CodeOfEntity.TAG);
         }
-        return tagConverter.convertToDto(optionalTag.get());
+        TagDto tagDto = tagConverter.convertToDto(optionalTag.get());
+        tagDto.add(linkTo(methodOn(TagController.class).getTagById(tagDto.getId())).withSelfRel());
+        return EntityModel.of(tagDto);
     }
 
     @PostMapping
-    public TagDto createTag(@RequestBody @Valid TagDto tagDto) {
+    public EntityModel<TagDto> createTag(@RequestBody @Valid TagDto tagDto) {
         Tag tag = tagConverter.convertFromDto(tagDto);
         if (!tagService.add(tag)) {
             throw new ResourceException("Tag wasn't added because one is exist", CodeOfEntity.TAG);
         }
-        return tagConverter.convertToDto(tag);
+
+        TagDto result = tagConverter.convertToDto(tag);
+        result.add(linkTo(methodOn(TagController.class).getTagById(tagDto.getId())).withSelfRel());
+        return EntityModel.of(result);
 
     }
 

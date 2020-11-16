@@ -46,8 +46,8 @@ public class WebConfig implements WebMvcConfigurer {
     }
 
     @Bean
-    public GiftCertificateConverter giftCertificateAdapter() {
-        return new GiftCertificateConverter();
+    public GiftCertificateConverter giftCertificateAdapter(TagConverter tagConverter) {
+        return new GiftCertificateConverter(tagConverter);
     }
 
     @Bean

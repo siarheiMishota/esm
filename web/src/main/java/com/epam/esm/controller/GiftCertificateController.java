@@ -1,5 +1,8 @@
 package com.epam.esm.controller;
 
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+
 import com.epam.esm.entity.CodeOfEntity;
 import com.epam.esm.entity.GiftCertificate;
 import com.epam.esm.entity.GiftCertificateDto;
@@ -19,6 +22,8 @@ import java.util.Optional;
 import javax.validation.Valid;
 import javax.validation.constraints.Min;
 import org.springframework.format.annotation.NumberFormat;
+import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.EntityModel;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -49,8 +54,8 @@ public class GiftCertificateController {
     }
 
     @GetMapping()
-    public List<GiftCertificateDto> getGiftCertificates(@Valid PaginationDto paginationDto,
-                                                        @Valid GiftCertificateParametersDto giftCertificateParametersDto) {
+    public CollectionModel<GiftCertificateDto> getGiftCertificates(@Valid PaginationDto paginationDto,
+                                                                   @Valid GiftCertificateParametersDto giftCertificateParametersDto) {
         Map<String, String> parameterMap = new HashMap<>();
         giftCertificateUtil.fillInMapFromPaginationDto(giftCertificateParametersDto, parameterMap);
         paginationUtil.fillInMapFromPaginationDto(paginationDto, parameterMap);
@@ -59,11 +64,15 @@ public class GiftCertificateController {
         if (giftCertificates.isEmpty()) {
             throw new ResourceNotFoundException("Requested resource not found ", CodeOfEntity.GIFT_CERTIFICATE);
         }
-        return giftCertificateConverter.convertListToListDto(giftCertificates);
+        List<GiftCertificateDto> giftCertificateDtos = giftCertificateConverter.convertListToListDto(giftCertificates);
+        for (GiftCertificateDto giftCertificateDto : giftCertificateDtos) {
+            addLinksInDto(giftCertificateDto);
+        }
+        return CollectionModel.of(giftCertificateDtos);
     }
 
     @GetMapping("/{id}")
-    public GiftCertificateDto getGiftCertificateById(@PathVariable @NumberFormat @Min(0) Long id) {
+    public EntityModel<GiftCertificateDto> getGiftCertificateById(@PathVariable @NumberFormat @Min(0) Long id) {
         if (id < 0) {
             throw new ResourceException(String.format("Id is negative (id=%d)", id), CodeOfEntity.GIFT_CERTIFICATE);
         }
@@ -73,11 +82,14 @@ public class GiftCertificateController {
             throw new ResourceNotFoundException(
                 String.format("Requested resource not found (id=%d)", id), CodeOfEntity.GIFT_CERTIFICATE);
         }
-        return giftCertificateConverter.convertToDto(optionalResult.get());
+        GiftCertificateDto giftCertificateDto = giftCertificateConverter.convertToDto(optionalResult.get());
+        addLinksInDto(giftCertificateDto);
+        return EntityModel.of(giftCertificateDto);
     }
 
     @PostMapping
-    public GiftCertificateDto createGiftCertificates(@RequestBody @Valid GiftCertificateDto giftCertificateDto) {
+    public EntityModel<GiftCertificateDto> createGiftCertificates(
+        @RequestBody @Valid GiftCertificateDto giftCertificateDto) {
         GiftCertificate giftCertificate = giftCertificateConverter.convertFromDto(giftCertificateDto);
 
         giftCertificateService.add(giftCertificate);
@@ -85,12 +97,15 @@ public class GiftCertificateController {
         if (optionalResult.isEmpty()) {
             throw new ResourceNotFoundException("Gift certificate wasn't added", CodeOfEntity.GIFT_CERTIFICATE);
         }
-        return giftCertificateConverter.convertToDto(optionalResult.get());
+        GiftCertificateDto giftCertificateResultDto = giftCertificateConverter.convertToDto(optionalResult.get());
+        addLinksInDto(giftCertificateResultDto);
+        return EntityModel.of(giftCertificateResultDto);
     }
 
     @PutMapping("/{id}")
-    public GiftCertificateDto updateGiftCertificate(@PathVariable long id,
-                                                    @RequestBody @Valid GiftCertificateDto giftCertificateDto) {
+    public EntityModel<GiftCertificateDto> updateGiftCertificate(@PathVariable long id,
+                                                                 @RequestBody
+                                                                 @Valid GiftCertificateDto giftCertificateDto) {
         if (id < 0) {
             throw new ResourceNotFoundException(
                 "Gift certificate wasn't updated because id is negative", CodeOfEntity.GIFT_CERTIFICATE);
@@ -98,11 +113,12 @@ public class GiftCertificateController {
         giftCertificateDto.setId(id);
 
         GiftCertificate giftCertificate = giftCertificateConverter.convertFromDto(giftCertificateDto);
-        if (giftCertificateService.update(giftCertificate)) {
-            return giftCertificateConverter.convertToDto(giftCertificate);
-        } else {
+        if (!giftCertificateService.update(giftCertificate)) {
             throw new ResourceException("Gift certificate wasn't updated", CodeOfEntity.GIFT_CERTIFICATE);
         }
+        GiftCertificateDto giftCertificateResultDto = giftCertificateConverter.convertToDto(giftCertificate);
+        addLinksInDto(giftCertificateResultDto);
+        return EntityModel.of(giftCertificateResultDto);
     }
 
     @DeleteMapping("/{id}")
@@ -120,7 +136,7 @@ public class GiftCertificateController {
     }
 
     @PatchMapping("/{id}")
-    public GiftCertificateDto updatePartGiftCertificate(
+    public EntityModel<GiftCertificateDto> updatePartGiftCertificate(
         @RequestBody GiftCertificatePatchDto giftCertificatePatchDto, @PathVariable long id) {
         if (id < 0) {
             throw new ResourceNotFoundException(
@@ -131,9 +147,18 @@ public class GiftCertificateController {
         GiftCertificate giftCertificate = giftCertificateUtil.fillNotNullFieldInGiftCertificate(
             giftCertificatePatchDto);
 
-        if (giftCertificateService.update(giftCertificate)) {
-            return giftCertificateConverter.convertToDto(giftCertificate);
+        if (!giftCertificateService.update(giftCertificate)) {
+            throw new ResourceException("Gift certificate wasn't updated from patch", CodeOfEntity.GIFT_CERTIFICATE);
         }
-        throw new ResourceException("Gift certificate wasn't updated from patch", CodeOfEntity.GIFT_CERTIFICATE);
+        GiftCertificateDto giftCertificateResultDto = giftCertificateConverter.convertToDto(giftCertificate);
+        addLinksInDto(giftCertificateResultDto);
+        return EntityModel.of(giftCertificateResultDto);
+    }
+
+    private void addLinksInDto(GiftCertificateDto giftCertificateDto) {
+        giftCertificateDto.add(linkTo(methodOn(GiftCertificateController.class).getGiftCertificateById(
+            giftCertificateDto.getId())).withSelfRel());
+        giftCertificateDto.getTags().forEach(tagDto ->
+            tagDto.add(linkTo(methodOn(TagController.class).getTagById(tagDto.getId())).withSelfRel()));
     }
 }

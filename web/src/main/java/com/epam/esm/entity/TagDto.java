@@ -2,8 +2,9 @@ package com.epam.esm.entity;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
+import org.springframework.hateoas.RepresentationModel;
 
-public class TagDto {
+public class TagDto extends RepresentationModel<TagDto> {
 
     private long id;
 

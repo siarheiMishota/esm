@@ -5,8 +5,9 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Null;
 import javax.validation.constraints.Size;
+import org.springframework.hateoas.RepresentationModel;
 
-public class UserDto {
+public class UserDto extends RepresentationModel<UserDto> {
 
     private Long id;
 
@@ -25,9 +26,6 @@ public class UserDto {
 
     @Null
     private List<OrderDto> orders;
-
-    public UserDto() {
-    }
 
     public Long getId() {
         return id;

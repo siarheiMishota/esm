@@ -4,8 +4,9 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
+import org.springframework.hateoas.RepresentationModel;
 
-public class OrderDto {
+public class OrderDto extends RepresentationModel<OrderDto> {
 
     private long id;
 

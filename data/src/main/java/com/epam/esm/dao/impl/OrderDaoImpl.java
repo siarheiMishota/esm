@@ -13,16 +13,14 @@ import com.epam.esm.dao.OrderDao;
 import com.epam.esm.entity.CodeOfEntity;
 import com.epam.esm.entity.GiftCertificate;
 import com.epam.esm.entity.Order;
-import com.epam.esm.exception.EntityDuplicateException;
+import com.epam.esm.entity.Pagination;
 import com.epam.esm.exception.EntityIntegrityViolationException;
 import com.epam.esm.util.PaginationParameter;
 import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.dao.DuplicateKeyException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -45,10 +43,10 @@ public class OrderDaoImpl implements OrderDao {
     }
 
     @Override
-    public List<Order> findAll(Map<String, String> paginationParametersMap) {
+    public List<Order> findAll(Pagination pagination) {
         StringBuilder stringRequestBuilder = new StringBuilder();
         stringRequestBuilder.append(FIND_ALL);
-        paginationParameter.fillInLimitAndOffset(paginationParametersMap, stringRequestBuilder);
+        paginationParameter.buildLimitAndOffset(pagination, stringRequestBuilder);
         List<Order> orders = jdbcTemplate.query(stringRequestBuilder.toString(),
             new BeanPropertyRowMapper<>(Order.class));
 
@@ -66,8 +64,11 @@ public class OrderDaoImpl implements OrderDao {
     }
 
     @Override
-    public List<Order> findByUserId(long userId) {
-        List<Order> orders = jdbcTemplate.query(FIND_BY_USER_ID, new Object[]{userId},
+    public List<Order> findByUserId(long userId, Pagination pagination) {
+        StringBuilder stringRequestBuilder = new StringBuilder();
+        stringRequestBuilder.append(FIND_BY_USER_ID);
+        paginationParameter.buildLimitAndOffset(pagination, stringRequestBuilder);
+        List<Order> orders = jdbcTemplate.query(stringRequestBuilder.toString(), new Object[]{userId},
             new BeanPropertyRowMapper<>(Order.class));
 
         orders.forEach(this::setGiftCertificateInOrder);
@@ -85,7 +86,6 @@ public class OrderDaoImpl implements OrderDao {
 
     @Override
     public Order add(Order order, long userId) {
-        try {
             GeneratedKeyHolder generatedKeyHolder = new GeneratedKeyHolder();
             jdbcTemplate.update(
                 connection -> {
@@ -100,15 +100,6 @@ public class OrderDaoImpl implements OrderDao {
             if (key != null) {
                 order.setId(key.longValue());
             }
-        } catch (DuplicateKeyException e) {
-            throw new EntityDuplicateException(e,
-                String.format("Order wasn't added because id= %s gift certificate is exist ",
-                    order.getGiftCertificate().getId()), CodeOfEntity.ORDER);
-        } catch (DataIntegrityViolationException e) {
-            throw new EntityIntegrityViolationException(e,
-                "Order wasn't added because gift certificate or user is not exist",
-                CodeOfEntity.ORDER);
-        }
         return order;
     }
 
@@ -116,11 +107,6 @@ public class OrderDaoImpl implements OrderDao {
     public int update(Order order) {
         try {
             return jdbcTemplate.update(UPDATE, order.getCost(), order.getGiftCertificate().getId());
-
-        } catch (DuplicateKeyException e) {
-            throw new EntityDuplicateException(e,
-                String.format("Order wasn't updated because id= %s gift certificate is exist ",
-                    order.getGiftCertificate().getId()), CodeOfEntity.ORDER);
         } catch (DataIntegrityViolationException e) {
             throw new EntityIntegrityViolationException(e,
                 "Order wasn't updated because gift certificate or user is not exist",

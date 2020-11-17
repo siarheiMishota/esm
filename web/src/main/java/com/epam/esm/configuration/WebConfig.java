@@ -3,9 +3,9 @@ package com.epam.esm.configuration;
 import com.epam.esm.service.GiftCertificateService;
 import com.epam.esm.service.configuration.ServiceConfiguration;
 import com.epam.esm.util.GiftCertificateUtil;
-import com.epam.esm.util.PaginationUtil;
 import com.epam.esm.util.converter.GiftCertificateConverter;
 import com.epam.esm.util.converter.OrderConverter;
+import com.epam.esm.util.converter.PaginationConverter;
 import com.epam.esm.util.converter.TagConverter;
 import com.epam.esm.util.converter.UserConverter;
 import org.springframework.context.annotation.Bean;
@@ -66,13 +66,12 @@ public class WebConfig implements WebMvcConfigurer {
     }
 
     @Bean
-    public GiftCertificateUtil giftCertificateUtil(GiftCertificateService giftCertificateService) {
-        return new GiftCertificateUtil(giftCertificateService);
+    public PaginationConverter paginationConverter() {
+        return new PaginationConverter();
     }
 
     @Bean
-    public PaginationUtil paginationUtil() {
-        return new PaginationUtil();
+    public GiftCertificateUtil giftCertificateUtil(GiftCertificateService giftCertificateService) {
+        return new GiftCertificateUtil(giftCertificateService);
     }
-
 }

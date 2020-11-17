@@ -4,17 +4,16 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 import com.epam.esm.entity.CodeOfEntity;
+import com.epam.esm.entity.Pagination;
 import com.epam.esm.entity.PaginationDto;
 import com.epam.esm.entity.Tag;
 import com.epam.esm.entity.TagDto;
 import com.epam.esm.exception.ResourceException;
 import com.epam.esm.exception.ResourceNotFoundException;
 import com.epam.esm.service.TagService;
-import com.epam.esm.util.PaginationUtil;
+import com.epam.esm.util.converter.PaginationConverter;
 import com.epam.esm.util.converter.TagConverter;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import javax.validation.Valid;
 import javax.validation.constraints.Min;
@@ -36,20 +35,20 @@ public class TagController {
 
     private final TagService tagService;
     private final TagConverter tagConverter;
-    private final PaginationUtil paginationUtil;
+    private final PaginationConverter paginationConverter;
 
-    public TagController(TagService tagService, TagConverter tagConverter, PaginationUtil paginationUtil) {
+    public TagController(TagService tagService,
+                         TagConverter tagConverter,
+                         PaginationConverter paginationConverter) {
         this.tagService = tagService;
         this.tagConverter = tagConverter;
-        this.paginationUtil = paginationUtil;
+        this.paginationConverter = paginationConverter;
     }
 
     @GetMapping
     public CollectionModel<TagDto> getTags(@Valid PaginationDto paginationDto) {
-        Map<String, String> parameterMap = new HashMap<>();
-        paginationUtil.fillInMapFromPaginationDto(paginationDto, parameterMap);
-
-        List<Tag> tags = tagService.findAll(parameterMap);
+        Pagination pagination = paginationConverter.convertFromDto(paginationDto);
+        List<Tag> tags = tagService.findAll(pagination);
 
         if (tags.isEmpty()) {
             throw new ResourceNotFoundException("Requested resource not found ", CodeOfEntity.TAG);

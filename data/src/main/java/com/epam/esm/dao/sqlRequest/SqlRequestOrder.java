@@ -6,7 +6,7 @@ public class SqlRequestOrder {
         + "from orders ord";
     public static final String FIND_ALL = BASE_QUERY;
     public static final String FIND_BY_ID = BASE_QUERY + " where ord.id=?";
-    public static final String FIND_BY_USER_ID = BASE_QUERY + "  join tag.users u on u.id = ord.id_user\n"
+    public static final String FIND_BY_USER_ID = BASE_QUERY + "  join users u on u.id = ord.id_user\n"
         + "where u.id =?";
     public static final String FIND_BY_USER_ID_AND_ID = FIND_BY_USER_ID + " and ord.id=?";
 

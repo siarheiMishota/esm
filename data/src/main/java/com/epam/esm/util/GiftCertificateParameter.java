@@ -19,7 +19,7 @@ import java.util.Map;
 
 public class GiftCertificateParameter {
 
-    public void fillInForSort(Map<String, String> parameters, StringBuilder fullFindBuilder) {
+    public void buildSort(Map<String, String> parameters, StringBuilder fullFindBuilder) {
         if (parameters.containsKey(PATTERN_KEY_SORT)) {
             String sort = parameters.get(PATTERN_KEY_SORT);
             if (!sort.isEmpty()) {
@@ -35,11 +35,11 @@ public class GiftCertificateParameter {
         }
     }
 
-    public void fillInForDescription(Map<String, String> parameters,
-                                     boolean whereUse,
-                                     StringBuilder fullFindBuilder) {
+    public void buildDescription(Map<String, String> parameters,
+                                 boolean isWhereUsed,
+                                 StringBuilder fullFindBuilder) {
         if (parameters.containsKey(PATTERN_KEY_DESCRIPTION)) {
-            if (!whereUse) {
+            if (!isWhereUsed) {
                 fullFindBuilder.append(WHERE);
             } else {
                 fullFindBuilder.append(AND);
@@ -59,11 +59,11 @@ public class GiftCertificateParameter {
         }
     }
 
-    public boolean fillInForName(Map<String, String> parameters,
-                                 boolean whereUse,
-                                 StringBuilder fullFindBuilder) {
+    public boolean buildName(Map<String, String> parameters,
+                             boolean isWhereUsed,
+                             StringBuilder fullFindBuilder) {
         if (parameters.containsKey(PATTERN_KEY_NAME)) {
-            if (!whereUse) {
+            if (!isWhereUsed) {
                 fullFindBuilder.append(WHERE).append(" ");
             } else {
                 fullFindBuilder.append(AND).append(" ");
@@ -79,14 +79,14 @@ public class GiftCertificateParameter {
                 .append(" ");
             fullFindBuilder.delete(fullFindBuilder.lastIndexOf(AND), fullFindBuilder.length());
 
-            whereUse = true;
+            isWhereUsed = true;
         }
-        return whereUse;
+        return isWhereUsed;
     }
 
-    public boolean fillInForTag(Map<String, String> parameters,
-                                boolean whereUse,
-                                StringBuilder fullFindBuilder) {
+    public boolean buildTag(Map<String, String> parameters,
+                            boolean isWhereUsed,
+                            StringBuilder fullFindBuilder) {
         if (parameters.containsKey(PATTERN_KEY_TAG)) {
             String tag = parameters.get(PATTERN_KEY_TAG);
             fullFindBuilder.append(" ").append(JOIN_TAG)
@@ -100,10 +100,10 @@ public class GiftCertificateParameter {
                 .append(AND)
                 .append(" ");
             fullFindBuilder.delete(fullFindBuilder.lastIndexOf(AND), fullFindBuilder.length());
-            whereUse = true;
+            isWhereUsed = true;
 
         }
-        return whereUse;
+        return isWhereUsed;
     }
 
     private Map<String, String> splitSortLineOnTokens(String line) {

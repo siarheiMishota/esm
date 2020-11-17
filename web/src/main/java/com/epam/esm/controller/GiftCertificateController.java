@@ -8,13 +8,14 @@ import com.epam.esm.entity.GiftCertificate;
 import com.epam.esm.entity.GiftCertificateDto;
 import com.epam.esm.entity.GiftCertificateParametersDto;
 import com.epam.esm.entity.GiftCertificatePatchDto;
+import com.epam.esm.entity.Pagination;
 import com.epam.esm.entity.PaginationDto;
 import com.epam.esm.exception.ResourceException;
 import com.epam.esm.exception.ResourceNotFoundException;
 import com.epam.esm.service.GiftCertificateService;
 import com.epam.esm.util.GiftCertificateUtil;
-import com.epam.esm.util.PaginationUtil;
 import com.epam.esm.util.converter.GiftCertificateConverter;
+import com.epam.esm.util.converter.PaginationConverter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -41,26 +42,26 @@ public class GiftCertificateController {
     private final GiftCertificateService giftCertificateService;
     private final GiftCertificateConverter giftCertificateConverter;
     private final GiftCertificateUtil giftCertificateUtil;
-    private final PaginationUtil paginationUtil;
+    private final PaginationConverter paginationConverter;
 
     public GiftCertificateController(GiftCertificateService giftCertificateService,
                                      GiftCertificateConverter giftCertificateConverter,
                                      GiftCertificateUtil giftCertificateUtil,
-                                     PaginationUtil paginationUtil) {
+                                     PaginationConverter paginationConverter) {
         this.giftCertificateService = giftCertificateService;
         this.giftCertificateConverter = giftCertificateConverter;
         this.giftCertificateUtil = giftCertificateUtil;
-        this.paginationUtil = paginationUtil;
+        this.paginationConverter = paginationConverter;
     }
 
     @GetMapping()
     public CollectionModel<GiftCertificateDto> getGiftCertificates(@Valid PaginationDto paginationDto,
                                                                    @Valid GiftCertificateParametersDto giftCertificateParametersDto) {
         Map<String, String> parameterMap = new HashMap<>();
-        giftCertificateUtil.fillInMapFromPaginationDto(giftCertificateParametersDto, parameterMap);
-        paginationUtil.fillInMapFromPaginationDto(paginationDto, parameterMap);
+        giftCertificateUtil.buildMapFromParameters(giftCertificateParametersDto, parameterMap);
+        Pagination pagination = paginationConverter.convertFromDto(paginationDto);
 
-        List<GiftCertificate> giftCertificates = giftCertificateService.findAll(parameterMap);
+        List<GiftCertificate> giftCertificates = giftCertificateService.findAll(parameterMap, pagination);
         if (giftCertificates.isEmpty()) {
             throw new ResourceNotFoundException("Requested resource not found ", CodeOfEntity.GIFT_CERTIFICATE);
         }
@@ -144,7 +145,7 @@ public class GiftCertificateController {
         }
         giftCertificatePatchDto.setId(id);
 
-        GiftCertificate giftCertificate = giftCertificateUtil.fillNotNullFieldInGiftCertificate(
+        GiftCertificate giftCertificate = giftCertificateUtil.buildNotNullFieldInGiftCertificate(
             giftCertificatePatchDto);
 
         if (!giftCertificateService.update(giftCertificate)) {

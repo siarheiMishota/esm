@@ -13,6 +13,7 @@ import com.epam.esm.dao.GiftCertificateDao;
 import com.epam.esm.dao.TagDao;
 import com.epam.esm.entity.CodeOfEntity;
 import com.epam.esm.entity.GiftCertificate;
+import com.epam.esm.entity.Pagination;
 import com.epam.esm.exception.EntityDuplicateException;
 import com.epam.esm.util.GiftCertificateParameter;
 import com.epam.esm.util.PaginationParameter;
@@ -34,8 +35,6 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
     public static final int NUMBER_FOR_DESCRIPTION = 2;
     public static final int NUMBER_FOR_PRICE = 3;
     public static final int NUMBER_FOR_DURATION = 4;
-    public static final String DEFAULT_LIMIT = "50";
-    public static final String DEFAULT_OFFSET = "0";
 
     private final JdbcTemplate jdbcTemplate;
     private final TagDao tagDao;
@@ -53,8 +52,8 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
     }
 
     @Override
-    public List<GiftCertificate> findAll(Map<String, String> parameters) {
-        String fullFind = getFullSqlWithParameters(parameters);
+    public List<GiftCertificate> findAll(Map<String, String> parameters, Pagination pagination) {
+        String fullFind = getFullSqlWithParameters(parameters, pagination);
 
         List<GiftCertificate> giftCertificates = jdbcTemplate.query(fullFind,
             new BeanPropertyRowMapper<>(GiftCertificate.class));
@@ -62,19 +61,19 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
         return giftCertificates;
     }
 
-    private String getFullSqlWithParameters(Map<String, String> parameters) {
+    private String getFullSqlWithParameters(Map<String, String> parameters, Pagination pagination) {
         if (parameters == null) {
             return FIND_ALL;
         }
-        boolean whereUse = false;
+        boolean isWhereUsed = false;
         StringBuilder fullFindBuilder = new StringBuilder(FIND_ALL);
 
-        whereUse = giftCertificateParameter.fillInForTag(parameters, whereUse, fullFindBuilder);
-        whereUse = giftCertificateParameter.fillInForName(parameters, whereUse, fullFindBuilder);
+        isWhereUsed = giftCertificateParameter.buildTag(parameters, isWhereUsed, fullFindBuilder);
+        isWhereUsed = giftCertificateParameter.buildName(parameters, isWhereUsed, fullFindBuilder);
 
-        giftCertificateParameter.fillInForDescription(parameters, whereUse, fullFindBuilder);
-        giftCertificateParameter.fillInForSort(parameters, fullFindBuilder);
-        paginationParameter.fillInLimitAndOffset(parameters, fullFindBuilder);
+        giftCertificateParameter.buildDescription(parameters, isWhereUsed, fullFindBuilder);
+        giftCertificateParameter.buildSort(parameters, fullFindBuilder);
+        paginationParameter.buildLimitAndOffset(pagination, fullFindBuilder);
         return fullFindBuilder.toString();
     }
 
@@ -89,11 +88,18 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
 
     @Override
     public Optional<GiftCertificate> findByOrderId(long orderId) {
-        Optional<GiftCertificate> optionalGiftCertificate = jdbcTemplate.query(FIND_BY_ORDER_ID, new Object[]{orderId},
-            new BeanPropertyRowMapper<>(GiftCertificate.class)).stream().findAny();
+        try {
 
-        optionalGiftCertificate.ifPresent(certificate -> setTagsToGiftCertificate(optionalGiftCertificate.get()));
-        return optionalGiftCertificate;
+            Optional<GiftCertificate> optionalGiftCertificate = jdbcTemplate.query(FIND_BY_ORDER_ID,
+                new Object[]{orderId},
+                new BeanPropertyRowMapper<>(GiftCertificate.class)).stream().findAny();
+
+            optionalGiftCertificate.ifPresent(certificate -> setTagsToGiftCertificate(optionalGiftCertificate.get()));
+            return optionalGiftCertificate;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     @Transactional
@@ -105,7 +111,6 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
     @Transactional
     @Override
     public int update(GiftCertificate giftCertificate) {
-        try {
             int update = jdbcTemplate.update(UPDATE, giftCertificate.getName(), giftCertificate.getDescription(),
                 giftCertificate.getPrice(), LocalDateTime.now(), giftCertificate.getDuration(),
                 giftCertificate.getId());
@@ -116,24 +121,20 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
 
             deleteTagGiftCertificateByGiftCertificateId(giftCertificate.getId());
 
-            giftCertificate.getTags().
-                forEach(tagDao::add);
+        giftCertificate.getTags().
+            forEach(tagDao::add);
 
-            giftCertificate.getTags()
-                .forEach(tag -> addTagGiftCertificate(tag.getId(), giftCertificate.getId()));
+        giftCertificate.getTags()
+            .forEach(tag -> addTagGiftCertificate(tag.getId(), giftCertificate.getId()));
 
-            Optional<GiftCertificate> optionalFromDb = findById(giftCertificate.getId());
-            if (optionalFromDb.isEmpty()) {
-                return 0;
-            }
-            giftCertificate.setTags(tagDao.findByGiftCertificateId(giftCertificate.getId()));
-            giftCertificate.setCreationDate(optionalFromDb.get().getCreationDate());
-            giftCertificate.setLastUpdateDate(optionalFromDb.get().getLastUpdateDate());
-            return update;
-        } catch (DuplicateKeyException e) {
-            throw new EntityDuplicateException(e, "Gift certificate wasn't updated because gift certificate is exist",
-                CodeOfEntity.GIFT_CERTIFICATE);
+        Optional<GiftCertificate> optionalFromDb = findById(giftCertificate.getId());
+        if (optionalFromDb.isEmpty()) {
+            return 0;
         }
+        giftCertificate.setTags(tagDao.findByGiftCertificateId(giftCertificate.getId(), new Pagination()));
+        giftCertificate.setCreationDate(optionalFromDb.get().getCreationDate());
+        giftCertificate.setLastUpdateDate(optionalFromDb.get().getLastUpdateDate());
+        return update;
     }
 
     public void deleteTagGiftCertificateByGiftCertificateId(long id) {
@@ -143,7 +144,6 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
     @Transactional
     @Override
     public GiftCertificate add(GiftCertificate giftCertificate) {
-        try {
             GeneratedKeyHolder generatedKeyHolder = new GeneratedKeyHolder();
             jdbcTemplate.update(
                 connection -> {
@@ -162,10 +162,6 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
                 giftCertificate.getTags().
                     forEach(tag -> addTagGiftCertificate(tag.getId(), giftCertificate.getId()));
             }
-        } catch (DuplicateKeyException e) {
-            throw new EntityDuplicateException(e, "Gift certificate wasn't added because gift certificate is exist",
-                CodeOfEntity.GIFT_CERTIFICATE);
-        }
         return giftCertificate;
     }
 
@@ -187,6 +183,6 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
     }
 
     private void setTagsToGiftCertificate(GiftCertificate giftCertificate) {
-        giftCertificate.setTags(tagDao.findByGiftCertificateId(giftCertificate.getId()));
+        giftCertificate.setTags(tagDao.findByGiftCertificateId(giftCertificate.getId(), new Pagination()));
     }
 }

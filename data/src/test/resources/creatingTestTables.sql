@@ -46,16 +46,16 @@ create table users
 
 create table orders
 (
-    id   int auto_increment,
-    cost decimal not null check ( cost > 0 ),
-    date timestamp default now(),
-    id_gift_certificate int not null ,
-    id_user int not null ,
+    id                  int auto_increment,
+    cost                decimal not null check ( cost > 0 ),
+    date                timestamp default now(),
+    id_gift_certificate int     not null,
+    id_user             int     not null,
 
     primary key (id),
 
-    foreign key (id_gift_certificate) REFERENCES gift_certificates(id),
-    foreign key (id_user) REFERENCES users(id)
+    foreign key (id_gift_certificate) REFERENCES gift_certificates (id),
+    foreign key (id_user) REFERENCES users (id)
 );
 
 
@@ -64,8 +64,7 @@ values ('extreme'),
        ('fun'),
        ('love'),
        ('relax'),
-       ('bored')
-;
+       ('bored');
 
 insert into gift_certificates (name, description, price, creation_date, last_update_date, duration)
 values ('name 1', 'description 1', 1, '2020-10-22T00:03:22.917992000', '2020-10-22T00:03:22.917992000', 1),
@@ -78,8 +77,7 @@ values ('name 1', 'description 1', 1, '2020-10-22T00:03:22.917992000', '2020-10-
        ('name 8', 'description 8', 8, '2020-10-22T00:03:22.917992000', '2020-10-22T00:03:22.917992000', 8),
        ('name 9', 'description 9', 9, '2020-10-22T00:03:22.917992000', '2020-10-22T00:03:22.917992000', 9),
        ('name 10', 'description 10', 10, '2020-10-22T00:03:22.917992000', '2020-12-22T00:03:22.917992000', 10),
-       ('name 11', 'description 11', 11, '2020-10-22T00:03:22.917992000', '2020-12-22T00:03:22.917992000', 11)
-;
+       ('name 11', 'description 11', 11, '2020-10-22T00:03:22.917992000', '2020-12-22T00:03:22.917992000', 11);
 
 
 insert into tags_gift_certificates (tag_id, gift_certificate_id)
@@ -93,28 +91,28 @@ values (1, 1),
        (2, 8),
        (3, 9),
        (3, 10),
-       (2, 3)
-;
+       (2, 3);
 
-insert into users (name, email, password) values ('Jobi', 'jchessun0@moonfruit.com', 'afb591939cccb575099d348c23d7e5892a3c35c1a2bf5420d3b131c62cbd4ef7'),
-('Nat', 'nlafont1@imgur.com', '6855d35eb88cfa08539aade1f8fc9d8f9ae82bf179d55a8a23c30412b4c83908'),
-('Augy', 'aswigg2@kickstarter.com', 'f40573804c5e76900099fec371bff046b2b966eb178f1855a4941bf710845483'),
-('Dena', 'dhamper3@rambler.ru', '1f74aff20b83704780f2de6ef5259739112f3ba27ced0718a7fbaa080ced92f6'),
-('Sarah', 'sprahm4@quantcast.com', '62b3dd516303461e96b90f868228cc5a4df3f0e445a6f7d0d6b41066c67a2652'),
-('Osbert', 'olangeley5@mayoclinic.com', '4b63634ff91590cceb1d027e791441d5a5aa9d2e8f9d5c96cfb7d0893ae66125'),
-('Keary', 'klorenzini6@yellowpages.com', '6d220d435b5fcf053695ca534dce6d399efadc101b3beb91282e27d06af802e0'),
-('Petronilla', 'pseago7@techcrunch.com', 'a59bcb2c7247b2f89d9dd684c6aacf52644c8be26a11d550020228f3fe99df08'),
-('Pincas', 'ptoomer8@blogtalkradio.com', '696ffc855badd67ac1b4e2d526b89bec155cdb5d3e44b3740bf9624665d5bf0e'),
-('Ailina', 'arains9@mapquest.com', '1f705e1cd6ab072cb01b39ff271c70a589e49bed5f1e9743d5684b72f87c40c0'),
-('Ofilia', 'ogatea@usa.gov', 'da23a22cab62c492ee6577573cc27a6841ce3c809bf906f0c986a90044ace133'),
-('Aurthur', 'ayitzhokb@fc2.com', '942629d819df09230ffc7b03f83001840153dcf3f3320e5786ef0d7bc0bdf380'),
-('Bryce', 'bcrowthec@nba.com', '635788165ba9b52a651400b5f62dab463bff4f210a3e9979e09df5accf43cfea'),
-('Rennie', 'rrosind@histats.com', '54134a2e984df6608bc0669ddcf64ccf77aa435505cd0dff495194baf7b1ecc0'),
-('Gennifer', 'gdowe@discuz.net', '9d7eee83afc7b60ca212e22e8339cf057c8931d66691e9009248eb0b6cc7d41c'),
-('Ferguson', 'fcarstairsf@jigsy.com', 'e165d87c63d2eb946543c11e5a145ee1cd87a052762d8a43b7b88154d87c572b'),
-('Juliann', 'jbalching@bravesites.com', 'f92b93ef3efca48a8c4515d1a39827f9795a9d4eba159f9cead11c953e997d40'),
-('Bobbee', 'bpeterah@altervista.org', '969d3a1290e1cb9f572d2a28759eb80cb2880bc43b9040adf09df7ac3d159ad9'),
-('Ola', 'omagoverni@pbs.org', '9fe0d8a2541feaa14ec48b670da2ebc53d496f6ac9bf0f266293dd72c45a9b7f'),
+insert into users (name, email, password)
+values ('Jobi', 'jchessun0@moonfruit.com', 'afb591939cccb575099d348c23d7e5892a3c35c1a2bf5420d3b131c62cbd4ef7'),
+       ('Nat', 'nlafont1@imgur.com', '6855d35eb88cfa08539aade1f8fc9d8f9ae82bf179d55a8a23c30412b4c83908'),
+       ('Augy', 'aswigg2@kickstarter.com', 'f40573804c5e76900099fec371bff046b2b966eb178f1855a4941bf710845483'),
+       ('Dena', 'dhamper3@rambler.ru', '1f74aff20b83704780f2de6ef5259739112f3ba27ced0718a7fbaa080ced92f6'),
+       ('Sarah', 'sprahm4@quantcast.com', '62b3dd516303461e96b90f868228cc5a4df3f0e445a6f7d0d6b41066c67a2652'),
+       ('Osbert', 'olangeley5@mayoclinic.com', '4b63634ff91590cceb1d027e791441d5a5aa9d2e8f9d5c96cfb7d0893ae66125'),
+       ('Keary', 'klorenzini6@yellowpages.com', '6d220d435b5fcf053695ca534dce6d399efadc101b3beb91282e27d06af802e0'),
+       ('Petronilla', 'pseago7@techcrunch.com', 'a59bcb2c7247b2f89d9dd684c6aacf52644c8be26a11d550020228f3fe99df08'),
+       ('Pincas', 'ptoomer8@blogtalkradio.com', '696ffc855badd67ac1b4e2d526b89bec155cdb5d3e44b3740bf9624665d5bf0e'),
+       ('Ailina', 'arains9@mapquest.com', '1f705e1cd6ab072cb01b39ff271c70a589e49bed5f1e9743d5684b72f87c40c0'),
+       ('Ofilia', 'ogatea@usa.gov', 'da23a22cab62c492ee6577573cc27a6841ce3c809bf906f0c986a90044ace133'),
+       ('Aurthur', 'ayitzhokb@fc2.com', '942629d819df09230ffc7b03f83001840153dcf3f3320e5786ef0d7bc0bdf380'),
+       ('Bryce', 'bcrowthec@nba.com', '635788165ba9b52a651400b5f62dab463bff4f210a3e9979e09df5accf43cfea'),
+       ('Rennie', 'rrosind@histats.com', '54134a2e984df6608bc0669ddcf64ccf77aa435505cd0dff495194baf7b1ecc0'),
+       ('Gennifer', 'gdowe@discuz.net', '9d7eee83afc7b60ca212e22e8339cf057c8931d66691e9009248eb0b6cc7d41c'),
+       ('Ferguson', 'fcarstairsf@jigsy.com', 'e165d87c63d2eb946543c11e5a145ee1cd87a052762d8a43b7b88154d87c572b'),
+       ('Juliann', 'jbalching@bravesites.com', 'f92b93ef3efca48a8c4515d1a39827f9795a9d4eba159f9cead11c953e997d40'),
+       ('Bobbee', 'bpeterah@altervista.org', '969d3a1290e1cb9f572d2a28759eb80cb2880bc43b9040adf09df7ac3d159ad9'),
+       ('Ola', 'omagoverni@pbs.org', '9fe0d8a2541feaa14ec48b670da2ebc53d496f6ac9bf0f266293dd72c45a9b7f'),
 ('Cristy', 'cwelfairj@icq.com', '947d0be7d635726550068e6cd57aec1b9c379ef00c63df9bd6405042de84244c'),
 ('Conant', 'cgunthorpek@sciencedaily.com', '2c28bd344b3871a05386cb5b1de959cc4f02d42291b26e9f8e0f72fd89acac07'),
 ('Marnia', 'mstlegerl@comcast.net', '72c44c07bd9faca91f5083dccfdbb2e7e6807a28dc2c1946a3e8c639a997adca'),

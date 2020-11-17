@@ -11,13 +11,13 @@ import com.epam.esm.dao.OrderDao;
 import com.epam.esm.dao.UserDao;
 import com.epam.esm.entity.CodeOfEntity;
 import com.epam.esm.entity.Order;
+import com.epam.esm.entity.Pagination;
 import com.epam.esm.entity.User;
 import com.epam.esm.exception.EntityDuplicateException;
 import com.epam.esm.util.PaginationParameter;
 import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
@@ -42,10 +42,10 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
-    public List<User> findAll(Map<String, String> parametersMap) {
+    public List<User> findAll(Pagination pagination) {
         StringBuilder stringRequestBuilder = new StringBuilder();
         stringRequestBuilder.append(FIND_ALL);
-        paginationParameter.fillInLimitAndOffset(parametersMap, stringRequestBuilder);
+        paginationParameter.buildLimitAndOffset(pagination, stringRequestBuilder);
 
         List<User> users = jdbcTemplate.query(stringRequestBuilder.toString(),
             new BeanPropertyRowMapper<>(User.class));
@@ -112,7 +112,7 @@ public class UserDaoImpl implements UserDao {
     }
 
     private void setOrderInUser(User user) {
-        List<Order> orders = orderDao.findByUserId(user.getId());
+        List<Order> orders = orderDao.findByUserId(user.getId(), new Pagination());
         user.setOrders(orders);
     }
 }

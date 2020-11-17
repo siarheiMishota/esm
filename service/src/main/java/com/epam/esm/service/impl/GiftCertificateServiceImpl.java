@@ -2,6 +2,7 @@ package com.epam.esm.service.impl;
 
 import com.epam.esm.dao.GiftCertificateDao;
 import com.epam.esm.entity.GiftCertificate;
+import com.epam.esm.entity.Pagination;
 import com.epam.esm.entity.Tag;
 import com.epam.esm.service.GiftCertificateService;
 import com.epam.esm.service.TagService;
@@ -36,8 +37,8 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
      * @return List of GiftCertificates which match the parameters
      */
     @Override
-    public List<GiftCertificate> findAll(Map<String, String> parameters) {
-        return giftCertificateDao.findAll(parameters);
+    public List<GiftCertificate> findAll(Map<String, String> parameters, Pagination pagination) {
+        return giftCertificateDao.findAll(parameters, pagination);
     }
 
     @Override

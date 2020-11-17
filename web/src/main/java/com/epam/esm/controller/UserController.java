@@ -4,17 +4,16 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 import com.epam.esm.entity.CodeOfEntity;
+import com.epam.esm.entity.Pagination;
 import com.epam.esm.entity.PaginationDto;
 import com.epam.esm.entity.User;
 import com.epam.esm.entity.UserDto;
 import com.epam.esm.exception.ResourceException;
 import com.epam.esm.exception.ResourceNotFoundException;
 import com.epam.esm.service.UserService;
-import com.epam.esm.util.PaginationUtil;
+import com.epam.esm.util.converter.PaginationConverter;
 import com.epam.esm.util.converter.UserConverter;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import javax.validation.Valid;
 import org.springframework.hateoas.CollectionModel;
@@ -35,20 +34,20 @@ public class UserController {
 
     private final UserService userService;
     private final UserConverter userConverter;
-    private final PaginationUtil paginationUtil;
+    private final PaginationConverter paginationConverter;
 
-    public UserController(UserService userService, UserConverter userConverter, PaginationUtil paginationUtil) {
+    public UserController(UserService userService,
+                          UserConverter userConverter,
+                          PaginationConverter paginationConverter) {
         this.userService = userService;
         this.userConverter = userConverter;
-        this.paginationUtil = paginationUtil;
+        this.paginationConverter = paginationConverter;
     }
 
     @GetMapping
     public CollectionModel<UserDto> getUsers(@Valid PaginationDto paginationDto) {
-        Map<String, String> parameterMap = new HashMap<>();
-        paginationUtil.fillInMapFromPaginationDto(paginationDto, parameterMap);
-
-        List<User> users = userService.findAll(parameterMap);
+        Pagination pagination = paginationConverter.convertFromDto(paginationDto);
+        List<User> users = userService.findAll(pagination);
         if (users.isEmpty()) {
             throw new ResourceNotFoundException("Requested resource not found ", CodeOfEntity.USER);
         }

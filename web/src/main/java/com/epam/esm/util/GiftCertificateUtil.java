@@ -23,8 +23,8 @@ public class GiftCertificateUtil {
         this.giftCertificateService = giftCertificateService;
     }
 
-    public void fillInMapFromPaginationDto(GiftCertificateParametersDto giftCertificateParametersDto,
-                                           Map<String, String> parameterMap) {
+    public void buildMapFromParameters(GiftCertificateParametersDto giftCertificateParametersDto,
+                                       Map<String, String> parameterMap) {
         if (giftCertificateParametersDto.getName() != null) {
             parameterMap.put(PATTERN_KEY_NAME, giftCertificateParametersDto.getName());
         }
@@ -41,7 +41,7 @@ public class GiftCertificateUtil {
         }
     }
 
-    public GiftCertificate fillNotNullFieldInGiftCertificate(GiftCertificatePatchDto giftCertificatePatchDto) {
+    public GiftCertificate buildNotNullFieldInGiftCertificate(GiftCertificatePatchDto giftCertificatePatchDto) {
         Optional<GiftCertificate> optionalGiftCertificate = giftCertificateService.findById(
             giftCertificatePatchDto.getId());
 
@@ -75,7 +75,7 @@ public class GiftCertificateUtil {
         return giftCertificate;
     }
 
-    public String replaceDateOnLastUpdateDateInLine(String line) {
+    private String replaceDateOnLastUpdateDateInLine(String line) {
         return line.replaceAll("date", "last_update_date");
     }
 }

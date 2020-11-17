@@ -10,7 +10,7 @@ public class PaginationDto {
     private int limit;
 
     @Min(0)
-    private int offset;
+    private long offset;
 
     public int getLimit() {
         return limit;
@@ -20,11 +20,11 @@ public class PaginationDto {
         this.limit = limit;
     }
 
-    public int getOffset() {
+    public long getOffset() {
         return offset;
     }
 
-    public void setOffset(int offset) {
+    public void setOffset(long offset) {
         this.offset = offset;
     }
 }

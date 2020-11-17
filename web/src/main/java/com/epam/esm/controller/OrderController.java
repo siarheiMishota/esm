@@ -7,16 +7,15 @@ import com.epam.esm.entity.CodeOfEntity;
 import com.epam.esm.entity.GiftCertificate;
 import com.epam.esm.entity.Order;
 import com.epam.esm.entity.OrderDto;
+import com.epam.esm.entity.Pagination;
 import com.epam.esm.entity.PaginationDto;
 import com.epam.esm.exception.ResourceException;
 import com.epam.esm.exception.ResourceNotFoundException;
 import com.epam.esm.service.GiftCertificateService;
 import com.epam.esm.service.OrderService;
-import com.epam.esm.util.PaginationUtil;
 import com.epam.esm.util.converter.OrderConverter;
-import java.util.HashMap;
+import com.epam.esm.util.converter.PaginationConverter;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import javax.validation.Valid;
 import org.springframework.hateoas.CollectionModel;
@@ -34,27 +33,28 @@ public class OrderController {
     public static final String ID_IS_NEGATIVE_ID = "Id is negative (id=%d)";
     private final OrderService orderService;
     private final OrderConverter orderConverter;
-    private final PaginationUtil paginationUtil;
+    private final PaginationConverter paginationConverter;
     private final GiftCertificateService giftCertificateService;
 
     public OrderController(OrderService orderService,
                            OrderConverter orderConverter,
-                           PaginationUtil paginationUtil,
+                           PaginationConverter paginationConverter,
                            GiftCertificateService giftCertificateService) {
         this.orderService = orderService;
         this.orderConverter = orderConverter;
-        this.paginationUtil = paginationUtil;
+        this.paginationConverter = paginationConverter;
         this.giftCertificateService = giftCertificateService;
     }
 
     @GetMapping("/orders")
     public CollectionModel<OrderDto> getOrders(@Valid PaginationDto paginationDto) {
-        Map<String, String> parameterMap = new HashMap<>();
-        paginationUtil.fillInMapFromPaginationDto(paginationDto, parameterMap);
+        Pagination pagination = paginationConverter.convertFromDto(paginationDto);
 
-        List<Order> orders = orderService.findAll(parameterMap);
+        List<Order> orders = orderService.findAll(pagination);
         if (orders.isEmpty()) {
-            throw new ResourceNotFoundException("Requested resource not found ", CodeOfEntity.ORDER);
+            throw new ResourceNotFoundException(
+                String.format("Requested resource not found, limit=%d, offset=%d ", paginationDto.getLimit(),
+                    paginationDto.getOffset()), CodeOfEntity.ORDER);
         }
         List<OrderDto> orderDtos = orderConverter.convertListToListDto(orders);
 
@@ -82,12 +82,14 @@ public class OrderController {
     }
 
     @GetMapping("/users/{userId}/orders")
-    public CollectionModel<OrderDto> getOrdersByUserId(@PathVariable long userId) {
+    public CollectionModel<OrderDto> getSpecifiedOrdersByUserId(@PathVariable long userId,
+                                                                @Valid PaginationDto paginationDto) {
         if (userId < 0) {
             throw new ResourceException(String.format(ID_IS_NEGATIVE_ID, userId), CodeOfEntity.ORDER);
         }
+        Pagination pagination = paginationConverter.convertFromDto(paginationDto);
 
-        List<Order> results = orderService.findByUserId(userId);
+        List<Order> results = orderService.findByUserId(userId, pagination);
         if (results.isEmpty()) {
             throw new ResourceNotFoundException(
                 String.format("Requested resource not found (id=%d)", userId), CodeOfEntity.ORDER);
@@ -101,8 +103,8 @@ public class OrderController {
     }
 
     @GetMapping("/users/{userId}/orders/{id}")
-    public EntityModel<OrderDto> getOrdersByUserIdById(@PathVariable long userId,
-                                                       @PathVariable long id) {
+    public EntityModel<OrderDto> getSpecifiedOrderByIdByUserId(@PathVariable long userId,
+                                                               @PathVariable long id) {
         if (userId < 0) {
             throw new ResourceException(String.format("Id is negative (userId=%d)", userId), CodeOfEntity.USER);
         }

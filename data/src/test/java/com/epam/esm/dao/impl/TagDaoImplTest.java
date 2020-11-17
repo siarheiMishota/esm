@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import com.epam.esm.configuration.DaoConfigurationTest;
 import com.epam.esm.dao.TagDao;
+import com.epam.esm.entity.Pagination;
 import com.epam.esm.entity.Tag;
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
@@ -20,11 +21,6 @@ class TagDaoImplTest {
 
     @Autowired
     private TagDao tagDao;
-
-    @Test
-    void findAll() {
-        assertEquals(50, tagDao.findAll().size());
-    }
 
     @Test
     void findById() {
@@ -60,7 +56,7 @@ class TagDaoImplTest {
 
     @Test
     void findByGiftCertificateId() {
-        assertEquals(2, tagDao.findByGiftCertificateId(3).size());
+        assertEquals(2, tagDao.findByGiftCertificateId(3, new Pagination()).size());
     }
 
 
@@ -95,25 +91,5 @@ class TagDaoImplTest {
         Optional<Tag> actual = tagDao.findById(tag.getId());
 
         assertNotEquals(expected, actual);
-    }
-
-    @Test
-    void deleteWithNegativeId() {
-        int expected = tagDao.findAll().size();
-
-        tagDao.delete(-1);
-        int actual = tagDao.findAll().size();
-
-        assertEquals(expected, actual);
-    }
-
-    @Test
-    void deleteWithNotExist() {
-        int expected = tagDao.findAll().size();
-
-        tagDao.delete(10000);
-        int actual = tagDao.findAll().size();
-
-        assertEquals(expected, actual);
     }
 }

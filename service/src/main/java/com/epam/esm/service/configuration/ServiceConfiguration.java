@@ -36,9 +36,8 @@ public class ServiceConfiguration {
 
     @Bean
     public OrderService orderService(OrderDao orderDao,
-                                     UserService userService,
-                                     GiftCertificateService giftCertificateService) {
-        return new OrderServiceImpl(orderDao, userService, giftCertificateService);
+                                     UserService userService) {
+        return new OrderServiceImpl(orderDao, userService);
     }
 
     @Bean
@@ -50,6 +49,4 @@ public class ServiceConfiguration {
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
-
-
 }

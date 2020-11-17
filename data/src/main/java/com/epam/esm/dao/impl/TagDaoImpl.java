@@ -8,12 +8,12 @@ import static com.epam.esm.dao.sqlRequest.SqlRequestTag.INSERT;
 
 import com.epam.esm.dao.TagDao;
 import com.epam.esm.dao.sqlRequest.SqlRequestUser;
+import com.epam.esm.entity.Pagination;
 import com.epam.esm.entity.Tag;
 import com.epam.esm.util.PaginationParameter;
 import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
@@ -32,10 +32,10 @@ public class TagDaoImpl implements TagDao {
     }
 
     @Override
-    public List<Tag> findAll(Map<String, String> paginationParametersMap) {
+    public List<Tag> findAll(Pagination pagination) {
         StringBuilder stringRequestBuilder = new StringBuilder();
         stringRequestBuilder.append(SqlRequestUser.FIND_ALL);
-        paginationParameter.fillInLimitAndOffset(paginationParametersMap, stringRequestBuilder);
+        paginationParameter.buildLimitAndOffset(pagination, stringRequestBuilder);
 
         return jdbcTemplate.query(stringRequestBuilder.toString(),
             new BeanPropertyRowMapper<>(Tag.class));
@@ -56,8 +56,11 @@ public class TagDaoImpl implements TagDao {
     }
 
     @Override
-    public List<Tag> findByGiftCertificateId(long giftCertificateId) {
-        return jdbcTemplate.query(FIND_BY_GIFT_CERTIFICATE_ID, new Object[]{giftCertificateId},
+    public List<Tag> findByGiftCertificateId(long giftCertificateId, Pagination pagination) {
+        StringBuilder stringRequestBuilder = new StringBuilder();
+        stringRequestBuilder.append(FIND_BY_GIFT_CERTIFICATE_ID);
+        paginationParameter.buildLimitAndOffset(pagination, stringRequestBuilder);
+        return jdbcTemplate.query(stringRequestBuilder.toString(), new Object[]{giftCertificateId},
             new BeanPropertyRowMapper<>(Tag.class));
     }
 

@@ -1,23 +1,19 @@
 package com.epam.esm.dao.impl;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import com.epam.esm.configuration.DaoConfigurationTest;
-import com.epam.esm.dao.StringParameters;
 import com.epam.esm.dao.UserDao;
 import com.epam.esm.entity.Order;
+import com.epam.esm.entity.Pagination;
 import com.epam.esm.entity.User;
 import java.math.BigDecimal;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.jdbc.BadSqlGrammarException;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 @ExtendWith(SpringExtension.class)
@@ -28,43 +24,17 @@ class UserDaoImplTest {
     private UserDao userDao;
 
     @Test
-    void findAll() {
-        List<User> all = userDao.findAll();
-        assertEquals(50, all.size());
-    }
-
-    @Test
     void findAllWithParameters() {
-        Map<String, String> parameterMap = new HashMap<>();
-        parameterMap.put(StringParameters.PATTERN_LIMIT, "30");
-        parameterMap.put(StringParameters.PATTERN_OFFSET, "10");
-        List<User> all = userDao.findAll(parameterMap);
+        Pagination pagination = new Pagination(30, 10);
+        List<User> all = userDao.findAll(pagination);
         assertEquals(30, all.size());
     }
 
     @Test
     void findAllWithParametersBigOffset() {
-        Map<String, String> parameterMap = new HashMap<>();
-        parameterMap.put(StringParameters.PATTERN_LIMIT, "30");
-        parameterMap.put(StringParameters.PATTERN_OFFSET, "100");
-        List<User> all = userDao.findAll(parameterMap);
+        Pagination pagination = new Pagination(30, 100);
+        List<User> all = userDao.findAll(pagination);
         assertEquals(List.of(), all);
-    }
-
-    @Test
-    void findAllWithParametersIncorrectLimit() {
-        Map<String, String> parameterMap = new HashMap<>();
-        parameterMap.put(StringParameters.PATTERN_LIMIT, "32a");
-        parameterMap.put(StringParameters.PATTERN_OFFSET, "10");
-        assertThrows(BadSqlGrammarException.class, () -> userDao.findAll(parameterMap));
-    }
-
-    @Test
-    void findAllWithParametersIncorrectOffset() {
-        Map<String, String> parameterMap = new HashMap<>();
-        parameterMap.put(StringParameters.PATTERN_LIMIT, "32");
-        parameterMap.put(StringParameters.PATTERN_OFFSET, "aa2 ");
-        assertThrows(BadSqlGrammarException.class, () -> userDao.findAll(parameterMap));
     }
 
     @Test

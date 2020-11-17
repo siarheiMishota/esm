@@ -7,6 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import com.epam.esm.configuration.DaoConfigurationTest;
 import com.epam.esm.dao.GiftCertificateDao;
 import com.epam.esm.entity.GiftCertificate;
+import com.epam.esm.entity.Pagination;
 import com.epam.esm.entity.Tag;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -33,7 +34,7 @@ class GiftCertificateDaoImplTest {
         Map<String, String> stringStringMap = new HashMap<>();
         stringStringMap.put("name", "name");
         stringStringMap.put("sort", "price:desc,name");
-        assertEquals(11, giftCertificateDao.findAll(stringStringMap).size());
+        assertEquals(11, giftCertificateDao.findAll(stringStringMap, new Pagination()).size());
     }
 
     @Test
@@ -41,7 +42,8 @@ class GiftCertificateDaoImplTest {
         Map<String, String> stringStringMap = new HashMap<>();
         stringStringMap.put("name", "name");
         stringStringMap.put("sort", "price:descss,name");
-        assertThrows(BadSqlGrammarException.class, () -> giftCertificateDao.findAll(stringStringMap).size());
+        assertThrows(BadSqlGrammarException.class,
+            () -> giftCertificateDao.findAll(stringStringMap, new Pagination()).size());
     }
 
     @Test
@@ -111,20 +113,20 @@ class GiftCertificateDaoImplTest {
 
     @Test
     void deleteWithNegativeId() {
-        int expected = giftCertificateDao.findAll(new HashMap<>()).size();
+        int expected = giftCertificateDao.findAll(new HashMap<>(), new Pagination()).size();
 
         giftCertificateDao.delete(-1);
-        int actual = giftCertificateDao.findAll(new HashMap<>()).size();
+        int actual = giftCertificateDao.findAll(new HashMap<>(), new Pagination()).size();
 
         assertEquals(expected, actual);
     }
 
     @Test
     void deleteWithNotExist() {
-        int expected = giftCertificateDao.findAll(new HashMap<>()).size();
+        int expected = giftCertificateDao.findAll(new HashMap<>(), new Pagination()).size();
 
         giftCertificateDao.delete(1200);
-        int actual = giftCertificateDao.findAll(new HashMap<>()).size();
+        int actual = giftCertificateDao.findAll(new HashMap<>(), new Pagination()).size();
 
         assertEquals(expected, actual);
     }

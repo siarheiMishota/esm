@@ -60,7 +60,7 @@ public class DaoConfigurationTest {
     }
 
     @Bean
-    public GiftCertificateParameter fillInRequest() {
+    public GiftCertificateParameter giftCertificateParameter() {
         return new GiftCertificateParameter();
     }
 

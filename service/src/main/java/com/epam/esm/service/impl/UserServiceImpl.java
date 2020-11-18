@@ -1,7 +1,7 @@
 package com.epam.esm.service.impl;
 
-import com.epam.esm.dao.UserDao;
 import com.epam.esm.entity.User;
+import com.epam.esm.repository.UserRepo;
 import com.epam.esm.service.UserService;
 import java.util.List;
 import java.util.Map;
@@ -10,10 +10,11 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 public class UserServiceImpl implements UserService {
 
-    private final UserDao userDao;
+    //    private final UserDao userDao;
+    private final UserRepo userDao;
     private final PasswordEncoder passwordEncoder;
 
-    public UserServiceImpl(UserDao userDao, PasswordEncoder passwordEncoder) {
+    public UserServiceImpl(UserRepo userDao, PasswordEncoder passwordEncoder) {
         this.userDao = userDao;
         this.passwordEncoder = passwordEncoder;
     }

@@ -1,7 +1,7 @@
 package com.epam.esm.service.impl;
 
-import com.epam.esm.dao.TagDao;
 import com.epam.esm.entity.Tag;
+import com.epam.esm.repository.TagRepo;
 import com.epam.esm.service.TagService;
 import java.util.List;
 import java.util.Map;
@@ -9,11 +9,14 @@ import java.util.Optional;
 
 public class TagServiceImpl implements TagService {
 
-    private final TagDao tagDao;
+//    private final TagDao tagDao;
 
-    public TagServiceImpl(TagDao tagDao) {
-        this.tagDao = tagDao;
+    private final TagRepo tagRepo;
+
+    public TagServiceImpl(TagRepo tagRepo) {
+        this.tagRepo = tagRepo;
     }
+
 
     @Override
     public List<Tag> findAll(Map<String, String> parametersMap) {

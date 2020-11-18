@@ -1,5 +1,8 @@
 package com.epam.esm.configuration;
 
+import com.epam.esm.util.GiftCertificateParameter;
+import com.epam.esm.util.PaginationParameter;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 
@@ -50,14 +53,14 @@ public class DaoConfiguration {
 //                                                 PaginationParameter paginationParameter) {
 //        return new GiftCertificateDaoImpl(jdbcTemplate, tagDao, giftCertificateParameter, paginationParameter);
 //    }
-//
-//    @Bean
-//    public GiftCertificateParameter giftCertificateParameters() {
-//        return new GiftCertificateParameter();
-//    }
-//
-//    @Bean
-//    public PaginationParameter paginationParameter() {
-//        return new PaginationParameter();
-//    }
+
+    @Bean
+    public GiftCertificateParameter giftCertificateParameters() {
+        return new GiftCertificateParameter();
+    }
+
+    @Bean
+    public PaginationParameter paginationParameter() {
+        return new PaginationParameter();
+    }
 }

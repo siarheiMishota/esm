@@ -1,10 +1,10 @@
 package com.epam.esm.service.configuration;
 
 import com.epam.esm.configuration.DaoConfiguration;
-import com.epam.esm.dao.GiftCertificateDao;
 import com.epam.esm.dao.OrderDao;
-import com.epam.esm.dao.TagDao;
 import com.epam.esm.dao.UserDao;
+import com.epam.esm.repository.GiftCertificateRepo;
+import com.epam.esm.repository.TagRepo;
 import com.epam.esm.service.GiftCertificateService;
 import com.epam.esm.service.OrderService;
 import com.epam.esm.service.TagService;
@@ -24,14 +24,13 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 public class ServiceConfiguration {
 
     @Bean
-    public TagService tagService(TagDao tagDao) {
-        return new TagServiceImpl(tagDao);
+    public TagService tagService(TagRepo tagRepo) {
+        return new TagServiceImpl(tagRepo);
     }
 
     @Bean
-    public GiftCertificateService giftCertificateService(GiftCertificateDao giftCertificateDao,
-                                                         TagService tagService) {
-        return new GiftCertificateServiceImpl(giftCertificateDao, tagService);
+    public GiftCertificateService giftCertificateService(GiftCertificateRepo giftCertificateRepo) {
+        return new GiftCertificateServiceImpl(giftCertificateRepo);
     }
 
     @Bean
@@ -51,5 +50,24 @@ public class ServiceConfiguration {
         return new BCryptPasswordEncoder();
     }
 
-
+//    public TagService tagService(TagDao tagDao) {
+//        return new TagServiceImpl(tagDao);
+//    }
+//
+//    @Bean
+//    public GiftCertificateService giftCertificateService(GiftCertificateRepo giftCertificateRepo) {
+//        return new GiftCertificateServiceImpl(giftCertificateRepo);
+//    }
+//
+//    @Bean
+//    public OrderService orderService(OrderDao orderDao,
+//                                     UserService userService,
+//                                     GiftCertificateService giftCertificateService) {
+//        return new OrderServiceImpl(orderDao, userService, giftCertificateService);
+//    }
+//
+//    @Bean
+//    public UserService userService(UserDao userDao, PasswordEncoder passwordEncoder) {
+//        return new UserServiceImpl(userDao, passwordEncoder);
+//    }
 }

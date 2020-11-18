@@ -1,15 +1,7 @@
 package com.epam.esm.dao.impl;
 
-import static org.junit.jupiter.api.Assertions.assertThrows;
-
 import com.epam.esm.configuration.DaoConfigurationTest;
-import com.epam.esm.dao.OrderDao;
-import com.epam.esm.entity.GiftCertificate;
-import com.epam.esm.entity.Order;
-import java.math.BigDecimal;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
@@ -17,41 +9,40 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 @SpringBootTest(classes = DaoConfigurationTest.class)
 class OrderDaoImplTest {
 
-
-    @Autowired
-    private OrderDao orderDao;
-
-    //    @Test
-//    void findAll() {
+//    @Autowired
+//    private OrderDao orderDao;
 //
-//    }
-//
+//    //    @Test
+////    void findAll() {
+////
+////    }
+////
+////    @Test
+////    void findById() {
+////        Optional<Order> byId = orderDao.findById(10);
+////        assertEquals(Optional.empty(),byId);
+////    }
+////
+////    @Test
+////    void findByUserId() {
+////    }
+////
 //    @Test
-//    void findById() {
-//        Optional<Order> byId = orderDao.findById(10);
-//        assertEquals(Optional.empty(),byId);
-//    }
+//    void add() {
+//        Order order = new Order();
+//        order.setCost(BigDecimal.valueOf(45));
+//        GiftCertificate giftCertificate = new GiftCertificate();
+//        giftCertificate.setId(10000);
+//        order.setGiftCertificate(giftCertificate);
 //
-//    @Test
-//    void findByUserId() {
+//        assertThrows(NullPointerException.class, () -> orderDao.add(order, 10));
 //    }
-//
-    @Test
-    void add() {
-        Order order = new Order();
-        order.setCost(BigDecimal.valueOf(45));
-        GiftCertificate giftCertificate = new GiftCertificate();
-        giftCertificate.setId(10000);
-        order.setGiftCertificate(giftCertificate);
-
-        assertThrows(NullPointerException.class, () -> orderDao.add(order, 10));
-    }
-//
-//    @Test
-//    void update() {
-//    }
-//
-//    @Test
-//    void delete() {
-//    }
+////
+////    @Test
+////    void update() {
+////    }
+////
+////    @Test
+////    void delete() {
+////    }
 }

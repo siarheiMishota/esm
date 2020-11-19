@@ -30,7 +30,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class OrderController {
 
-    public static final String ID_IS_NEGATIVE_ID = "Id is negative (id=%d)";
+    private static final String ID_IS_NEGATIVE_ID = "Id is negative (id=%d)";
     private final OrderService orderService;
     private final OrderConverter orderConverter;
     private final PaginationConverter paginationConverter;

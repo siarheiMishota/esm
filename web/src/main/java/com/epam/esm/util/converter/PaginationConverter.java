@@ -13,13 +13,13 @@ public class PaginationConverter {
         Pagination pagination = new Pagination();
         int limit;
         long offset;
-        if (paginationDto.getLimit() == 0) {
+        if (paginationDto.getLimit() <= 0) {
             limit = DEFAULT_LIMIT;
         } else {
             limit = paginationDto.getLimit();
         }
 
-        if (paginationDto.getOffset() == 0) {
+        if (paginationDto.getOffset() <= 0) {
             offset = DEFAULT_OFFSET;
         } else {
             offset = paginationDto.getOffset();

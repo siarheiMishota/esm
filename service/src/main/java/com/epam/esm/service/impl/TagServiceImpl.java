@@ -1,6 +1,7 @@
 package com.epam.esm.service.impl;
 
 import com.epam.esm.dao.TagDao;
+import com.epam.esm.entity.Pagination;
 import com.epam.esm.entity.Tag;
 import com.epam.esm.service.TagService;
 import java.util.List;
@@ -15,8 +16,8 @@ public class TagServiceImpl implements TagService {
     }
 
     @Override
-    public List<Tag> findAll() {
-        return tagDao.findAll();
+    public List<Tag> findAll(Pagination pagination) {
+        return tagDao.findAll(pagination);
     }
 
     @Override
@@ -30,8 +31,8 @@ public class TagServiceImpl implements TagService {
     }
 
     @Override
-    public List<Tag> findByGiftCertificateId(long giftCertificateId) {
-        return tagDao.findByGiftCertificateId(giftCertificateId);
+    public List<Tag> findByGiftCertificateId(long giftCertificateId, Pagination pagination) {
+        return tagDao.findByGiftCertificateId(giftCertificateId, pagination);
     }
 
     @Override
@@ -39,11 +40,7 @@ public class TagServiceImpl implements TagService {
         if (tag == null) {
             return false;
         }
-        if (tagDao.findByName(tag.getName()).isEmpty()) {
-            tagDao.add(tag);
-            return true;
-        }
-        return false;
+        return tagDao.add(tag) != null;
     }
 
     @Override

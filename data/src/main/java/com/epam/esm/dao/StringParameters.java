@@ -16,6 +16,8 @@ public class StringParameters {
     public static final String WHERE = " where ";
     public static final String LIKE = " like ";
     public static final String AND = " and ";
+    public static final String PATTERN_LIMIT = "limit";
+    public static final String PATTERN_OFFSET = "offset";
     public static final String PATTERN_KEY_SORT = "sort";
     public static final String PATTERN_KEY_NAME = "name";
     public static final String PATTERN_KEY_TAG = "tag";

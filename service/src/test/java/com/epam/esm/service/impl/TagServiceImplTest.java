@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.BDDMockito.given;
 
 import com.epam.esm.dao.TagDao;
+import com.epam.esm.entity.Pagination;
 import com.epam.esm.entity.Tag;
 import java.util.List;
 import java.util.Optional;
@@ -26,10 +27,10 @@ class TagServiceImplTest {
 
     @Test
     void findAll() {
-        given(tagDao.findAll()).willReturn(List.of(new Tag(1, "1"), new Tag(2, "2")));
+        given(tagDao.findAll(new Pagination())).willReturn(List.of(new Tag(1, "1"), new Tag(2, "2")));
 
         List<Tag> expected = List.of(new Tag(1, "1"), new Tag(2, "2"));
-        assertEquals(expected, tagService.findAll());
+        assertEquals(expected, tagService.findAll(new Pagination()));
     }
 
     @Test
@@ -72,24 +73,25 @@ class TagServiceImplTest {
 
     @Test
     void findByGiftCertificateId() {
-        given(tagDao.findByGiftCertificateId(1)).willReturn(List.of(new Tag(1, "1"), new Tag(2, "2")));
+        given(tagDao.findByGiftCertificateId(1, new Pagination())).willReturn(
+            List.of(new Tag(1, "1"), new Tag(2, "2")));
 
         List<Tag> expected = List.of(new Tag(1, "1"), new Tag(2, "2"));
-        assertEquals(expected, tagService.findByGiftCertificateId(1));
+        assertEquals(expected, tagService.findByGiftCertificateId(1, new Pagination()));
     }
 
     @Test
     void findByGiftCertificateIdNotExist() {
-        given(tagDao.findByGiftCertificateId(100)).willReturn(List.of());
+        given(tagDao.findByGiftCertificateId(100, new Pagination())).willReturn(List.of());
 
-        assertEquals(List.of(), tagService.findByGiftCertificateId(100));
+        assertEquals(List.of(), tagService.findByGiftCertificateId(100, new Pagination()));
     }
 
     @Test
     void findByGiftCertificateIdWithNegativeId() {
-        given(tagDao.findByGiftCertificateId(-1)).willReturn(List.of());
+        given(tagDao.findByGiftCertificateId(-1, new Pagination())).willReturn(List.of());
 
-        assertEquals(List.of(), tagService.findByGiftCertificateId(-1));
+        assertEquals(List.of(), tagService.findByGiftCertificateId(-1, new Pagination()));
     }
 
     @Test
@@ -106,9 +108,9 @@ class TagServiceImplTest {
 
     @Test
     void delete() {
-        given(tagService.findAll()).willReturn(List.of(new Tag(), new Tag(), new Tag()));
+        given(tagService.findAll(new Pagination())).willReturn(List.of(new Tag(), new Tag(), new Tag()));
         tagService.delete(4);
-        assertEquals(3, tagService.findAll().size());
+        assertEquals(3, tagService.findAll(new Pagination()).size());
 
     }
 }

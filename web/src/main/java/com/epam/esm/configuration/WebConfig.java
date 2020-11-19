@@ -1,9 +1,13 @@
 package com.epam.esm.configuration;
 
-import com.epam.esm.controller.GiftCertificateAdapter;
 import com.epam.esm.service.GiftCertificateService;
 import com.epam.esm.service.configuration.ServiceConfiguration;
 import com.epam.esm.util.GiftCertificateUtil;
+import com.epam.esm.util.converter.GiftCertificateConverter;
+import com.epam.esm.util.converter.OrderConverter;
+import com.epam.esm.util.converter.PaginationConverter;
+import com.epam.esm.util.converter.TagConverter;
+import com.epam.esm.util.converter.UserConverter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -42,8 +46,28 @@ public class WebConfig implements WebMvcConfigurer {
     }
 
     @Bean
-    public GiftCertificateAdapter giftCertificateAdapter() {
-        return new GiftCertificateAdapter();
+    public GiftCertificateConverter giftCertificateAdapter(TagConverter tagConverter) {
+        return new GiftCertificateConverter(tagConverter);
+    }
+
+    @Bean
+    public UserConverter userAdapter(OrderConverter orderConverter) {
+        return new UserConverter(orderConverter);
+    }
+
+    @Bean
+    public OrderConverter orderAdapter() {
+        return new OrderConverter();
+    }
+
+    @Bean
+    public TagConverter tagAdapter() {
+        return new TagConverter();
+    }
+
+    @Bean
+    public PaginationConverter paginationConverter() {
+        return new PaginationConverter();
     }
 
     @Bean

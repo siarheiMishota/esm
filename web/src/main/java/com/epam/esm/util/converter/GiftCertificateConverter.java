@@ -1,15 +1,22 @@
-package com.epam.esm.controller;
+package com.epam.esm.util.converter;
 
 import com.epam.esm.entity.GiftCertificate;
 import com.epam.esm.entity.GiftCertificateDto;
 import com.epam.esm.entity.Tag;
+import com.epam.esm.entity.TagDto;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class GiftCertificateAdapter {
+public class GiftCertificateConverter {
 
-    public GiftCertificate adaptDtoTo(GiftCertificateDto giftCertificateDto) {
+    private final TagConverter tagConverter;
+
+    public GiftCertificateConverter(TagConverter tagConverter) {
+        this.tagConverter = tagConverter;
+    }
+
+    public GiftCertificate convertFromDto(GiftCertificateDto giftCertificateDto) {
         GiftCertificate giftCertificate = new GiftCertificate();
         giftCertificate.setId(giftCertificateDto.getId());
         giftCertificate.setName(giftCertificateDto.getName());
@@ -17,7 +24,7 @@ public class GiftCertificateAdapter {
         giftCertificate.setPrice(giftCertificateDto.getPrice());
         giftCertificate.setDuration(giftCertificateDto.getDuration());
 
-        List<Tag> tagsDto = giftCertificateDto.getTags();
+        List<TagDto> tagsDto = giftCertificateDto.getTags();
         if (tagsDto == null) {
             giftCertificate.setTags(new ArrayList<>());
         } else {
@@ -28,7 +35,7 @@ public class GiftCertificateAdapter {
         return giftCertificate;
     }
 
-    public GiftCertificateDto adaptToDto(GiftCertificate giftCertificate) {
+    public GiftCertificateDto convertToDto(GiftCertificate giftCertificate) {
         GiftCertificateDto giftCertificateDto = new GiftCertificateDto();
         giftCertificateDto.setId(giftCertificate.getId());
         giftCertificateDto.setName(giftCertificate.getName());
@@ -37,13 +44,13 @@ public class GiftCertificateAdapter {
         giftCertificateDto.setCreationDate(giftCertificate.getCreationDate().toString());
         giftCertificateDto.setLastUpdateDate(giftCertificate.getLastUpdateDate().toString());
         giftCertificateDto.setDuration(giftCertificate.getDuration());
-        giftCertificateDto.setTags(giftCertificate.getTags());
+        giftCertificateDto.setTags(tagConverter.convertListToListDto(giftCertificate.getTags()));
         return giftCertificateDto;
     }
 
-    public List<GiftCertificateDto> adaptListToListDto(List<GiftCertificate> giftCertificates) {
+    public List<GiftCertificateDto> convertListToListDto(List<GiftCertificate> giftCertificates) {
         return giftCertificates.stream()
-            .map(this::adaptToDto)
+            .map(this::convertToDto)
             .collect(Collectors.toList());
     }
 }

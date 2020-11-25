@@ -53,16 +53,12 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
 
     @Override
     public boolean update(GiftCertificate giftCertificate) {
-        removeDuplicateTags(giftCertificate.getTags());
-        removeAllWhitespace(giftCertificate);
-        buildTagFromDb(giftCertificate);
+        if (giftCertificate.getTags() != null) {
+            removeDuplicateTags(giftCertificate.getTags());
+            buildTagFromDb(giftCertificate);
+        }
 
         return giftCertificateDao.update(giftCertificate) != 0;
-    }
-
-    private void removeAllWhitespace(GiftCertificate giftCertificate) {
-        giftCertificate.getTags()
-            .forEach(tag -> tag.setName(tag.getName().replaceAll("\\s+", "")));
     }
 
     private void buildTagFromDb(GiftCertificate giftCertificate) {
@@ -73,6 +69,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     public GiftCertificate add(GiftCertificate giftCertificate) {
         removeDuplicateTags(giftCertificate.getTags());
         buildTagFromDb(giftCertificate);
+
         return giftCertificateDao.add(giftCertificate);
     }
 

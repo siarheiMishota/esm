@@ -142,6 +142,7 @@ public class GiftCertificateController {
             throw new ResourceNotFoundException(
                 "Part of gift certificate wasn't updated because id is negative", CodeOfEntity.GIFT_CERTIFICATE);
         }
+
         giftCertificatePatchDto.setId(id);
 
         GiftCertificate giftCertificate = giftCertificateUtil.buildNotNullFieldInGiftCertificate(

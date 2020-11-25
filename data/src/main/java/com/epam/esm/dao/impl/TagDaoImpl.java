@@ -53,7 +53,12 @@ public class TagDaoImpl implements TagDao {
 
     @Override
     public Tag add(Tag tag) {
-        entityManager.persist(tag);
+        Optional<Tag> optionalTag = findByName(tag.getName());
+        if (optionalTag.isPresent()) {
+            tag.setId(optionalTag.get().getId());
+        } else {
+            entityManager.persist(tag);
+        }
         return tag;
     }
 

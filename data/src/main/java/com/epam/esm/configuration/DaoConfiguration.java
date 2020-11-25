@@ -14,19 +14,12 @@ import javax.persistence.EntityManagerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
-import org.springframework.core.env.Environment;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 @Configuration
 @PropertySource("classpath:data.properties")
 @EnableTransactionManagement
 public class DaoConfiguration {
-
-    private final Environment environment;
-
-    public DaoConfiguration(Environment environment) {
-        this.environment = environment;
-    }
 
     @Bean
     public EntityManager entityManager(EntityManagerFactory entityManagerFactory) {

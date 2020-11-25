@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import com.epam.esm.configuration.DaoConfigurationTest;
 import com.epam.esm.dao.GiftCertificateDao;
 import com.epam.esm.entity.GiftCertificate;
 import com.epam.esm.entity.Pagination;
@@ -17,13 +18,12 @@ import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.jdbc.BadSqlGrammarException;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 @ExtendWith(SpringExtension.class)
-//@SpringBootTest(classes = DaoConfigurationTest.class)
-@DataJpaTest
+@ContextConfiguration(classes = DaoConfigurationTest.class)
 class GiftCertificateDaoImplTest {
 
     @Autowired
@@ -142,6 +142,6 @@ class GiftCertificateDaoImplTest {
             BigDecimal.valueOf(4),
             LocalDateTime.of(2020, 10, 22, 0, 3, 22, 917992000),
             LocalDateTime.of(2020, 10, 22, 0, 3, 22, 917992000),
-            4, List.of(new Tag(1, "extreme")));
+            4, List.of(new Tag(1L, "extreme")));
     }
 }

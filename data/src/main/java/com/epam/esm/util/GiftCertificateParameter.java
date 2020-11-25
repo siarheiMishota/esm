@@ -1,16 +1,17 @@
 package com.epam.esm.util;
 
 import static com.epam.esm.dao.StringParameters.AND;
+import static com.epam.esm.dao.StringParameters.ASC;
 import static com.epam.esm.dao.StringParameters.COLUMN_DESCRIPTION;
 import static com.epam.esm.dao.StringParameters.COLUMN_NAME;
 import static com.epam.esm.dao.StringParameters.COLUMN_NAME_FOR_TAG;
-import static com.epam.esm.dao.StringParameters.G_C;
 import static com.epam.esm.dao.StringParameters.LIKE;
 import static com.epam.esm.dao.StringParameters.ORDER_BY;
 import static com.epam.esm.dao.StringParameters.PATTERN_KEY_DESCRIPTION;
 import static com.epam.esm.dao.StringParameters.PATTERN_KEY_NAME;
 import static com.epam.esm.dao.StringParameters.PATTERN_KEY_SORT;
 import static com.epam.esm.dao.StringParameters.PATTERN_KEY_TAG;
+import static com.epam.esm.dao.StringParameters.PREFIX_GC;
 import static com.epam.esm.dao.StringParameters.WHERE;
 import static com.epam.esm.dao.sqlRequest.SqlRequestGiftCertificate.JOIN_TAG;
 
@@ -27,7 +28,7 @@ public class GiftCertificateParameter {
                 fullFindBuilder.append(ORDER_BY);
                 Map<String, String> tokensMap = splitSortLineOnTokens(sort);
 
-                tokensMap.forEach((key, value) -> fullFindBuilder.append(G_C).append(key)
+                tokensMap.forEach((key, value) -> fullFindBuilder.append(PREFIX_GC).append(key)
                     .append(" ")
                     .append(value)
                     .append(","));
@@ -113,7 +114,7 @@ public class GiftCertificateParameter {
             .forEach(sortLine -> {
                 int indexOfColon = sortLine.indexOf(":");
                 if (indexOfColon == -1) {
-                    sortMap.put(sortLine, "asc");
+                    sortMap.put(sortLine, ASC);
                 } else {
                     sortMap.put(sortLine.substring(0, indexOfColon), sortLine.substring(indexOfColon + 1));
                 }

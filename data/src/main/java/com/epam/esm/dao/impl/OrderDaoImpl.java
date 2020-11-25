@@ -5,10 +5,8 @@ import static com.epam.esm.dao.sqlRequest.SqlRequestOrder.FIND_BY_USER_ID;
 import static com.epam.esm.dao.sqlRequest.SqlRequestOrder.FIND_BY_USER_ID_AND_ID;
 
 import com.epam.esm.dao.OrderDao;
-import com.epam.esm.entity.CodeOfEntity;
 import com.epam.esm.entity.Order;
 import com.epam.esm.entity.Pagination;
-import com.epam.esm.exception.ResourceNotFoundException;
 import java.util.List;
 import java.util.Optional;
 import javax.persistence.EntityManager;
@@ -62,14 +60,8 @@ public class OrderDaoImpl implements OrderDao {
 
     @Override
     public int update(Order order) {
-        try {
-            entityManager.merge(order);
-            return 1;
-        } catch (IllegalArgumentException e) {
-            throw new ResourceNotFoundException(
-                String.format("Resource is not found, (id=%d)", order.getGiftCertificate().getId()),
-                CodeOfEntity.ORDER);
-        }
+        entityManager.merge(order);
+        return 1;
     }
 
     @Override

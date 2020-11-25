@@ -5,7 +5,6 @@ import javax.persistence.CascadeType;
 import javax.persistence.ColumnResult;
 import javax.persistence.ConstructorResult;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -29,22 +28,23 @@ public class Tag {
     private long id;
     private String name;
 
-    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+
+    //    @ManyToMany(mappedBy = "tags", fetch = FetchType.LAZY)
+    @ManyToMany(cascade = {CascadeType.MERGE, CascadeType.REFRESH})
     @JoinTable(name = "tag_gift_certificate",
         inverseJoinColumns = @JoinColumn(name = "gift_certificate_id"),
         joinColumns = @JoinColumn(name = "tag_id"))
     private List<GiftCertificate> giftCertificates;
 
-
     public Tag() {
+    }
+
+    public Tag(String name) {
+        this.name = name;
     }
 
     public Tag(long id, String name) {
         this.id = id;
-        this.name = name;
-    }
-
-    public Tag(String name) {
         this.name = name;
     }
 

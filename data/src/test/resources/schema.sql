@@ -1,4 +1,100 @@
-insert into users (name, email, password)
+
+create table tag
+(
+    id   int auto_increment,
+    name varchar(30) not null unique,
+
+    primary key (id)
+
+);
+
+create table gift_certificate
+(
+    id               int auto_increment,
+    name             varchar(50) not null,
+    description      text        not null,
+    price            decimal     not null check ( price >= 0 ),
+    creation_date    timestamp   not null default now(),
+    last_update_date timestamp   not null default now(),
+    duration         int         not null check ( duration >= 0 ),
+
+    primary key (id)
+);
+
+create table tag_gift_certificate
+(
+    tag_id              int not null,
+    gift_certificate_id int not null,
+
+    primary key (tag_id, gift_certificate_id),
+
+    foreign key (tag_id) references tag (id) on delete cascade,
+    foreign key (gift_certificate_id) references gift_certificate (id) on delete cascade
+
+);
+
+create table user
+(
+    id       int auto_increment,
+    name     varchar(50)  not null,
+    email    varchar(50)  not null,
+    password varchar(100) not null,
+
+    primary key (id),
+
+    unique (email)
+);
+
+
+create table orders
+(
+    id                  int auto_increment,
+    cost                decimal not null check ( cost > 0 ),
+    date                timestamp default now(),
+    id_gift_certificate int     not null,
+    id_user             int     not null,
+
+    primary key (id),
+
+    foreign key (id_gift_certificate) REFERENCES gift_certificate (id),
+    foreign key (id_user) REFERENCES user (id)
+);
+
+insert into tag(name)
+values ('extreme'),
+       ('fun'),
+       ('love'),
+       ('relax'),
+       ('bored');
+
+
+insert into gift_certificate (name, description, price, creation_date, last_update_date, duration)
+values ('name 1', 'description 1', 1, '2020-10-22T00:03:22.917992000', '2020-10-22T00:03:22.917992000', 1),
+       ('name 2', 'description 2', 2, '2020-10-22T00:03:22.917992000', '2020-10-22T00:03:22.917992000', 2),
+       ('name 3', 'description 3', 3, '2020-10-22T00:03:22.917992000', '2020-10-22T00:03:22.917992000', 3),
+       ('name 4', 'description 4', 4, '2020-10-22T00:03:22.917992000', '2020-10-22T00:03:22.917992000', 4),
+       ('name 5', 'description 5', 5, '2020-10-22T00:03:22.917992000', '2020-10-22T00:03:22.917992000', 5),
+       ('name 6', 'description 6', 6, '2020-10-22T00:03:22.917992000', '2020-10-22T00:03:22.917992000', 6),
+       ('name 7', 'description 7', 7, '2020-10-22T00:03:22.917992000', '2020-10-22T00:03:22.917992000', 7),
+       ('name 8', 'description 8', 8, '2020-10-22T00:03:22.917992000', '2020-10-22T00:03:22.917992000', 8),
+       ('name 9', 'description 9', 9, '2020-10-22T00:03:22.917992000', '2020-10-22T00:03:22.917992000', 9),
+       ('name 10', 'description 10', 10, '2020-10-22T00:03:22.917992000', '2020-12-22T00:03:22.917992000', 10),
+       ('name 11', 'description 11', 11, '2020-10-22T00:03:22.917992000', '2020-12-22T00:03:22.917992000', 11);
+
+insert into tag_gift_certificate (tag_id, gift_certificate_id)
+values (1, 1),
+       (2, 2),
+       (3, 3),
+       (1, 4),
+       (2, 5),
+       (3, 6),
+       (1, 7),
+       (2, 8),
+       (3, 9),
+       (3, 10),
+       (2, 3);
+
+insert into user (name, email, password)
 values ('Jobi', 'jchessun0@moonfruit.com', 'afb591939cccb575099d348c23d7e5892a3c35c1a2bf5420d3b131c62cbd4ef7'),
        ('Nat', 'nlafont1@imgur.com', '6855d35eb88cfa08539aade1f8fc9d8f9ae82bf179d55a8a23c30412b4c83908'),
        ('Augy', 'aswigg2@kickstarter.com', 'f40573804c5e76900099fec371bff046b2b966eb178f1855a4941bf710845483'),
@@ -71,101 +167,6 @@ values ('Jobi', 'jchessun0@moonfruit.com', 'afb591939cccb575099d348c23d7e5892a3c
        ('Tiff', 'tpydcock1x@latimes.com', '79f8bc81a15481753c5f497e526ff532ba934c07fd8c8aced594a67614628e46'),
        ('Alonzo', 'asimm1y@blogs.com', '899693c6adfff111befafaa1a921564777016066b38fc88d4ea8e843627deda5'),
        ('Lane', 'ljohnsson1z@wired.com', '5414cd24d923e6b0034362095d326435dcf5a7ea8c224c053ac0b6022f1b8a14');
-
-create table tags
-(
-    id   int auto_increment,
-    name varchar(30) not null unique,
-
-    primary key (id)
-
-);
-
-create table gift_certificates
-(
-    id               int auto_increment,
-    name             varchar(50) not null,
-    description      text        not null,
-    price            decimal     not null check ( price >= 0 ),
-    creation_date    timestamp   not null default now(),
-    last_update_date timestamp   not null default now(),
-    duration         int         not null check ( duration >= 0 ),
-
-    primary key (id)
-);
-
-create table tags_gift_certificates
-(
-    tag_id              int not null,
-    gift_certificate_id int not null,
-
-    primary key (tag_id, gift_certificate_id),
-
-    foreign key (tag_id) references tags (id) on delete cascade,
-    foreign key (gift_certificate_id) references gift_certificates (id) on delete cascade
-
-);
-
-create table users
-(
-    id       int auto_increment,
-    name     varchar(50)  not null,
-    email    varchar(50)  not null,
-    password varchar(100) not null,
-
-    primary key (id),
-
-    unique (email)
-);
-
-
-create table orders
-(
-    id                  int auto_increment,
-    cost                decimal not null check ( cost > 0 ),
-    date                timestamp default now(),
-    id_gift_certificate int     not null,
-    id_user             int     not null,
-
-    primary key (id),
-
-    foreign key (id_gift_certificate) REFERENCES gift_certificates (id),
-    foreign key (id_user) REFERENCES users (id)
-);
-
-insert into tags(name)
-values ('extreme'),
-       ('fun'),
-       ('love'),
-       ('relax'),
-       ('bored');
-
-
-insert into gift_certificates (name, description, price, creation_date, last_update_date, duration)
-values ('name 1', 'description 1', 1, '2020-10-22T00:03:22.917992000', '2020-10-22T00:03:22.917992000', 1),
-       ('name 2', 'description 2', 2, '2020-10-22T00:03:22.917992000', '2020-10-22T00:03:22.917992000', 2),
-       ('name 3', 'description 3', 3, '2020-10-22T00:03:22.917992000', '2020-10-22T00:03:22.917992000', 3),
-       ('name 4', 'description 4', 4, '2020-10-22T00:03:22.917992000', '2020-10-22T00:03:22.917992000', 4),
-       ('name 5', 'description 5', 5, '2020-10-22T00:03:22.917992000', '2020-10-22T00:03:22.917992000', 5),
-       ('name 6', 'description 6', 6, '2020-10-22T00:03:22.917992000', '2020-10-22T00:03:22.917992000', 6),
-       ('name 7', 'description 7', 7, '2020-10-22T00:03:22.917992000', '2020-10-22T00:03:22.917992000', 7),
-       ('name 8', 'description 8', 8, '2020-10-22T00:03:22.917992000', '2020-10-22T00:03:22.917992000', 8),
-       ('name 9', 'description 9', 9, '2020-10-22T00:03:22.917992000', '2020-10-22T00:03:22.917992000', 9),
-       ('name 10', 'description 10', 10, '2020-10-22T00:03:22.917992000', '2020-12-22T00:03:22.917992000', 10),
-       ('name 11', 'description 11', 11, '2020-10-22T00:03:22.917992000', '2020-12-22T00:03:22.917992000', 11);
-
-insert into tags_gift_certificates (tag_id, gift_certificate_id)
-values (1, 1),
-       (2, 2),
-       (3, 3),
-       (1, 4),
-       (2, 5),
-       (3, 6),
-       (1, 7),
-       (2, 8),
-       (3, 9),
-       (3, 10),
-       (2, 3);
 
 insert into orders (cost, id_gift_certificate, id_user)
 values (1, 1, 60),

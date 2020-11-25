@@ -40,18 +40,9 @@ public class TagServiceImpl implements TagService {
         if (tag == null) {
             return false;
         }
-        while (true) {
-            try {
-                Optional<Tag> optionalTag = tagDao.findByName(tag.getName());
-                if (optionalTag.isPresent()) {
-                    tag.setId(optionalTag.get().getId());
-                } else {
-                    tagDao.add(tag);
-                }
-                return true;
-            } catch (Exception ignored) {
-            }
-        }
+
+        tagDao.add(tag);
+        return true;
     }
 
     @Override

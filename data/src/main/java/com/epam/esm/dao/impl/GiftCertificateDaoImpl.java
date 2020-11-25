@@ -6,6 +6,7 @@ import com.epam.esm.dao.GiftCertificateDao;
 import com.epam.esm.entity.CodeOfEntity;
 import com.epam.esm.entity.GiftCertificate;
 import com.epam.esm.entity.Pagination;
+import com.epam.esm.exception.ResourceException;
 import com.epam.esm.exception.ResourceNotFoundException;
 import com.epam.esm.util.GiftCertificateParameter;
 import java.time.LocalDateTime;
@@ -67,28 +68,63 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
     }
 
     @Override
-    public int update(GiftCertificate giftCertificate) {
-        try {
-            Optional<GiftCertificate> optionalGiftCertificate = findById(giftCertificate.getId());
-            if (optionalGiftCertificate.isEmpty()) {
-                throw new ResourceNotFoundException(
-                    String.format("Resource is not found, (id=%d)", giftCertificate.getId()),
-                    CodeOfEntity.GIFT_CERTIFICATE);
-            }
-
-            GiftCertificate giftCertificateDb = optionalGiftCertificate.get();
-
-            giftCertificate.setOrders(giftCertificateDb.getOrders());
-            giftCertificate.setLastUpdateDate(LocalDateTime.now());
-            giftCertificate.setCreationDate(giftCertificateDb.getCreationDate());
-
-            entityManager.merge(giftCertificate);
-            return 1;
-        } catch (IllegalArgumentException e) {
+    public int update(GiftCertificate giftCertificateInner) {
+        Optional<GiftCertificate> optionalGiftCertificate = findById(giftCertificateInner.getId());
+        if (optionalGiftCertificate.isEmpty()) {
             throw new ResourceNotFoundException(
-                String.format("Resource is not found, (id=%d)", giftCertificate.getId()),
+                String.format("Resource is not found, (id=%d)", giftCertificateInner.getId()),
                 CodeOfEntity.GIFT_CERTIFICATE);
         }
+        GiftCertificate giftCertificateDb = buildNotNullFieldForUpdate(giftCertificateInner);
+        entityManager.merge(giftCertificateDb);
+
+        buildForReturn(giftCertificateDb, giftCertificateInner);
+        return 1;
+    }
+
+    public GiftCertificate buildNotNullFieldForUpdate(GiftCertificate giftCertificateInner) {
+        Optional<GiftCertificate> optionalGiftCertificate = findById(giftCertificateInner.getId());
+
+        if (optionalGiftCertificate.isEmpty()) {
+            throw new ResourceException("Gift certificate wasn't updated because id isn't found",
+                CodeOfEntity.GIFT_CERTIFICATE);
+        }
+
+        GiftCertificate giftCertificate = optionalGiftCertificate.get();
+
+        if (giftCertificateInner.getName() != null) {
+            giftCertificate.setName(giftCertificateInner.getName());
+        }
+
+        if (giftCertificateInner.getDescription() != null) {
+            giftCertificate.setDescription(giftCertificateInner.getDescription());
+        }
+
+        if (giftCertificateInner.getPrice() != null) {
+            giftCertificate.setPrice(giftCertificateInner.getPrice());
+        }
+
+        if (giftCertificateInner.getDuration() > 0) {
+            giftCertificate.setDuration(giftCertificateInner.getDuration());
+        }
+
+        if (giftCertificateInner.getTags() != null && !giftCertificateInner
+            .getTags().isEmpty()) {
+            giftCertificate.setTags(giftCertificateInner.getTags());
+        }
+        return giftCertificate;
+    }
+
+    public void buildForReturn(GiftCertificate fromDb, GiftCertificate toReturn) {
+        toReturn.setId(fromDb.getId());
+        toReturn.setTags(fromDb.getTags());
+        toReturn.setOrders(fromDb.getOrders());
+        toReturn.setCreationDate(fromDb.getCreationDate());
+        toReturn.setLastUpdateDate(fromDb.getLastUpdateDate());
+        toReturn.setDuration(fromDb.getDuration());
+        toReturn.setPrice(fromDb.getPrice());
+        toReturn.setName(fromDb.getName());
+        toReturn.setDescription(fromDb.getDescription());
     }
 
     @Override

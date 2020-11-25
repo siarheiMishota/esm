@@ -13,14 +13,13 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-//@ExtendWith(SpringExtension.class)
-@SpringBootTest(classes = DaoConfigurationTest.class)
-@DataJpaTest
+@ExtendWith(SpringExtension.class)
+@ContextConfiguration(classes = DaoConfigurationTest.class)
 class UserDaoImplTest {
-
 
     private final UserDao userDao;
 

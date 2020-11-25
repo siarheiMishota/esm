@@ -8,14 +8,12 @@ import com.epam.esm.entity.CodeOfEntity;
 import com.epam.esm.entity.Pagination;
 import com.epam.esm.entity.User;
 import com.epam.esm.exception.EntityDuplicateException;
-import com.epam.esm.exception.ResourceNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
-import org.springframework.dao.DuplicateKeyException;
 import org.springframework.transaction.annotation.Transactional;
 
 @Transactional
@@ -47,28 +45,31 @@ public class UserDaoImpl implements UserDao {
 
     @Override
     public User add(User user) {
-        try {
-            user.setOrders(new ArrayList<>());
-            entityManager.persist(user);
-            return user;
-        } catch (Exception e) {
-            throw new EntityDuplicateException(
-                String.format("Email is exist, email= %s", user.getEmail()), CodeOfEntity.USER);
+        Optional<User> optionalUser = findByEmail(user.getEmail());
+        if (optionalUser.isPresent()) {
+            throw new EntityDuplicateException("User wasn't updated because email is exist  " + user.getEmail(),
+                CodeOfEntity.USER);
         }
+
+        user.setOrders(new ArrayList<>());
+        entityManager.persist(user);
+        return user;
     }
 
     @Override
     public int update(User user) {
-        try {
-            entityManager.merge(user);
-            return 1;
-        } catch (DuplicateKeyException e) {
-            throw new EntityDuplicateException(e, "User wasn't updated because email is exist  " + user.getEmail(),
-                CodeOfEntity.USER);
-        } catch (IllegalArgumentException e) {
-            throw new ResourceNotFoundException(String.format("Resource is not found, (id=%d)", user.getId()),
+        checkEmailAvailability(user);
+
+        entityManager.merge(user);
+        return 1;
+    }
+
+    private void checkEmailAvailability(User user) {
+        Optional<User> optionalUser = findByEmail(user.getEmail());
+        if (optionalUser.isPresent() && optionalUser.get().getId() != user.getId()) {
+            throw new EntityDuplicateException("User wasn't updated because email is exist  " + user.getEmail(),
                 CodeOfEntity.USER);
         }
     }
-
 }
+

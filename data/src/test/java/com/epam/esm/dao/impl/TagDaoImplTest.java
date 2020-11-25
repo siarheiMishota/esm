@@ -6,7 +6,6 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import com.epam.esm.configuration.DaoConfigurationTest;
 import com.epam.esm.dao.TagDao;
-import com.epam.esm.entity.Pagination;
 import com.epam.esm.entity.Tag;
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
@@ -55,8 +54,9 @@ class TagDaoImplTest {
     }
 
     @Test
-    void findByGiftCertificateId() {
-        assertEquals(2, tagDao.findByGiftCertificateId(3, new Pagination()).size());
+    void findMostUsedByUserHighestCost() {
+        Tag expected = new Tag(1, "extreme");
+        assertEquals(expected, tagDao.findMostUsedByUserHighestCost().get());
     }
 
 

@@ -1,6 +1,8 @@
 package com.epam.esm.dao.impl;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import com.epam.esm.configuration.DaoConfigurationTest;
 import com.epam.esm.dao.UserDao;
@@ -11,17 +13,20 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-@ExtendWith(SpringExtension.class)
+//@ExtendWith(SpringExtension.class)
 @SpringBootTest(classes = DaoConfigurationTest.class)
+@DataJpaTest
 class UserDaoImplTest {
 
-    @Autowired
-    private UserDao userDao;
+
+    private final UserDao userDao;
+
+    public UserDaoImplTest(UserDao userDao) {
+        this.userDao = userDao;
+    }
 
     @Test
     void findAllWithParameters() {
@@ -62,13 +67,27 @@ class UserDaoImplTest {
         assertEquals(Optional.empty(), userDao.findById(5456));
     }
 
-//    @Test
-//    void add() {
-//        User expected = new User();
-//        expected.setId(50);
-//        expected.setName("Jennee");
-//        expected.setEmail("jmottram1d@un.org");
-//        expected.setPassword("7faab5f29ab9712326938b3267de8f5c764d3e097cf84d937ace6b29bed0016f");
-//        userDao.add(expected);
-//    }
+    @Test
+    void add() {
+        User user = getUser();
+        user.setEmail("jenneee@mail.ru");
+
+        long expected = user.getId();
+        userDao.add(user);
+        assertNotEquals(expected, user.getId());
+    }
+
+    @Test()
+    void addWithNull() {
+        assertThrows(NullPointerException.class, () -> userDao.add(null));
+    }
+
+    private User getUser() {
+        User user = new User();
+        user.setId(50);
+        user.setName("Jennee");
+        user.setEmail("jmottram1d@un.org");
+        user.setPassword("7faab5f29ab9712326938b3267de8f5c764d3e097cf84d937ace6b29bed0016f");
+        return user;
+    }
 }

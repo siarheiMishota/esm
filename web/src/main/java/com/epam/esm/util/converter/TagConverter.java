@@ -16,7 +16,7 @@ public class TagConverter {
 
     public Tag convertFromDto(TagDto tagDto) {
         Tag tag = new Tag();
-        tag.setName(tagDto.getName());
+        tag.setName(tagDto.getName()/*.replaceAll("\\s+","")*/);
         return tag;
     }
 

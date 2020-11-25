@@ -12,8 +12,6 @@ public interface GiftCertificateDao {
 
     Optional<GiftCertificate> findById(long id);
 
-    Optional<GiftCertificate> findByOrderId(long orderId);
-
     GiftCertificate add(GiftCertificate giftCertificate);
 
     int update(GiftCertificate giftCertificate);

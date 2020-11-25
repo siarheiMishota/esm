@@ -1,10 +1,14 @@
 package com.epam.esm.service.impl;
 
 import com.epam.esm.dao.OrderDao;
+import com.epam.esm.entity.GiftCertificate;
 import com.epam.esm.entity.Order;
 import com.epam.esm.entity.Pagination;
+import com.epam.esm.entity.User;
+import com.epam.esm.service.GiftCertificateService;
 import com.epam.esm.service.OrderService;
 import com.epam.esm.service.UserService;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -12,10 +16,14 @@ public class OrderServiceImpl implements OrderService {
 
     private final OrderDao orderDao;
     private final UserService userService;
+    private final GiftCertificateService giftCertificateService;
 
-    public OrderServiceImpl(OrderDao orderDao, UserService userService) {
+    public OrderServiceImpl(OrderDao orderDao,
+                            UserService userService,
+                            GiftCertificateService giftCertificateService) {
         this.orderDao = orderDao;
         this.userService = userService;
+        this.giftCertificateService = giftCertificateService;
     }
 
     @Override
@@ -41,9 +49,17 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public Order add(Order order, long userId) {
-        if (userService.findById(userId).isEmpty()) {
+        Optional<User> optionalUser = userService.findById(userId);
+        Optional<GiftCertificate> optionalGiftCertificate = giftCertificateService.findById(
+            order.getGiftCertificate().getId());
+        if (optionalUser.isEmpty() || optionalGiftCertificate.isEmpty()) {
             return order;
         }
+
+        order.setDate(LocalDateTime.now());
+        order.setUser(optionalUser.get());
+        order.setGiftCertificate(optionalGiftCertificate.get());
+
         return orderDao.add(order, userId);
     }
 

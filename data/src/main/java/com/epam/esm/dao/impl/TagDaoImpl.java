@@ -1,94 +1,65 @@
 package com.epam.esm.dao.impl;
 
-import static com.epam.esm.dao.sqlRequest.SqlRequestTag.DELETE;
-import static com.epam.esm.dao.sqlRequest.SqlRequestTag.FIND_BY_GIFT_CERTIFICATE_ID;
-import static com.epam.esm.dao.sqlRequest.SqlRequestTag.FIND_BY_ID;
+import static com.epam.esm.dao.sqlRequest.SqlRequestTag.FIND_ALL;
 import static com.epam.esm.dao.sqlRequest.SqlRequestTag.FIND_BY_NAME;
-import static com.epam.esm.dao.sqlRequest.SqlRequestTag.INSERT;
+import static com.epam.esm.dao.sqlRequest.SqlRequestTag.FIND_MOST_USED_BY_USER_HIGHEST_COST;
 
 import com.epam.esm.dao.TagDao;
-import com.epam.esm.dao.sqlRequest.SqlRequestUser;
 import com.epam.esm.entity.Pagination;
 import com.epam.esm.entity.Tag;
-import com.epam.esm.util.PaginationParameter;
-import java.sql.PreparedStatement;
-import java.sql.Statement;
 import java.util.List;
 import java.util.Optional;
-import org.springframework.dao.DuplicateKeyException;
-import org.springframework.jdbc.core.BeanPropertyRowMapper;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.support.GeneratedKeyHolder;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.TypedQuery;
 import org.springframework.transaction.annotation.Transactional;
 
+
+@Transactional
 public class TagDaoImpl implements TagDao {
 
-    private final JdbcTemplate jdbcTemplate;
-    private final PaginationParameter paginationParameter;
-
-    public TagDaoImpl(JdbcTemplate jdbcTemplate, PaginationParameter paginationParameter) {
-        this.jdbcTemplate = jdbcTemplate;
-        this.paginationParameter = paginationParameter;
-    }
+    @PersistenceContext
+    private EntityManager entityManager;
 
     @Override
     public List<Tag> findAll(Pagination pagination) {
-        StringBuilder stringRequestBuilder = new StringBuilder();
-        stringRequestBuilder.append(SqlRequestUser.FIND_ALL);
-        paginationParameter.buildLimitAndOffset(pagination, stringRequestBuilder);
-
-        return jdbcTemplate.query(stringRequestBuilder.toString(),
-            new BeanPropertyRowMapper<>(Tag.class));
+        TypedQuery<Tag> query = entityManager.createQuery(FIND_ALL, Tag.class)
+            .setMaxResults(pagination.getLimit())
+            .setFirstResult(pagination.getOffset());
+        return query.getResultList();
     }
 
     @Override
     public Optional<Tag> findById(long id) {
-        return jdbcTemplate.query(FIND_BY_ID, new Object[]{id}, new BeanPropertyRowMapper<>(Tag.class))
-            .stream()
-            .findAny();
+        Tag tag = entityManager.find(Tag.class, id);
+        return tag != null ? Optional.of(tag) : Optional.empty();
     }
 
     @Override
     public Optional<Tag> findByName(String name) {
-        return jdbcTemplate.query(FIND_BY_NAME, new Object[]{name}, new BeanPropertyRowMapper<>(Tag.class))
-            .stream()
-            .findAny();
+        return entityManager.createQuery(FIND_BY_NAME, Tag.class)
+            .setParameter("name", name)
+            .getResultStream().findAny();
     }
+
 
     @Override
-    public List<Tag> findByGiftCertificateId(long giftCertificateId, Pagination pagination) {
-        StringBuilder stringRequestBuilder = new StringBuilder();
-        stringRequestBuilder.append(FIND_BY_GIFT_CERTIFICATE_ID);
-        paginationParameter.buildLimitAndOffset(pagination, stringRequestBuilder);
-        return jdbcTemplate.query(stringRequestBuilder.toString(), new Object[]{giftCertificateId},
-            new BeanPropertyRowMapper<>(Tag.class));
+    public Optional<Tag> findMostUsedByUserHighestCost() {
+        List tagMapping = entityManager.createNativeQuery(FIND_MOST_USED_BY_USER_HIGHEST_COST, "TagMapping")
+            .getResultList();
+        Tag tag = (Tag) tagMapping.get(0);
+        return Optional.of(tag);
     }
 
-    @Transactional
     @Override
     public Tag add(Tag tag) {
-        try {
-            GeneratedKeyHolder generatedKeyHolder = new GeneratedKeyHolder();
-            jdbcTemplate.update(
-                connection -> {
-                    PreparedStatement preparedStatement = connection.prepareStatement(INSERT,
-                        Statement.RETURN_GENERATED_KEYS);
-                    preparedStatement.setString(1, tag.getName());
-                    return preparedStatement;
-                }, generatedKeyHolder);
-            Number key = generatedKeyHolder.getKey();
-            if (key != null) {
-                tag.setId(key.longValue());
-            }
-        } catch (DuplicateKeyException e) {
-            findByName(tag.getName()).ifPresent(value -> tag.setId(value.getId()));
-        }
+        entityManager.persist(tag);
         return tag;
     }
 
-    @Transactional
     @Override
     public void delete(long id) {
-        jdbcTemplate.update(DELETE, id);
+        Optional<Tag> optionalTag = findById(id);
+        optionalTag.ifPresent(entityManager::remove);
     }
 }

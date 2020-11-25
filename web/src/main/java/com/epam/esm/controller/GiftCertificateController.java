@@ -21,8 +21,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import javax.validation.Valid;
-import javax.validation.constraints.Min;
-import org.springframework.format.annotation.NumberFormat;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -73,7 +71,7 @@ public class GiftCertificateController {
     }
 
     @GetMapping("/{id}")
-    public EntityModel<GiftCertificateDto> getGiftCertificateById(@PathVariable @NumberFormat @Min(0) Long id) {
+    public EntityModel<GiftCertificateDto> getGiftCertificateById(@PathVariable Long id) {
         if (id < 0) {
             throw new ResourceException(String.format("Id is negative (id=%d)", id), CodeOfEntity.GIFT_CERTIFICATE);
         }
@@ -139,6 +137,7 @@ public class GiftCertificateController {
     @PatchMapping("/{id}")
     public EntityModel<GiftCertificateDto> updatePartGiftCertificate(
         @RequestBody GiftCertificatePatchDto giftCertificatePatchDto, @PathVariable long id) {
+
         if (id < 0) {
             throw new ResourceNotFoundException(
                 "Part of gift certificate wasn't updated because id is negative", CodeOfEntity.GIFT_CERTIFICATE);
@@ -151,6 +150,7 @@ public class GiftCertificateController {
         if (!giftCertificateService.update(giftCertificate)) {
             throw new ResourceException("Gift certificate wasn't updated from patch", CodeOfEntity.GIFT_CERTIFICATE);
         }
+
         GiftCertificateDto giftCertificateResultDto = giftCertificateConverter.convertToDto(giftCertificate);
         addLinksInDto(giftCertificateResultDto);
         return EntityModel.of(giftCertificateResultDto);

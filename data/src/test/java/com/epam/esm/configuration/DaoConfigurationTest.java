@@ -9,54 +9,32 @@ import com.epam.esm.dao.impl.OrderDaoImpl;
 import com.epam.esm.dao.impl.TagDaoImpl;
 import com.epam.esm.dao.impl.UserDaoImpl;
 import com.epam.esm.util.GiftCertificateParameter;
-import com.epam.esm.util.PaginationParameter;
-import javax.sql.DataSource;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
-import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
 
 @Configuration
 public class DaoConfigurationTest {
 
     @Bean
-    public DataSource dataSource() {
-        return new EmbeddedDatabaseBuilder().setType(EmbeddedDatabaseType.H2)
-            .addScript("classpath:creatingTestTables.sql")
-            .build();
+    public EntityManager entityManager(EntityManagerFactory entityManagerFactory) {
+        return entityManagerFactory.createEntityManager();
     }
 
     @Bean
-    public JdbcTemplate jdbcTemplate(DataSource dataSource) {
-        return new JdbcTemplate(dataSource);
+    public TagDao tagDao() {
+        return new TagDaoImpl();
     }
 
     @Bean
-    public TagDao tagDao(JdbcTemplate jdbcTemplate, PaginationParameter paginationParameter) {
-        return new TagDaoImpl(jdbcTemplate, paginationParameter);
+    public UserDao userDao() {
+        return new UserDaoImpl();
     }
 
     @Bean
-    public GiftCertificateDao giftCertificateDao(JdbcTemplate jdbcTemplate,
-                                                 TagDao tagDao,
-                                                 GiftCertificateParameter giftCertificateParameter,
-                                                 PaginationParameter paginationParameter) {
-        return new GiftCertificateDaoImpl(jdbcTemplate, tagDao, giftCertificateParameter, paginationParameter);
-    }
-
-    @Bean
-    public UserDao userDao(JdbcTemplate jdbcTemplate,
-                           OrderDao orderDao,
-                           PaginationParameter paginationParameter) {
-        return new UserDaoImpl(jdbcTemplate, orderDao, paginationParameter);
-    }
-
-    @Bean
-    public OrderDao orderDao(JdbcTemplate jdbcTemplate,
-                             GiftCertificateDao giftCertificateDao,
-                             PaginationParameter paginationParameter) {
-        return new OrderDaoImpl(jdbcTemplate, giftCertificateDao, paginationParameter);
+    public OrderDao orderDao() {
+        return new OrderDaoImpl();
     }
 
     @Bean
@@ -65,7 +43,8 @@ public class DaoConfigurationTest {
     }
 
     @Bean
-    public PaginationParameter paginationParameter() {
-        return new PaginationParameter();
+    public GiftCertificateDao giftCertificateDao(GiftCertificateParameter giftCertificateParameter) {
+        return new GiftCertificateDaoImpl(giftCertificateParameter);
     }
 }
+

@@ -13,7 +13,7 @@ public interface TagService {
 
     Optional<Tag> findByName(String name);
 
-    List<Tag> findByGiftCertificateId(long giftCertificateId, Pagination pagination);
+    Optional<Tag> findMostUsedByUserHighestCost();
 
     boolean add(Tag tag);
 

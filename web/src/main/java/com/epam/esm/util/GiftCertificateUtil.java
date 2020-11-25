@@ -76,6 +76,6 @@ public class GiftCertificateUtil {
     }
 
     private String replaceDateOnLastUpdateDateInLine(String line) {
-        return line.replaceAll("date", "last_update_date");
+        return line.replaceAll("date", "lastUpdateDate");
     }
 }

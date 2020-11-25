@@ -4,6 +4,7 @@ public class StringParameters {
 
     public static final String COLUMN_ID = "gc.id";
     public static final String COLUMN_NAME = "gc.name";
+    public static final String G_C = "gc.";
     public static final String COLUMN_NAME_FOR_TAG = "t.name";
     public static final String COLUMN_DESCRIPTION = "description";
     public static final String COLUMN_LAST_UPDATE_DATE = "last_update_date";

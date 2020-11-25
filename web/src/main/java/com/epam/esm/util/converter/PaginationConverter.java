@@ -8,11 +8,10 @@ import com.epam.esm.entity.PaginationDto;
 
 public class PaginationConverter {
 
-
     public Pagination convertFromDto(PaginationDto paginationDto) {
         Pagination pagination = new Pagination();
         int limit;
-        long offset;
+        int offset;
         if (paginationDto.getLimit() <= 0) {
             limit = DEFAULT_LIMIT;
         } else {

@@ -58,18 +58,8 @@ public class UserDaoImpl implements UserDao {
 
     @Override
     public boolean update(User user) {
-        checkEmailAvailability(user);
-
         entityManager.merge(user);
         return true;
-    }
-
-    private void checkEmailAvailability(User user) {
-        Optional<User> optionalUser = findByEmail(user.getEmail());
-        if (optionalUser.isPresent() && optionalUser.get().getId() != user.getId()) {
-            throw new EntityDuplicateException("User wasn't updated because email is exist  " + user.getEmail(),
-                CodeOfEntity.USER);
-        }
     }
 }
 

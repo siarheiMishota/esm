@@ -74,6 +74,11 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public void delete(long id) {
-        orderDao.delete(id);
+        Optional<Order> optionalOrder = findById(id);
+        if(optionalOrder.isEmpty()){
+            throw new ResourceNotFoundException(String.format("Resource is not found, (id=%d)", id), CodeOfEntity.ORDER);
+        }else {
+            orderDao.delete(optionalOrder.get());
+        }
     }
 }

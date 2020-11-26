@@ -73,7 +73,7 @@ class TagDaoImplTest {
         tagDao.add(tag);
         assertNotEquals(expected, tag.getId());
 
-        tagDao.delete(tag.getId());
+        tagDao.delete(tag);
     }
 
     @Test
@@ -93,7 +93,7 @@ class TagDaoImplTest {
         tagDao.add(tag);
         Optional<Tag> expected = tagDao.findById(tag.getId());
 
-        tagDao.delete(tag.getId());
+        tagDao.delete(tag);
         Optional<Tag> actual = tagDao.findById(tag.getId());
 
         assertNotEquals(expected, actual);

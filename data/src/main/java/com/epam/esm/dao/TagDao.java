@@ -17,5 +17,5 @@ public interface TagDao {
 
     Tag add(Tag tag);
 
-    void delete(long id);
+    void delete(Tag tag);
 }

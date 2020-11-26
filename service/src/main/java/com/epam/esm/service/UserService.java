@@ -13,5 +13,7 @@ public interface UserService {
 
     User add(User user);
 
+    Optional<User> findByEmail(String email);
+
     boolean update(User user);
 }

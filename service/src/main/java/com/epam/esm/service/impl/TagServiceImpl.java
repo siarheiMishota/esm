@@ -1,8 +1,10 @@
 package com.epam.esm.service.impl;
 
 import com.epam.esm.dao.TagDao;
+import com.epam.esm.entity.CodeOfEntity;
 import com.epam.esm.entity.Pagination;
 import com.epam.esm.entity.Tag;
+import com.epam.esm.exception.ResourceNotFoundException;
 import com.epam.esm.service.TagService;
 import java.util.List;
 import java.util.Optional;
@@ -47,6 +49,11 @@ public class TagServiceImpl implements TagService {
 
     @Override
     public void delete(long id) {
-        tagDao.delete(id);
+        Optional<Tag> optionalTag = findById(id);
+        if (optionalTag.isEmpty()) {
+            throw new ResourceNotFoundException(String.format("Resource is not found, (id=%d)", id), CodeOfEntity.TAG);
+        }
+
+        tagDao.delete(optionalTag.get());
     }
 }

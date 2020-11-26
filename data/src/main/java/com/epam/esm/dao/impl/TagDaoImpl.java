@@ -14,7 +14,6 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 import org.springframework.transaction.annotation.Transactional;
 
-
 @Transactional
 public class TagDaoImpl implements TagDao {
 
@@ -42,7 +41,6 @@ public class TagDaoImpl implements TagDao {
             .getResultStream().findAny();
     }
 
-
     @Override
     public Optional<Tag> findMostUsedByUserHighestCost() {
         List tagMapping = entityManager.createNativeQuery(FIND_MOST_USED_BY_USER_HIGHEST_COST, "TagMapping")
@@ -63,8 +61,7 @@ public class TagDaoImpl implements TagDao {
     }
 
     @Override
-    public void delete(long id) {
-        Optional<Tag> optionalTag = findById(id);
-        optionalTag.ifPresent(entityManager::remove);
+    public void delete(Tag tag) {
+        entityManager.remove(tag);
     }
 }

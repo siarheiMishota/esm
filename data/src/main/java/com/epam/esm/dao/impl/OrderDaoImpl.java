@@ -60,14 +60,12 @@ public class OrderDaoImpl implements OrderDao {
 
     @Override
     public boolean update(Order order) {
-
         entityManager.merge(order);
         return true;
     }
 
     @Override
-    public void delete(long id) {
-        Optional<Order> optionalOrder = findById(id);
-        optionalOrder.ifPresent(entityManager::remove);
+    public void delete(Order order) {
+        entityManager.remove(order);
     }
 }

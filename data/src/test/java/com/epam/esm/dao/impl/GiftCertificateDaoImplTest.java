@@ -70,7 +70,7 @@ class GiftCertificateDaoImplTest {
         giftCertificateDao.add(giftCertificate);
         Optional<GiftCertificate> expected = giftCertificateDao.findById(giftCertificate.getId());
 
-        giftCertificateDao.delete(giftCertificate.getId());
+        giftCertificateDao.delete(giftCertificate);
         Optional<GiftCertificate> actual = giftCertificateDao.findById(giftCertificate.getId());
 
         assertNotEquals(expected, actual);
@@ -80,7 +80,9 @@ class GiftCertificateDaoImplTest {
     void deleteWithNegativeId() {
         int expected = giftCertificateDao.findAll(new HashMap<>(), new Pagination()).size();
 
-        giftCertificateDao.delete(-1);
+        GiftCertificate giftCertificate = new GiftCertificate();
+        giftCertificate.setId(-1);
+        giftCertificateDao.delete(giftCertificate);
         int actual = giftCertificateDao.findAll(new HashMap<>(), new Pagination()).size();
 
         assertEquals(expected, actual);
@@ -90,7 +92,9 @@ class GiftCertificateDaoImplTest {
     void deleteWithNotExist() {
         int expected = giftCertificateDao.findAll(new HashMap<>(), new Pagination()).size();
 
-        giftCertificateDao.delete(1200);
+        GiftCertificate giftCertificate = new GiftCertificate();
+        giftCertificate.setId(40000);
+        giftCertificateDao.delete(giftCertificate);
         int actual = giftCertificateDao.findAll(new HashMap<>(), new Pagination()).size();
 
         assertEquals(expected, actual);
@@ -131,7 +135,7 @@ class GiftCertificateDaoImplTest {
         giftCertificateDao.add(giftCertificate);
         assertNotEquals(expected, giftCertificate.getId());
 
-        giftCertificateDao.delete(giftCertificate.getId());
+        giftCertificateDao.delete(giftCertificate);
     }
 
     @Test()

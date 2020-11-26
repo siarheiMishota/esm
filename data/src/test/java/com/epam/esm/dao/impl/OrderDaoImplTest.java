@@ -95,7 +95,7 @@ class OrderDaoImplTest {
         orderDao.add(order, 3);
         assertNotEquals(expected, order.getId());
 
-        orderDao.delete(order.getId());
+        orderDao.delete(order);
     }
 
     @Test()
@@ -133,7 +133,7 @@ class OrderDaoImplTest {
         orderDao.add(order, 3);
         Optional<Order> expected = orderDao.findById(order.getId());
 
-        orderDao.delete(order.getId());
+        orderDao.delete(order);
         Optional<Order> actual = orderDao.findById(order.getId());
 
         assertNotEquals(expected, actual);
@@ -143,7 +143,9 @@ class OrderDaoImplTest {
     void deleteWithNegativeId() {
         int expected = orderDao.findAll(new Pagination()).size();
 
-        orderDao.delete(-1);
+        Order order = new Order();
+        order.setId(-1);
+        orderDao.delete(order);
         int actual = orderDao.findAll(new Pagination()).size();
 
         assertEquals(expected, actual);
@@ -153,7 +155,9 @@ class OrderDaoImplTest {
     void deleteWithNotExist() {
         int expected = orderDao.findAll(new Pagination()).size();
 
-        orderDao.delete(1200);
+        Order order = new Order();
+        order.setId(11152);
+        orderDao.delete(order);
         int actual = orderDao.findAll(new Pagination()).size();
 
         assertEquals(expected, actual);

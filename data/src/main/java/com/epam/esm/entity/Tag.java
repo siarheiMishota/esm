@@ -2,6 +2,7 @@ package com.epam.esm.entity;
 
 import java.util.List;
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.ColumnResult;
 import javax.persistence.ConstructorResult;
 import javax.persistence.Entity;
@@ -26,6 +27,8 @@ public class Tag {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
+
+    @Column(length = 30)
     private String name;
 
     @ManyToMany(cascade = {CascadeType.MERGE, CascadeType.REFRESH})

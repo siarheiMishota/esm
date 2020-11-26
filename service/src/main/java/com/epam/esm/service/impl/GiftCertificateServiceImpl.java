@@ -1,9 +1,12 @@
 package com.epam.esm.service.impl;
 
 import com.epam.esm.dao.GiftCertificateDao;
+import com.epam.esm.entity.CodeOfEntity;
 import com.epam.esm.entity.GiftCertificate;
 import com.epam.esm.entity.Pagination;
 import com.epam.esm.entity.Tag;
+import com.epam.esm.exception.ResourceException;
+import com.epam.esm.exception.ResourceNotFoundException;
 import com.epam.esm.service.GiftCertificateService;
 import com.epam.esm.service.TagService;
 import java.util.ArrayList;
@@ -48,17 +51,32 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
 
     @Override
     public void delete(long id) {
-        giftCertificateDao.delete(id);
+        Optional<GiftCertificate> optionalGiftCertificate = findById(id);
+        if(optionalGiftCertificate.isEmpty()){
+            throw new ResourceNotFoundException(String.format("Resource is not found, (id=%d)", id), CodeOfEntity.GIFT_CERTIFICATE);
+        }else {
+            giftCertificateDao.delete(optionalGiftCertificate.get());
+        }
     }
 
     @Override
-    public boolean update(GiftCertificate giftCertificate) {
-        if (giftCertificate.getTags() != null) {
-            removeDuplicateTags(giftCertificate.getTags());
-            buildTagFromDb(giftCertificate);
+    public boolean update(GiftCertificate giftCertificateInner) {
+        if (giftCertificateInner.getTags() != null) {
+            removeDuplicateTags(giftCertificateInner.getTags());
+            buildTagFromDb(giftCertificateInner);
         }
 
-        return giftCertificateDao.update(giftCertificate);
+        Optional<GiftCertificate> optionalGiftCertificate = findById(giftCertificateInner.getId());
+        if (optionalGiftCertificate.isEmpty()) {
+            throw new ResourceNotFoundException(
+                String.format("Resource is not found, (id=%d)", giftCertificateInner.getId()),
+                CodeOfEntity.GIFT_CERTIFICATE);
+        }
+        GiftCertificate giftCertificateDb = buildNotNullFieldForUpdate(giftCertificateInner);
+        giftCertificateDao.update(giftCertificateDb);
+        buildForReturn(giftCertificateDb, giftCertificateInner);
+
+        return true;
     }
 
     private void buildTagFromDb(GiftCertificate giftCertificate) {
@@ -85,5 +103,50 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
                 uniqueTags.add(tagNext.getName());
             }
         }
+    }
+
+    private GiftCertificate buildNotNullFieldForUpdate(GiftCertificate giftCertificateInner) {
+        Optional<GiftCertificate> optionalGiftCertificate = findById(giftCertificateInner.getId());
+
+        if (optionalGiftCertificate.isEmpty()) {
+            throw new ResourceException("Gift certificate wasn't updated because id isn't found",
+                CodeOfEntity.GIFT_CERTIFICATE);
+        }
+
+        GiftCertificate giftCertificate = optionalGiftCertificate.get();
+
+        if (giftCertificateInner.getName() != null) {
+            giftCertificate.setName(giftCertificateInner.getName());
+        }
+
+        if (giftCertificateInner.getDescription() != null) {
+            giftCertificate.setDescription(giftCertificateInner.getDescription());
+        }
+
+        if (giftCertificateInner.getPrice() != null) {
+            giftCertificate.setPrice(giftCertificateInner.getPrice());
+        }
+
+        if (giftCertificateInner.getDuration() > 0) {
+            giftCertificate.setDuration(giftCertificateInner.getDuration());
+        }
+
+        if (giftCertificateInner.getTags() != null && !giftCertificateInner
+            .getTags().isEmpty()) {
+            giftCertificate.setTags(giftCertificateInner.getTags());
+        }
+        return giftCertificate;
+    }
+
+    private void buildForReturn(GiftCertificate fromDb, GiftCertificate toReturn) {
+        toReturn.setId(fromDb.getId());
+        toReturn.setTags(fromDb.getTags());
+        toReturn.setOrders(fromDb.getOrders());
+        toReturn.setCreationDate(fromDb.getCreationDate());
+        toReturn.setLastUpdateDate(fromDb.getLastUpdateDate());
+        toReturn.setDuration(fromDb.getDuration());
+        toReturn.setPrice(fromDb.getPrice());
+        toReturn.setName(fromDb.getName());
+        toReturn.setDescription(fromDb.getDescription());
     }
 }

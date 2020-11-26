@@ -1,6 +1,7 @@
 package com.epam.esm.entity;
 
 import java.util.List;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -13,8 +14,14 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
+
+    @Column(length = 50)
     private String name;
+
+    @Column(unique = true,length = 50)
     private String email;
+
+    @Column(length = 100)
     private String password;
 
     @OneToMany(mappedBy = "user")

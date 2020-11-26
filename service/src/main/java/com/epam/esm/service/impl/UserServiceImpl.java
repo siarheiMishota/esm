@@ -36,7 +36,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public int update(User user) {
+    public boolean update(User user) {
         return userDao.update(user);
     }
 }

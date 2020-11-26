@@ -58,7 +58,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
             buildTagFromDb(giftCertificate);
         }
 
-        return giftCertificateDao.update(giftCertificate) != 0;
+        return giftCertificateDao.update(giftCertificate);
     }
 
     private void buildTagFromDb(GiftCertificate giftCertificate) {

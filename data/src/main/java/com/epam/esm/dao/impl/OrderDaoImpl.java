@@ -59,9 +59,10 @@ public class OrderDaoImpl implements OrderDao {
     }
 
     @Override
-    public int update(Order order) {
+    public boolean update(Order order) {
+
         entityManager.merge(order);
-        return 1;
+        return true;
     }
 
     @Override

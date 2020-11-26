@@ -13,5 +13,5 @@ public interface UserService {
 
     User add(User user);
 
-    int update(User user);
+    boolean update(User user);
 }

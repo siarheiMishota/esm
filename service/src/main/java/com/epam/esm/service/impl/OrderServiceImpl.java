@@ -1,10 +1,12 @@
 package com.epam.esm.service.impl;
 
 import com.epam.esm.dao.OrderDao;
+import com.epam.esm.entity.CodeOfEntity;
 import com.epam.esm.entity.GiftCertificate;
 import com.epam.esm.entity.Order;
 import com.epam.esm.entity.Pagination;
 import com.epam.esm.entity.User;
+import com.epam.esm.exception.ResourceNotFoundException;
 import com.epam.esm.service.GiftCertificateService;
 import com.epam.esm.service.OrderService;
 import com.epam.esm.service.UserService;
@@ -53,7 +55,9 @@ public class OrderServiceImpl implements OrderService {
         Optional<GiftCertificate> optionalGiftCertificate = giftCertificateService.findById(
             order.getGiftCertificate().getId());
         if (optionalUser.isEmpty() || optionalGiftCertificate.isEmpty()) {
-            return order;
+             throw new ResourceNotFoundException(
+                String.format("Resource is not found, (id=%d)", order.getId()),
+                CodeOfEntity.ORDER);
         }
 
         order.setDate(LocalDateTime.now());
@@ -64,7 +68,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public int update(Order order) {
+    public boolean update(Order order) {
         return orderDao.update(order);
     }
 

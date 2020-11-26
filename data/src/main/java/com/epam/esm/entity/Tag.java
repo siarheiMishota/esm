@@ -28,8 +28,6 @@ public class Tag {
     private long id;
     private String name;
 
-
-    //    @ManyToMany(mappedBy = "tags", fetch = FetchType.LAZY)
     @ManyToMany(cascade = {CascadeType.MERGE, CascadeType.REFRESH})
     @JoinTable(name = "tag_gift_certificate",
         inverseJoinColumns = @JoinColumn(name = "gift_certificate_id"),

@@ -107,7 +107,7 @@ public class UserController {
         userDto.setId(id);
 
         User user = userConverter.convertFromDto(userDto);
-        if (userService.update(user) == 0) {
+        if (!userService.update(user)) {
             throw new ResourceException("User wasn't updated", CodeOfEntity.USER);
         }
 

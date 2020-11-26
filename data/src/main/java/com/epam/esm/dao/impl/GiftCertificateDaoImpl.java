@@ -68,7 +68,7 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
     }
 
     @Override
-    public int update(GiftCertificate giftCertificateInner) {
+    public boolean update(GiftCertificate giftCertificateInner) {
         Optional<GiftCertificate> optionalGiftCertificate = findById(giftCertificateInner.getId());
         if (optionalGiftCertificate.isEmpty()) {
             throw new ResourceNotFoundException(
@@ -79,7 +79,7 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
         entityManager.merge(giftCertificateDb);
 
         buildForReturn(giftCertificateDb, giftCertificateInner);
-        return 1;
+        return true;
     }
 
     public GiftCertificate buildNotNullFieldForUpdate(GiftCertificate giftCertificateInner) {

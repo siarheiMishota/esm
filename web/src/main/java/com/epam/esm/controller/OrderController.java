@@ -23,7 +23,6 @@ import org.springframework.hateoas.EntityModel;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -153,35 +152,5 @@ public class OrderController {
         }
 
         order.setCost(optionalGiftCertificate.get().getPrice());
-    }
-
-    @PutMapping("/users/{userId}/orders/{id}")
-    public EntityModel<OrderDto> updateOrder(@PathVariable long userId,
-                                             @PathVariable long id,
-                                             @RequestBody @Valid OrderDto orderDto) {
-        if (id < 0) {
-            throw new ResourceException(
-                "Order wasn't updated because id is negative", CodeOfEntity.ORDER);
-        }
-        if (userId < 0) {
-            throw new ResourceException(
-                "Order wasn't updated because userId is negative", CodeOfEntity.USER);
-        }
-        Order order = orderConverter.convertFromDto(orderDto);
-        order.setId(id);
-        setCostOrder(order);
-
-        Optional<Order> optionalResult = orderService.findByUserIdAndId(userId, id);
-        if (optionalResult.isEmpty()) {
-            throw new ResourceNotFoundException(
-                String.format("Requested resource not found (userId=%d and id=%d)", userId, id), CodeOfEntity.ORDER);
-        }
-
-        if (orderService.update(order) == 0) {
-            throw new ResourceException("Order wasn't updated", CodeOfEntity.ORDER);
-        }
-        OrderDto result = orderConverter.convertToDto(optionalResult.get());
-        result.add(linkTo(methodOn(OrderController.class).getOrders(new PaginationDto())).withRel("orders"));
-        return EntityModel.of(result);
     }
 }

@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import com.epam.esm.configuration.DaoConfigurationTest;
 import com.epam.esm.dao.TagDao;
+import com.epam.esm.entity.Pagination;
 import com.epam.esm.entity.Tag;
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
@@ -20,6 +21,11 @@ class TagDaoImplTest {
 
     @Autowired
     private TagDao tagDao;
+
+    @Test
+    void findAll() {
+        assertEquals(10, tagDao.findAll(new Pagination()).size());
+    }
 
     @Test
     void findById() {

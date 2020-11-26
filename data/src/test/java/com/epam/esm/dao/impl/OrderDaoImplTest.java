@@ -1,8 +1,10 @@
 package com.epam.esm.dao.impl;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.epam.esm.configuration.DaoConfigurationTest;
 import com.epam.esm.dao.OrderDao;
@@ -106,8 +108,8 @@ class OrderDaoImplTest {
         Order order = getOrder();
         order.setCost(BigDecimal.valueOf(400));
 
-        int actual = orderDao.update(order);
-        assertEquals(1, actual);
+        boolean actual = orderDao.update(order);
+        assertTrue(actual);
 
         orderDao.update(getOrder());
     }
@@ -122,7 +124,7 @@ class OrderDaoImplTest {
         Order order = getOrder();
         order.setId(4000);
 
-        assertEquals(0, orderDao.update(order));
+        assertFalse(orderDao.update(order));
     }
 
     @Test

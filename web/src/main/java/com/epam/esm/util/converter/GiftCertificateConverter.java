@@ -2,7 +2,6 @@ package com.epam.esm.util.converter;
 
 import com.epam.esm.entity.GiftCertificate;
 import com.epam.esm.entity.GiftCertificateDto;
-import com.epam.esm.entity.Tag;
 import com.epam.esm.entity.TagDto;
 import java.util.ArrayList;
 import java.util.List;
@@ -29,7 +28,7 @@ public class GiftCertificateConverter {
             giftCertificate.setTags(new ArrayList<>());
         } else {
             giftCertificate.setTags(tagsDto.stream()
-                .map(tagDto -> new Tag(tagDto.getId(), tagDto.getName()))
+                .map(tagConverter::convertFromDto)
                 .collect(Collectors.toList()));
         }
         return giftCertificate;

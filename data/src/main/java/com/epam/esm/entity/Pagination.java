@@ -6,9 +6,9 @@ public class Pagination {
     public static final int DEFAULT_OFFSET = 0;
 
     private int limit;
-    private long offset;
+    private int offset;
 
-    public Pagination(int limit, long offset) {
+    public Pagination(int limit, int offset) {
         this.limit = limit;
         this.offset = offset;
     }
@@ -26,11 +26,11 @@ public class Pagination {
         this.limit = limit;
     }
 
-    public long getOffset() {
+    public int getOffset() {
         return offset;
     }
 
-    public void setOffset(long offset) {
+    public void setOffset(int offset) {
         this.offset = offset;
     }
 
@@ -54,7 +54,7 @@ public class Pagination {
     @Override
     public int hashCode() {
         int result = limit;
-        result = 31 * result + (int) (offset ^ (offset >>> 32));
+        result = 31 * result + (offset ^ (offset >>> 32));
         return result;
     }
 

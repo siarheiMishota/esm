@@ -59,7 +59,7 @@ public class ExceptionHandlerController {
     public ExceptionDto handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
         String messageError = getMessageFromBindingResult(e.getBindingResult());
 
-        return new ExceptionDto(messageError,
+        return new ExceptionDto(messageError + " not correct",
             HttpStatus.BAD_REQUEST.value() + CodeOfEntity.DEFAULT.getCode());
     }
 

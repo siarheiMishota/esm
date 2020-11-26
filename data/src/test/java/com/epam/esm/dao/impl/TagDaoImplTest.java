@@ -12,15 +12,20 @@ import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 @ExtendWith(SpringExtension.class)
-@SpringBootTest(classes = DaoConfigurationTest.class)
+@ContextConfiguration(classes = DaoConfigurationTest.class)
 class TagDaoImplTest {
 
     @Autowired
     private TagDao tagDao;
+
+    @Test
+    void findAll() {
+        assertEquals(10, tagDao.findAll(new Pagination()).size());
+    }
 
     @Test
     void findById() {
@@ -55,8 +60,9 @@ class TagDaoImplTest {
     }
 
     @Test
-    void findByGiftCertificateId() {
-        assertEquals(2, tagDao.findByGiftCertificateId(3, new Pagination()).size());
+    void findMostUsedByUserHighestCost() {
+        Tag expected = new Tag(1, "extreme");
+        assertEquals(expected, tagDao.findMostUsedByUserHighestCost().get());
     }
 
 

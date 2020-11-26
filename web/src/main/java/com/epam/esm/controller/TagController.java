@@ -66,8 +66,21 @@ public class TagController {
     public EntityModel<TagDto> getTagById(@PathVariable @Min(1) @NumberFormat long id) {
         Optional<Tag> optionalTag = tagService.findById(id);
         if (optionalTag.isEmpty()) {
-            throw new ResourceException(String.format("Requested resource not found (id=%d)", id), CodeOfEntity.TAG);
+            throw new ResourceNotFoundException(String.format("Requested resource not found (id=%d)", id),
+                CodeOfEntity.TAG);
         }
+        TagDto tagDto = tagConverter.convertToDto(optionalTag.get());
+        tagDto.add(linkTo(methodOn(TagController.class).getTagById(tagDto.getId())).withSelfRel());
+        return EntityModel.of(tagDto);
+    }
+
+    @GetMapping("/mostUsedByUserHighestCost")
+    public EntityModel<TagDto> getTagMostUsedByUserHighestCost() {
+        Optional<Tag> optionalTag = tagService.findMostUsedByUserHighestCost();
+        if (optionalTag.isEmpty()) {
+            throw new ResourceNotFoundException("Requested resource not found", CodeOfEntity.TAG);
+        }
+
         TagDto tagDto = tagConverter.convertToDto(optionalTag.get());
         tagDto.add(linkTo(methodOn(TagController.class).getTagById(tagDto.getId())).withSelfRel());
         return EntityModel.of(tagDto);
@@ -93,7 +106,7 @@ public class TagController {
         }
 
         if (tagService.findById(id).isEmpty()) {
-            throw new ResourceException(String.format("Id= %d is not exist", id), CodeOfEntity.TAG);
+            throw new ResourceNotFoundException(String.format("Id= %d is not exist", id), CodeOfEntity.TAG);
         }
         tagService.delete(id);
     }

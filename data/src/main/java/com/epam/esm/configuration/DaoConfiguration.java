@@ -9,70 +9,45 @@ import com.epam.esm.dao.impl.OrderDaoImpl;
 import com.epam.esm.dao.impl.TagDaoImpl;
 import com.epam.esm.dao.impl.UserDaoImpl;
 import com.epam.esm.util.GiftCertificateParameter;
-import com.epam.esm.util.PaginationParameter;
-import com.zaxxer.hikari.HikariDataSource;
-import javax.sql.DataSource;
-import org.springframework.beans.factory.annotation.Value;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
-import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 @Configuration
 @PropertySource("classpath:data.properties")
+@EnableTransactionManagement
 public class DaoConfiguration {
 
     @Bean
-    public DataSource dataSource(@Value("${driver}") String driver,
-                                 @Value("${url}") String url,
-                                 @Value("${user}") String user,
-                                 @Value("${password}") String password) {
-
-        HikariDataSource hikariDataSource = new HikariDataSource();
-        hikariDataSource.setDriverClassName(driver);
-        hikariDataSource.setJdbcUrl(url);
-        hikariDataSource.setUsername(user);
-        hikariDataSource.setPassword(password);
-        return hikariDataSource;
+    public EntityManager entityManager(EntityManagerFactory entityManagerFactory) {
+        return entityManagerFactory.createEntityManager();
     }
 
     @Bean
-    public JdbcTemplate jdbcTemplate(DataSource dataSource) {
-        return new JdbcTemplate(dataSource);
+    public TagDao tagDao() {
+        return new TagDaoImpl();
     }
 
     @Bean
-    public TagDao tagDao(JdbcTemplate jdbcTemplate, PaginationParameter paginationParameter) {
-        return new TagDaoImpl(jdbcTemplate, paginationParameter);
+    public UserDao userDao() {
+        return new UserDaoImpl();
     }
 
     @Bean
-    public UserDao userDao(JdbcTemplate jdbcTemplate, PaginationParameter paginationParameter, OrderDao orderDao) {
-        return new UserDaoImpl(jdbcTemplate, orderDao, paginationParameter);
+    public OrderDao orderDao() {
+        return new OrderDaoImpl();
     }
 
     @Bean
-    public OrderDao orderDao(JdbcTemplate jdbcTemplate,
-                             PaginationParameter paginationParameter,
-                             GiftCertificateDao giftCertificateDao) {
-        return new OrderDaoImpl(jdbcTemplate, giftCertificateDao, paginationParameter);
-    }
-
-    @Bean
-    public GiftCertificateDao giftCertificateDao(JdbcTemplate jdbcTemplate,
-                                                 TagDao tagDao,
-                                                 GiftCertificateParameter giftCertificateParameter,
-                                                 PaginationParameter paginationParameter) {
-        return new GiftCertificateDaoImpl(jdbcTemplate, tagDao, giftCertificateParameter, paginationParameter);
+    public GiftCertificateDao giftCertificateDao(GiftCertificateParameter giftCertificateParameter) {
+        return new GiftCertificateDaoImpl(giftCertificateParameter);
     }
 
     @Bean
     public GiftCertificateParameter giftCertificateParameters() {
         return new GiftCertificateParameter();
-    }
-
-    @Bean
-    public PaginationParameter paginationParameter() {
-        return new PaginationParameter();
     }
 }

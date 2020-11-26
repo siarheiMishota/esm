@@ -53,23 +53,23 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
 
     @Override
     public boolean update(GiftCertificate giftCertificate) {
-        removeDuplicateTags(giftCertificate.getTags());
-        return giftCertificateDao.update(giftCertificate) != 0;
+        if (giftCertificate.getTags() != null) {
+            removeDuplicateTags(giftCertificate.getTags());
+            buildTagFromDb(giftCertificate);
+        }
+
+        return giftCertificateDao.update(giftCertificate);
+    }
+
+    private void buildTagFromDb(GiftCertificate giftCertificate) {
+        giftCertificate.getTags().forEach(tagService::add);
     }
 
     @Override
     public GiftCertificate add(GiftCertificate giftCertificate) {
         removeDuplicateTags(giftCertificate.getTags());
-        if (giftCertificate.getTags() != null) {
-            giftCertificate.getTags().forEach(tag -> {
-                Optional<Tag> optionalTagFromDb = tagService.findByName(tag.getName());
-                if (optionalTagFromDb.isPresent()) {
-                    tag.setId(optionalTagFromDb.get().getId());
-                } else {
-                    tagService.add(tag);
-                }
-            });
-        }
+        buildTagFromDb(giftCertificate);
+
         return giftCertificateDao.add(giftCertificate);
     }
 

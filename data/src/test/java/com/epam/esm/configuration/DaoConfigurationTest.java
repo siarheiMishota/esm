@@ -9,54 +9,73 @@ import com.epam.esm.dao.impl.OrderDaoImpl;
 import com.epam.esm.dao.impl.TagDaoImpl;
 import com.epam.esm.dao.impl.UserDaoImpl;
 import com.epam.esm.util.GiftCertificateParameter;
-import com.epam.esm.util.PaginationParameter;
+import java.util.Properties;
+import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
+import org.springframework.orm.jpa.JpaTransactionManager;
+import org.springframework.orm.jpa.JpaVendorAdapter;
+import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
+import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 @Configuration
+@ComponentScan("com.epam.esm.entity")
+@EnableTransactionManagement
 public class DaoConfigurationTest {
 
     @Bean
-    public DataSource dataSource() {
-        return new EmbeddedDatabaseBuilder().setType(EmbeddedDatabaseType.H2)
-            .addScript("classpath:creatingTestTables.sql")
-            .build();
+    LocalContainerEntityManagerFactoryBean entityManagerFactory() {
+        LocalContainerEntityManagerFactoryBean emf =
+            new LocalContainerEntityManagerFactoryBean();
+        emf.setPackagesToScan("com.epam.esm.entity");
+        emf.setDataSource(createDataSource());
+        emf.setJpaVendorAdapter(createJpaVendorAdapter());
+        emf.setJpaProperties(createHibernateProperties());
+        emf.afterPropertiesSet();
+        return emf;
+    }
+
+    private DataSource createDataSource() {
+        EmbeddedDatabaseBuilder builder = new EmbeddedDatabaseBuilder();
+        builder.addScript("classpath:schema.sql");
+        return builder.setType(EmbeddedDatabaseType.H2).build();
+    }
+
+    private JpaVendorAdapter createJpaVendorAdapter() {
+        return new HibernateJpaVendorAdapter();
+    }
+
+    private Properties createHibernateProperties() {
+        Properties properties = new Properties();
+        properties.setProperty("hibernate.hbm2ddl.auto", "create-drop");
+        properties.setProperty("hibernate.dialect", "org.hibernate.dialect.H2Dialect");
+        return properties;
     }
 
     @Bean
-    public JdbcTemplate jdbcTemplate(DataSource dataSource) {
-        return new JdbcTemplate(dataSource);
+    PlatformTransactionManager transactionManager(EntityManagerFactory emf) {
+        return new JpaTransactionManager(emf);
     }
 
     @Bean
-    public TagDao tagDao(JdbcTemplate jdbcTemplate, PaginationParameter paginationParameter) {
-        return new TagDaoImpl(jdbcTemplate, paginationParameter);
+    public TagDao tagDao() {
+        return new TagDaoImpl();
     }
 
     @Bean
-    public GiftCertificateDao giftCertificateDao(JdbcTemplate jdbcTemplate,
-                                                 TagDao tagDao,
-                                                 GiftCertificateParameter giftCertificateParameter,
-                                                 PaginationParameter paginationParameter) {
-        return new GiftCertificateDaoImpl(jdbcTemplate, tagDao, giftCertificateParameter, paginationParameter);
+    public UserDao userDao() {
+        return new UserDaoImpl();
     }
 
     @Bean
-    public UserDao userDao(JdbcTemplate jdbcTemplate,
-                           OrderDao orderDao,
-                           PaginationParameter paginationParameter) {
-        return new UserDaoImpl(jdbcTemplate, orderDao, paginationParameter);
-    }
-
-    @Bean
-    public OrderDao orderDao(JdbcTemplate jdbcTemplate,
-                             GiftCertificateDao giftCertificateDao,
-                             PaginationParameter paginationParameter) {
-        return new OrderDaoImpl(jdbcTemplate, giftCertificateDao, paginationParameter);
+    public OrderDao orderDao() {
+        return new OrderDaoImpl();
     }
 
     @Bean
@@ -65,7 +84,8 @@ public class DaoConfigurationTest {
     }
 
     @Bean
-    public PaginationParameter paginationParameter() {
-        return new PaginationParameter();
+    public GiftCertificateDao giftCertificateDao(GiftCertificateParameter giftCertificateParameter) {
+        return new GiftCertificateDaoImpl(giftCertificateParameter);
     }
 }
+

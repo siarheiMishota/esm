@@ -13,7 +13,7 @@ public interface TagDao {
 
     Optional<Tag> findByName(String name);
 
-    List<Tag> findByGiftCertificateId(long giftCertificateId, Pagination pagination);
+    Optional<Tag> findMostUsedByUserHighestCost();
 
     Tag add(Tag tag);
 

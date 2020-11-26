@@ -1,6 +1,5 @@
 package com.epam.esm.configuration;
 
-import com.epam.esm.service.GiftCertificateService;
 import com.epam.esm.service.configuration.ServiceConfiguration;
 import com.epam.esm.util.GiftCertificateUtil;
 import com.epam.esm.util.converter.GiftCertificateConverter;
@@ -71,7 +70,7 @@ public class WebConfig implements WebMvcConfigurer {
     }
 
     @Bean
-    public GiftCertificateUtil giftCertificateUtil(GiftCertificateService giftCertificateService) {
-        return new GiftCertificateUtil(giftCertificateService);
+    public GiftCertificateUtil giftCertificateUtil() {
+        return new GiftCertificateUtil();
     }
 }

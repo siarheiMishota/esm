@@ -31,8 +31,8 @@ public class TagServiceImpl implements TagService {
     }
 
     @Override
-    public List<Tag> findByGiftCertificateId(long giftCertificateId, Pagination pagination) {
-        return tagDao.findByGiftCertificateId(giftCertificateId, pagination);
+    public Optional<Tag> findMostUsedByUserHighestCost() {
+        return tagDao.findMostUsedByUserHighestCost();
     }
 
     @Override
@@ -40,7 +40,9 @@ public class TagServiceImpl implements TagService {
         if (tag == null) {
             return false;
         }
-        return tagDao.add(tag) != null;
+
+        tagDao.add(tag);
+        return true;
     }
 
     @Override

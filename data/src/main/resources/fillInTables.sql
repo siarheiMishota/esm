@@ -1,4 +1,4 @@
-insert into tag.tags(name)
+insert into tag(name)
 values ('extreme'),
        ('fun'),
        ('love'),
@@ -43,7 +43,7 @@ values ('extreme'),
        ('Laos'),
        ('North Korea');
 
-insert into tag.gift_certificates (name, description, price, duration)
+insert into gift_certificate (name, description, price, duration)
 values ('Libellula quadrimaculata',
         'Acute gastric ulcer with hemorrhage and perforation, without mention of obstruction', 1, 1),
        ('Phaethon aethereus', 'Hepatic encephalopathy', 2, 2),
@@ -1410,7 +1410,7 @@ values ('Libellula quadrimaculata',
         'Dolphinarium — a place where you can see the performance of such beautiful animals as dolphins, walruses or fur seals. They are trained to please and surprise the audience. And people are allowed to stroke and touch mammals and get new emotions.',
         210, 45);
 
-insert into tag.tags_gift_certificates (tag_id, gift_certificate_id)
+insert into tag_gift_certificate (tag_id, gift_certificate_id)
 values (1, 1),
        (2, 1),
        (2, 2),
@@ -2358,7 +2358,7 @@ values (1, 1),
        (18, 894),
        (4, 895);
 
-insert into tag.users (name, email, password)
+insert into user (name, email, password)
 values ('Jobi', 'jchessun0@moonfruit.com', 'afb591939cccb575099d348c23d7e5892a3c35c1a2bf5420d3b131c62cbd4ef7'),
        ('Nat', 'nlafont1@imgur.com', '6855d35eb88cfa08539aade1f8fc9d8f9ae82bf179d55a8a23c30412b4c83908'),
        ('Augy', 'aswigg2@kickstarter.com', 'f40573804c5e76900099fec371bff046b2b966eb178f1855a4941bf710845483'),
@@ -3386,7 +3386,7 @@ values ('Jobi', 'jchessun0@moonfruit.com', 'afb591939cccb575099d348c23d7e5892a3c
        ('Debi', 'dkopsrq@java.com', '89e5a956a5c3d7bdba85898095af50d0b5f0d499d7f34f0a11ff9019b99ca4dc'),
        ('Arley', 'abangiardrr@loc.gov', 'd82379d9dc500fd5df0f8eed5b79acb7e9cb3ad0bc893455d3370a1f59c43d07');
 
-insert into tag.orders (cost, id_gift_certificate, id_user)
+insert into orders (cost, id_gift_certificate, id_user)
 values (1, 1, 999),
        (2, 2, 998),
        (3, 3, 997),

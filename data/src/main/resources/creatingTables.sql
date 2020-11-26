@@ -1,4 +1,4 @@
-create table tags
+create table tag
 (
     id   int auto_increment,
     name varchar(30) not null unique,
@@ -7,7 +7,7 @@ create table tags
 
 );
 
-create table gift_certificates
+create table gift_certificate
 (
     id               int auto_increment,
     name             varchar(50) not null,
@@ -20,19 +20,19 @@ create table gift_certificates
     primary key (id)
 );
 
-create table tags_gift_certificates
+create table tag_gift_certificate
 (
     tag_id              int not null,
     gift_certificate_id int not null,
 
     primary key (tag_id, gift_certificate_id),
 
-    foreign key (tag_id) references tags (id) on delete cascade,
-    foreign key (gift_certificate_id) references gift_certificates (id) on delete cascade
+    foreign key (tag_id) references tag (id),
+    foreign key (gift_certificate_id) references gift_certificate (id)
 
 );
 
-create table users
+create table user
 (
     id       int auto_increment,
     name     varchar(50)  not null,
@@ -46,14 +46,14 @@ create table users
 
 create table orders
 (
-    id   int auto_increment,
-    cost decimal not null check ( cost > 0 ),
-    date timestamp default now(),
-    id_gift_certificate int not null ,
-    id_user int not null ,
+    id                  int auto_increment,
+    cost                decimal not null check ( cost > 0 ),
+    date                timestamp default now(),
+    id_gift_certificate int     not null,
+    id_user             int     not null,
 
     primary key (id),
 
-    foreign key (id_gift_certificate) REFERENCES gift_certificates(id),
-    foreign key (id_user) REFERENCES users(id)
+    foreign key (id_gift_certificate) REFERENCES gift_certificate (id),
+    foreign key (id_user) REFERENCES user (id)
 );

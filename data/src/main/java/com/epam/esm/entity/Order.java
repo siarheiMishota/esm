@@ -2,13 +2,31 @@ package com.epam.esm.entity;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 
+@Entity
+@Table(name = "orders")
 public class Order {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
     private BigDecimal cost;
     private LocalDateTime date;
+
+    @ManyToOne()
+    @JoinColumn(name = "id_gift_certificate")
     private GiftCertificate giftCertificate;
+
+    @ManyToOne()
+    @JoinColumn(name = "id_user")
+    private User user;
 
     public Order() {
     }
@@ -56,6 +74,14 @@ public class Order {
 
     public void setGiftCertificate(GiftCertificate giftCertificate) {
         this.giftCertificate = giftCertificate;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 
     @Override

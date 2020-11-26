@@ -73,7 +73,7 @@ class GiftCertificateServiceImplTest {
     @Test
     void update() {
         GiftCertificate giftCertificate = getGiftCertificate();
-        given(giftCertificateDao.update(giftCertificate)).willReturn(1);
+        given(giftCertificateDao.update(giftCertificate)).willReturn(true);
         assertTrue(giftCertificateService.update(giftCertificate));
     }
 
@@ -82,7 +82,7 @@ class GiftCertificateServiceImplTest {
         GiftCertificate giftCertificate = getGiftCertificate();
         giftCertificate.setId(100);
 
-        given(giftCertificateDao.update(giftCertificate)).willReturn(0);
+        given(giftCertificateDao.update(giftCertificate)).willReturn(false);
         assertFalse(giftCertificateService.update(giftCertificate));
     }
 
@@ -91,7 +91,7 @@ class GiftCertificateServiceImplTest {
         GiftCertificate giftCertificate = getGiftCertificate();
         giftCertificate.setId(-1);
 
-        given(giftCertificateDao.update(giftCertificate)).willReturn(0);
+        given(giftCertificateDao.update(giftCertificate)).willReturn(false);
         assertFalse(giftCertificateService.update(giftCertificate));
     }
 

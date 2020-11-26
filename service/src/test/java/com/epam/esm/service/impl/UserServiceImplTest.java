@@ -1,7 +1,9 @@
 package com.epam.esm.service.impl;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.BDDMockito.given;
 
 import com.epam.esm.dao.UserDao;
@@ -65,8 +67,8 @@ class UserServiceImplTest {
     @Test
     void update() {
         User expected = getUser();
-        given(userDao.update(expected)).willReturn(1);
-        assertEquals(1, userService.update(expected));
+        given(userDao.update(expected)).willReturn(true);
+        assertTrue( userService.update(expected));
     }
 
     @Test
@@ -74,8 +76,8 @@ class UserServiceImplTest {
         User user = getUser();
         user.setId(1000);
 
-        given(userDao.update(user)).willReturn(0);
-        assertEquals(0, userService.update(user));
+        given(userDao.update(user)).willReturn(false);
+        assertFalse(userService.update(user));
     }
 
     @Test
@@ -83,8 +85,8 @@ class UserServiceImplTest {
         User user = getUser();
         user.setId(-1);
 
-        given(userDao.update(user)).willReturn(0);
-        assertEquals(0, userService.update(user));
+        given(userDao.update(user)).willReturn(false);
+        assertFalse(userService.update(user));
     }
 
     private User getUser() {

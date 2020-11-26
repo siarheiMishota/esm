@@ -1,7 +1,9 @@
 package com.epam.esm.service.impl;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.BDDMockito.given;
 
 import com.epam.esm.dao.OrderDao;
@@ -83,8 +85,8 @@ class OrderServiceImplTest {
     @Test
     void update() {
         Order order = getOrder();
-        given(orderDao.update(order)).willReturn(1);
-        assertEquals(1, orderService.update(order));
+        given(orderDao.update(order)).willReturn(true);
+        assertTrue( orderService.update(order));
     }
 
     @Test
@@ -92,8 +94,8 @@ class OrderServiceImplTest {
         Order order = getOrder();
         order.setId(1000);
 
-        given(orderDao.update(order)).willReturn(0);
-        assertEquals(0, orderService.update(order));
+        given(orderDao.update(order)).willReturn(false);
+        assertFalse(orderService.update(order));
     }
 
     @Test
@@ -101,8 +103,8 @@ class OrderServiceImplTest {
         Order order = getOrder();
         order.setId(-1);
 
-        given(orderDao.update(order)).willReturn(0);
-        assertEquals(0, orderService.update(order));
+        given(orderDao.update(order)).willReturn(false);
+        assertFalse(orderService.update(order));
     }
 
     @Test

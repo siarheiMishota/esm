@@ -1,8 +1,10 @@
 package com.epam.esm.dao.impl;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.epam.esm.configuration.DaoConfigurationTest;
 import com.epam.esm.dao.GiftCertificateDao;
@@ -101,8 +103,8 @@ class GiftCertificateDaoImplTest {
         giftCertificate.setDescription("description 400");
         giftCertificate.setPrice(BigDecimal.valueOf(400));
 
-        int actual = giftCertificateDao.update(giftCertificate);
-        assertEquals(1, actual);
+        boolean actual = giftCertificateDao.update(giftCertificate);
+        assertTrue( actual);
 
         giftCertificateDao.update(getGiftCertificate());
     }
@@ -117,7 +119,7 @@ class GiftCertificateDaoImplTest {
         GiftCertificate giftCertificate = getGiftCertificate();
         giftCertificate.setId(4000);
 
-        assertEquals(0, giftCertificateDao.update(giftCertificate));
+        assertFalse( giftCertificateDao.update(giftCertificate));
     }
 
     @Test

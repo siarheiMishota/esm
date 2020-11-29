@@ -8,7 +8,7 @@ import com.epam.esm.dao.impl.GiftCertificateDaoImpl;
 import com.epam.esm.dao.impl.OrderDaoImpl;
 import com.epam.esm.dao.impl.TagDaoImpl;
 import com.epam.esm.dao.impl.UserDaoImpl;
-import com.epam.esm.util.GiftCertificateParameter;
+import com.epam.esm.util.GiftCertificateSqlBuilder;
 import java.util.Properties;
 import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
@@ -79,13 +79,13 @@ public class DaoConfigurationTest {
     }
 
     @Bean
-    public GiftCertificateParameter giftCertificateParameter() {
-        return new GiftCertificateParameter();
+    public GiftCertificateSqlBuilder giftCertificateParameter() {
+        return new GiftCertificateSqlBuilder();
     }
 
     @Bean
-    public GiftCertificateDao giftCertificateDao(GiftCertificateParameter giftCertificateParameter) {
-        return new GiftCertificateDaoImpl(giftCertificateParameter);
+    public GiftCertificateDao giftCertificateDao(GiftCertificateSqlBuilder giftCertificateSqlBuilder) {
+        return new GiftCertificateDaoImpl(giftCertificateSqlBuilder);
     }
 }
 

@@ -1,7 +1,7 @@
 create table tag
 (
     id   int auto_increment,
-    name varchar(30) not null unique,
+    name varchar(50) not null unique,
 
     primary key (id)
 
@@ -10,7 +10,7 @@ create table tag
 create table gift_certificate
 (
     id               int auto_increment,
-    name             varchar(50) not null,
+    name             varchar(70) not null,
     description      text        not null,
     price            decimal     not null check ( price >= 0 ),
     creation_date    timestamp   not null default now(),

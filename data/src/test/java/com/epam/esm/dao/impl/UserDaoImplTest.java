@@ -14,11 +14,11 @@ import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.springframework.test.context.ContextConfiguration;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 @ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes = DaoConfigurationTest.class)
+@SpringBootTest(classes = DaoConfigurationTest.class)
 class UserDaoImplTest {
 
     private final UserDao userDao;

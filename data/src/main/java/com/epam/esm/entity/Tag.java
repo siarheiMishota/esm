@@ -28,7 +28,7 @@ public class Tag {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @Column(length = 30)
+    @Column(length = 50)
     private String name;
 
     @ManyToMany(cascade = {CascadeType.MERGE, CascadeType.REFRESH})

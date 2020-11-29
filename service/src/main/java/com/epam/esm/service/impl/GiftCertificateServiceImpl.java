@@ -3,6 +3,7 @@ package com.epam.esm.service.impl;
 import com.epam.esm.dao.GiftCertificateDao;
 import com.epam.esm.entity.CodeOfEntity;
 import com.epam.esm.entity.GiftCertificate;
+import com.epam.esm.entity.GiftCertificateParameter;
 import com.epam.esm.entity.Pagination;
 import com.epam.esm.entity.Tag;
 import com.epam.esm.exception.ResourceException;
@@ -12,7 +13,6 @@ import com.epam.esm.service.TagService;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 public class GiftCertificateServiceImpl implements GiftCertificateService {
@@ -28,7 +28,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
 
     /**
      *
-     * @param parameters - Map of parameters which are searched for certificates.
+     * @param giftCertificateParameter - object of parameters which are searched for certificates.
      *  Kind of parameters:
      *      "name,searchingName" - where name - the field name will be name which will be search on, searchingName -
      *      value which will be search on.
@@ -40,8 +40,8 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
      * @return List of GiftCertificates which match the parameters
      */
     @Override
-    public List<GiftCertificate> findAll(Map<String, String> parameters, Pagination pagination) {
-        return giftCertificateDao.findAll(parameters, pagination);
+    public List<GiftCertificate> findAll(GiftCertificateParameter giftCertificateParameter, Pagination pagination) {
+        return giftCertificateDao.findAll(giftCertificateParameter, pagination);
     }
 
     @Override

@@ -3,6 +3,7 @@ package com.epam.esm.configuration;
 import com.epam.esm.service.configuration.ServiceConfiguration;
 import com.epam.esm.util.GiftCertificateUtil;
 import com.epam.esm.util.converter.GiftCertificateConverter;
+import com.epam.esm.util.converter.GiftCertificateParameterConverter;
 import com.epam.esm.util.converter.OrderConverter;
 import com.epam.esm.util.converter.PaginationConverter;
 import com.epam.esm.util.converter.TagConverter;
@@ -67,6 +68,11 @@ public class WebConfig implements WebMvcConfigurer {
     @Bean
     public PaginationConverter paginationConverter() {
         return new PaginationConverter();
+    }
+
+    @Bean
+    public GiftCertificateParameterConverter giftCertificateParameterConverter(){
+        return new GiftCertificateParameterConverter();
     }
 
     @Bean

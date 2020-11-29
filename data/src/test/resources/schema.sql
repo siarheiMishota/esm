@@ -2,7 +2,7 @@
 create table tag
 (
     id   int auto_increment,
-    name varchar(30) not null unique,
+    name varchar(50) not null unique,
 
     primary key (id)
 

@@ -55,7 +55,7 @@ public class OrderServiceImpl implements OrderService {
         Optional<GiftCertificate> optionalGiftCertificate = giftCertificateService.findById(
             order.getGiftCertificate().getId());
         if (optionalUser.isEmpty() || optionalGiftCertificate.isEmpty()) {
-             throw new ResourceNotFoundException(
+            throw new ResourceNotFoundException(
                 String.format("Resource is not found, (id=%d)", order.getId()),
                 CodeOfEntity.ORDER);
         }
@@ -75,9 +75,10 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public void delete(long id) {
         Optional<Order> optionalOrder = findById(id);
-        if(optionalOrder.isEmpty()){
-            throw new ResourceNotFoundException(String.format("Resource is not found, (id=%d)", id), CodeOfEntity.ORDER);
-        }else {
+        if (optionalOrder.isEmpty()) {
+            throw new ResourceNotFoundException(String.format("Resource is not found, (id=%d)", id),
+                CodeOfEntity.ORDER);
+        } else {
             orderDao.delete(optionalOrder.get());
         }
     }

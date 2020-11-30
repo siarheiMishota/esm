@@ -105,7 +105,7 @@ class GiftCertificateDaoImplTest {
         giftCertificate.setPrice(BigDecimal.valueOf(400));
 
         boolean actual = giftCertificateDao.update(giftCertificate);
-        assertTrue( actual);
+        assertTrue(actual);
 
         giftCertificateDao.update(getGiftCertificate());
     }
@@ -120,7 +120,7 @@ class GiftCertificateDaoImplTest {
         GiftCertificate giftCertificate = getGiftCertificate();
         giftCertificate.setId(4000);
 
-        assertFalse( giftCertificateDao.update(giftCertificate));
+        assertFalse(giftCertificateDao.update(giftCertificate));
     }
 
     @Test

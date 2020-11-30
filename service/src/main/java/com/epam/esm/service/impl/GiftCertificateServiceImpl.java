@@ -52,9 +52,10 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     @Override
     public void delete(long id) {
         Optional<GiftCertificate> optionalGiftCertificate = findById(id);
-        if(optionalGiftCertificate.isEmpty()){
-            throw new ResourceNotFoundException(String.format("Resource is not found, (id=%d)", id), CodeOfEntity.GIFT_CERTIFICATE);
-        }else {
+        if (optionalGiftCertificate.isEmpty()) {
+            throw new ResourceNotFoundException(String.format("Resource is not found, (id=%d)", id),
+                CodeOfEntity.GIFT_CERTIFICATE);
+        } else {
             giftCertificateDao.delete(optionalGiftCertificate.get());
         }
     }

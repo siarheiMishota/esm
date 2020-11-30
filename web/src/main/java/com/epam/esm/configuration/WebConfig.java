@@ -71,7 +71,7 @@ public class WebConfig implements WebMvcConfigurer {
     }
 
     @Bean
-    public GiftCertificateParameterConverter giftCertificateParameterConverter(){
+    public GiftCertificateParameterConverter giftCertificateParameterConverter() {
         return new GiftCertificateParameterConverter();
     }
 

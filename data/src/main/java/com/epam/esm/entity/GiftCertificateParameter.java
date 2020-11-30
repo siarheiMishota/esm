@@ -7,7 +7,7 @@ public class GiftCertificateParameter {
 
     private String name;
     private String description;
-    private List<String> tags=new ArrayList<>();
+    private List<String> tags = new ArrayList<>();
     private String sort;
 
     public GiftCertificateParameter() {

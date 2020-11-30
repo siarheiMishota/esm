@@ -1,47 +1,53 @@
 package com.epam.esm.configuration;
 
 import com.epam.esm.dao.GiftCertificateDao;
+import com.epam.esm.dao.OrderDao;
 import com.epam.esm.dao.TagDao;
+import com.epam.esm.dao.UserDao;
 import com.epam.esm.dao.impl.GiftCertificateDaoImpl;
+import com.epam.esm.dao.impl.OrderDaoImpl;
 import com.epam.esm.dao.impl.TagDaoImpl;
-import com.zaxxer.hikari.HikariDataSource;
-import javax.sql.DataSource;
-import org.springframework.beans.factory.annotation.Value;
+import com.epam.esm.dao.impl.UserDaoImpl;
+import com.epam.esm.util.GiftCertificateSqlBuilder;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
-import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 @Configuration
 @PropertySource("classpath:data.properties")
+@EnableTransactionManagement
 public class DaoConfiguration {
 
     @Bean
-    public DataSource dataSource(@Value("${driver}") String driver,
-                                 @Value("${url}") String url,
-                                 @Value("${user}") String user,
-                                 @Value("${password}") String password) {
-
-        HikariDataSource hikariDataSource = new HikariDataSource();
-        hikariDataSource.setDriverClassName(driver);
-        hikariDataSource.setJdbcUrl(url);
-        hikariDataSource.setUsername(user);
-        hikariDataSource.setPassword(password);
-        return hikariDataSource;
+    public EntityManager entityManager(EntityManagerFactory entityManagerFactory) {
+        return entityManagerFactory.createEntityManager();
     }
 
     @Bean
-    public JdbcTemplate jdbcTemplate(DataSource dataSource) {
-        return new JdbcTemplate(dataSource);
+    public TagDao tagDao() {
+        return new TagDaoImpl();
     }
 
     @Bean
-    public TagDao tagDao(JdbcTemplate jdbcTemplate) {
-        return new TagDaoImpl(jdbcTemplate);
+    public UserDao userDao() {
+        return new UserDaoImpl();
     }
 
     @Bean
-    public GiftCertificateDao giftCertificateDao(JdbcTemplate jdbcTemplate, TagDao tagDao) {
-        return new GiftCertificateDaoImpl(jdbcTemplate, tagDao);
+    public OrderDao orderDao() {
+        return new OrderDaoImpl();
+    }
+
+    @Bean
+    public GiftCertificateDao giftCertificateDao(GiftCertificateSqlBuilder giftCertificateSqlBuilder) {
+        return new GiftCertificateDaoImpl(giftCertificateSqlBuilder);
+    }
+
+    @Bean
+    public GiftCertificateSqlBuilder giftCertificateParameters() {
+        return new GiftCertificateSqlBuilder();
     }
 }

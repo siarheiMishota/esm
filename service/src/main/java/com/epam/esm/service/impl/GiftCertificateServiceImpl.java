@@ -1,14 +1,18 @@
 package com.epam.esm.service.impl;
 
 import com.epam.esm.dao.GiftCertificateDao;
+import com.epam.esm.entity.CodeOfEntity;
 import com.epam.esm.entity.GiftCertificate;
+import com.epam.esm.entity.GiftCertificateParameter;
+import com.epam.esm.entity.Pagination;
 import com.epam.esm.entity.Tag;
+import com.epam.esm.exception.ResourceException;
+import com.epam.esm.exception.ResourceNotFoundException;
 import com.epam.esm.service.GiftCertificateService;
 import com.epam.esm.service.TagService;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 public class GiftCertificateServiceImpl implements GiftCertificateService {
@@ -24,7 +28,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
 
     /**
      *
-     * @param parameters - Map of parameters which are searched for certificates.
+     * @param giftCertificateParameter - object of parameters which are searched for certificates.
      *  Kind of parameters:
      *      "name,searchingName" - where name - the field name will be name which will be search on, searchingName -
      *      value which will be search on.
@@ -36,13 +40,8 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
      * @return List of GiftCertificates which match the parameters
      */
     @Override
-    public List<GiftCertificate> findAll(Map<String, String> parameters) {
-        return giftCertificateDao.findAll(parameters);
-    }
-
-    @Override
-    public List<GiftCertificate> findAll() {
-        return giftCertificateDao.findAll();
+    public List<GiftCertificate> findAll(GiftCertificateParameter giftCertificateParameter, Pagination pagination) {
+        return giftCertificateDao.findAll(giftCertificateParameter, pagination);
     }
 
     @Override
@@ -52,29 +51,44 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
 
     @Override
     public void delete(long id) {
-        giftCertificateDao.delete(id);
+        Optional<GiftCertificate> optionalGiftCertificate = findById(id);
+        if (optionalGiftCertificate.isEmpty()) {
+            throw new ResourceNotFoundException(String.format("Resource is not found, (id=%d)", id),
+                CodeOfEntity.GIFT_CERTIFICATE);
+        } else {
+            giftCertificateDao.delete(optionalGiftCertificate.get());
+        }
     }
 
     @Override
-    public boolean update(GiftCertificate giftCertificate) {
-        removeDuplicateTags(giftCertificate.getTags());
-        return giftCertificateDao.update(giftCertificate) != 0;
+    public boolean update(GiftCertificate giftCertificateInner) {
+        if (giftCertificateInner.getTags() != null) {
+            removeDuplicateTags(giftCertificateInner.getTags());
+            buildTagFromDb(giftCertificateInner);
+        }
+
+        Optional<GiftCertificate> optionalGiftCertificate = findById(giftCertificateInner.getId());
+        if (optionalGiftCertificate.isEmpty()) {
+            throw new ResourceNotFoundException(
+                String.format("Resource is not found, (id=%d)", giftCertificateInner.getId()),
+                CodeOfEntity.GIFT_CERTIFICATE);
+        }
+        GiftCertificate giftCertificateDb = buildNotNullFieldForUpdate(giftCertificateInner);
+        giftCertificateDao.update(giftCertificateDb);
+        buildForReturn(giftCertificateDb, giftCertificateInner);
+
+        return true;
+    }
+
+    private void buildTagFromDb(GiftCertificate giftCertificate) {
+        giftCertificate.getTags().forEach(tagService::add);
     }
 
     @Override
     public GiftCertificate add(GiftCertificate giftCertificate) {
         removeDuplicateTags(giftCertificate.getTags());
+        buildTagFromDb(giftCertificate);
 
-        if (giftCertificate.getTags() != null) {
-            giftCertificate.getTags().forEach(tag -> {
-                Optional<Tag> optionalTagFromDb = tagService.findByName(tag.getName());
-                if (optionalTagFromDb.isPresent()) {
-                    tag.setId(optionalTagFromDb.get().getId());
-                } else {
-                    tagService.add(tag);
-                }
-            });
-        }
         return giftCertificateDao.add(giftCertificate);
     }
 
@@ -90,5 +104,50 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
                 uniqueTags.add(tagNext.getName());
             }
         }
+    }
+
+    private GiftCertificate buildNotNullFieldForUpdate(GiftCertificate giftCertificateInner) {
+        Optional<GiftCertificate> optionalGiftCertificate = findById(giftCertificateInner.getId());
+
+        if (optionalGiftCertificate.isEmpty()) {
+            throw new ResourceException("Gift certificate wasn't updated because id isn't found",
+                CodeOfEntity.GIFT_CERTIFICATE);
+        }
+
+        GiftCertificate giftCertificate = optionalGiftCertificate.get();
+
+        if (giftCertificateInner.getName() != null) {
+            giftCertificate.setName(giftCertificateInner.getName());
+        }
+
+        if (giftCertificateInner.getDescription() != null) {
+            giftCertificate.setDescription(giftCertificateInner.getDescription());
+        }
+
+        if (giftCertificateInner.getPrice() != null) {
+            giftCertificate.setPrice(giftCertificateInner.getPrice());
+        }
+
+        if (giftCertificateInner.getDuration() > 0) {
+            giftCertificate.setDuration(giftCertificateInner.getDuration());
+        }
+
+        if (giftCertificateInner.getTags() != null && !giftCertificateInner
+            .getTags().isEmpty()) {
+            giftCertificate.setTags(giftCertificateInner.getTags());
+        }
+        return giftCertificate;
+    }
+
+    private void buildForReturn(GiftCertificate fromDb, GiftCertificate toReturn) {
+        toReturn.setId(fromDb.getId());
+        toReturn.setTags(fromDb.getTags());
+        toReturn.setOrders(fromDb.getOrders());
+        toReturn.setCreationDate(fromDb.getCreationDate());
+        toReturn.setLastUpdateDate(fromDb.getLastUpdateDate());
+        toReturn.setDuration(fromDb.getDuration());
+        toReturn.setPrice(fromDb.getPrice());
+        toReturn.setName(fromDb.getName());
+        toReturn.setDescription(fromDb.getDescription());
     }
 }

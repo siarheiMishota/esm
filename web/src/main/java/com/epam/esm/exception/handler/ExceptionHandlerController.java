@@ -1,12 +1,17 @@
 package com.epam.esm.exception.handler;
 
 import com.epam.esm.entity.CodeOfEntity;
+import com.epam.esm.exception.EntityDuplicateException;
+import com.epam.esm.exception.EntityIntegrityViolationException;
 import com.epam.esm.exception.ResourceException;
 import com.epam.esm.exception.ResourceNotFoundException;
 import com.epam.esm.exception.handler.dto.ExceptionDto;
+import java.util.stream.Collectors;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.BindException;
-import org.springframework.validation.FieldError;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -33,7 +38,7 @@ public class ExceptionHandlerController {
     public ExceptionDto handleMethodArgumentTypeMismatchException(MethodArgumentTypeMismatchException e) {
         String exceptionMessage = new StringBuilder().append(e.getParameter().getParameterName())
             .append("=")
-            .append(e.getValue().toString())
+            .append(e.getValue())
             .append(" ")
             .append("notCorrect").toString();
         return new ExceptionDto(exceptionMessage, HttpStatus.BAD_REQUEST.value() + CodeOfEntity.DEFAULT.getCode());
@@ -42,28 +47,54 @@ public class ExceptionHandlerController {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(BindException.class)
     public ExceptionDto handleBindException(BindException e) {
-        FieldError fieldError = e.getBindingResult().getFieldError();
-        String field = fieldError.getField();
-        String incorrectValue = fieldError.getRejectedValue().toString();
-        StringBuilder resultStringBuilder = new StringBuilder();
-        resultStringBuilder.append(field).append("=")
-            .append(incorrectValue).append(" ")
-            .append("notCorrect");
-        return new ExceptionDto(resultStringBuilder.toString(),
+        String messageError = getMessageFromBindingResult(e.getBindingResult());
+
+        return new ExceptionDto(messageError + " not correct",
             HttpStatus.BAD_REQUEST.value() + CodeOfEntity.DEFAULT.getCode());
     }
+
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ExceptionDto handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
-        FieldError fieldError = e.getBindingResult().getFieldError();
-        String field = fieldError.getField();
-        String exceptionMessage = fieldError.getDefaultMessage();
-        StringBuilder resultStringBuilder = new StringBuilder();
-        resultStringBuilder.append(field).append(" - ")
-            .append(exceptionMessage);
-        return new ExceptionDto(resultStringBuilder.toString(),
+        String messageError = getMessageFromBindingResult(e.getBindingResult());
+
+        return new ExceptionDto(messageError + " not correct",
             HttpStatus.BAD_REQUEST.value() + CodeOfEntity.DEFAULT.getCode());
+    }
+
+    private String getMessageFromBindingResult(BindingResult bindingResult) {
+        return bindingResult.getFieldErrors().stream()
+            .map(fieldError -> fieldError.getField() + " = " + fieldError.getRejectedValue())
+            .collect(Collectors.joining(" and ", "(", ")"));
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ExceptionDto handleHttpMessageNotReadableException(HttpMessageNotReadableException e) {
+        return new ExceptionDto("Incorrect value for numeric field",
+            HttpStatus.BAD_REQUEST.value() + CodeOfEntity.DEFAULT.getCode());
+    }
+
+    @ResponseStatus(HttpStatus.CONFLICT)
+    @ExceptionHandler(EntityDuplicateException.class)
+    public ExceptionDto handleEntityDuplicateException(EntityDuplicateException e) {
+        return new ExceptionDto(e.getMessage(),
+            HttpStatus.CONFLICT.value() + e.getCodeOfEntity().getCode());
+    }
+
+    @ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY)
+    @ExceptionHandler(EntityIntegrityViolationException.class)
+    public ExceptionDto handleEntityIntegrityViolationException(EntityIntegrityViolationException e) {
+        return new ExceptionDto(e.getMessage(),
+            HttpStatus.UNPROCESSABLE_ENTITY.value() + e.getCodeOfEntity().getCode());
+    }
+
+    @ResponseStatus(HttpStatus.METHOD_NOT_ALLOWED)
+    @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
+    public ExceptionDto handleHttpRequestMethodNotSupportedException(HttpRequestMethodNotSupportedException e) {
+        return new ExceptionDto(e.getMessage(),
+            HttpStatus.METHOD_NOT_ALLOWED.value() + CodeOfEntity.DEFAULT.getCode());
     }
 
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)

@@ -3,17 +3,40 @@ package com.epam.esm.entity;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 
+@Entity
 public class GiftCertificate {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
+
+    @Column(length = 50)
     private String name;
     private String description;
     private BigDecimal price;
     private LocalDateTime creationDate;
     private LocalDateTime lastUpdateDate;
     private int duration;
+
+    @ManyToMany(cascade = {CascadeType.MERGE, CascadeType.REFRESH})
+    @JoinTable(name = "tag_gift_certificate",
+        joinColumns = @JoinColumn(name = "gift_certificate_id"),
+        inverseJoinColumns = @JoinColumn(name = "tag_id"))
     private List<Tag> tags;
+
+    @OneToMany(mappedBy = "giftCertificate", orphanRemoval = true)
+    private List<Order> orders;
 
     public GiftCertificate() {
     }
@@ -110,6 +133,14 @@ public class GiftCertificate {
 
     public void setTags(List<Tag> tags) {
         this.tags = tags;
+    }
+
+    public List<Order> getOrders() {
+        return orders;
+    }
+
+    public void setOrders(List<Order> orders) {
+        this.orders = orders;
     }
 
     @Override

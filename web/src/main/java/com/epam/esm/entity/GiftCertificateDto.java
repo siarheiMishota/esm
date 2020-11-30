@@ -7,8 +7,9 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import org.springframework.hateoas.RepresentationModel;
 
-public class GiftCertificateDto {
+public class GiftCertificateDto extends RepresentationModel<GiftCertificateDto> {
 
     @Min(0)
     private long id;
@@ -31,7 +32,7 @@ public class GiftCertificateDto {
     @Min(0)
     @NotNull
     private Integer duration;
-    private List<Tag> tags;
+    private List<TagDto> tags;
 
     public GiftCertificateDto() {
     }
@@ -43,7 +44,7 @@ public class GiftCertificateDto {
                               LocalDateTime creationDate,
                               LocalDateTime lastUpdateDate,
                               int duration,
-                              List<Tag> tags) {
+                              List<TagDto> tags) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -111,11 +112,11 @@ public class GiftCertificateDto {
         this.duration = duration;
     }
 
-    public List<Tag> getTags() {
+    public List<TagDto> getTags() {
         return tags;
     }
 
-    public void setTags(List<Tag> tags) {
+    public void setTags(List<TagDto> tags) {
         this.tags = tags;
     }
 }

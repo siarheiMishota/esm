@@ -1,19 +1,51 @@
 package com.epam.esm.entity;
 
+import java.util.List;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.ColumnResult;
+import javax.persistence.ConstructorResult;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
+import javax.persistence.SqlResultSetMapping;
+
+@SqlResultSetMapping(
+    name = "TagMapping",
+    classes = @ConstructorResult(
+        targetClass = Tag.class,
+        columns = {
+            @ColumnResult(name = "t.id", type = Long.class),
+            @ColumnResult(name = "t.name")}))
+@Entity
 public class Tag {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
+
+    @Column(length = 50)
     private String name;
+
+    @ManyToMany(cascade = {CascadeType.MERGE, CascadeType.REFRESH})
+    @JoinTable(name = "tag_gift_certificate",
+        inverseJoinColumns = @JoinColumn(name = "gift_certificate_id"),
+        joinColumns = @JoinColumn(name = "tag_id"))
+    private List<GiftCertificate> giftCertificates;
 
     public Tag() {
     }
 
-    public Tag(long id, String name) {
-        this.id = id;
+    public Tag(String name) {
         this.name = name;
     }
 
-    public Tag(String name) {
+    public Tag(long id, String name) {
+        this.id = id;
         this.name = name;
     }
 
@@ -31,6 +63,14 @@ public class Tag {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public List<GiftCertificate> getGiftCertificates() {
+        return giftCertificates;
+    }
+
+    public void setGiftCertificates(List<GiftCertificate> giftCertificates) {
+        this.giftCertificates = giftCertificates;
     }
 
     @Override

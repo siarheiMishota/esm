@@ -7,35 +7,37 @@ import static org.mockito.BDDMockito.given;
 
 import com.epam.esm.dao.GiftCertificateDao;
 import com.epam.esm.entity.GiftCertificate;
+import com.epam.esm.entity.Pagination;
 import com.epam.esm.entity.Tag;
 import com.epam.esm.service.TagService;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.boot.test.context.SpringBootTest;
 
-@ExtendWith(MockitoExtension.class)
+@SpringBootTest(classes = MockitoExtension.class)
 class GiftCertificateServiceImplTest {
 
     @Mock
     private GiftCertificateDao giftCertificateDao;
 
     @Mock
-    private TagService tagService;
+    TagService tagService;
 
     @InjectMocks
     private GiftCertificateServiceImpl giftCertificateService;
 
     @Test
     void findAll() {
-        given(giftCertificateDao.findAll(Map.of())).willReturn(getGiftCertificates());
-        assertEquals(getGiftCertificates(), giftCertificateService.findAll(Map.of()));
+        given(giftCertificateDao.findAll(Map.of(), new Pagination())).willReturn(getGiftCertificates());
+        assertEquals(getGiftCertificates(), giftCertificateService.findAll(Map.of(), new Pagination()));
     }
 
     @Test
@@ -63,15 +65,15 @@ class GiftCertificateServiceImplTest {
 
     @Test
     void delete() {
-        given(giftCertificateDao.findAll()).willReturn(getGiftCertificates());
+        given(giftCertificateDao.findAll(new HashMap<>(), new Pagination())).willReturn(getGiftCertificates());
         giftCertificateService.delete(11);
-        assertEquals(3, giftCertificateService.findAll().size());
+        assertEquals(3, giftCertificateService.findAll(new HashMap<>(), new Pagination()).size());
     }
 
     @Test
     void update() {
         GiftCertificate giftCertificate = getGiftCertificate();
-        given(giftCertificateDao.update(giftCertificate)).willReturn(1);
+        given(giftCertificateDao.update(giftCertificate)).willReturn(true);
         assertTrue(giftCertificateService.update(giftCertificate));
     }
 
@@ -80,7 +82,7 @@ class GiftCertificateServiceImplTest {
         GiftCertificate giftCertificate = getGiftCertificate();
         giftCertificate.setId(100);
 
-        given(giftCertificateDao.update(giftCertificate)).willReturn(0);
+        given(giftCertificateDao.update(giftCertificate)).willReturn(false);
         assertFalse(giftCertificateService.update(giftCertificate));
     }
 
@@ -89,7 +91,7 @@ class GiftCertificateServiceImplTest {
         GiftCertificate giftCertificate = getGiftCertificate();
         giftCertificate.setId(-1);
 
-        given(giftCertificateDao.update(giftCertificate)).willReturn(0);
+        given(giftCertificateDao.update(giftCertificate)).willReturn(false);
         assertFalse(giftCertificateService.update(giftCertificate));
     }
 

@@ -6,16 +6,17 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import com.epam.esm.configuration.DaoConfigurationTest;
 import com.epam.esm.dao.TagDao;
+import com.epam.esm.entity.Pagination;
 import com.epam.esm.entity.Tag;
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.ContextConfiguration;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 @ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes = DaoConfigurationTest.class)
+@SpringBootTest(classes = DaoConfigurationTest.class)
 class TagDaoImplTest {
 
     @Autowired
@@ -23,7 +24,7 @@ class TagDaoImplTest {
 
     @Test
     void findAll() {
-        assertEquals(5, tagDao.findAll().size());
+        assertEquals(10, tagDao.findAll(new Pagination()).size());
     }
 
     @Test
@@ -59,8 +60,9 @@ class TagDaoImplTest {
     }
 
     @Test
-    void findByGiftCertificateId() {
-        assertEquals(2, tagDao.findByGiftCertificateId(3).size());
+    void findMostUsedByUserHighestCost() {
+        Tag expected = new Tag(1, "extreme");
+        assertEquals(expected, tagDao.findMostUsedByUserHighestCost().get());
     }
 
 
@@ -71,7 +73,7 @@ class TagDaoImplTest {
         tagDao.add(tag);
         assertNotEquals(expected, tag.getId());
 
-        tagDao.delete(tag.getId());
+        tagDao.delete(tag);
     }
 
     @Test
@@ -91,29 +93,9 @@ class TagDaoImplTest {
         tagDao.add(tag);
         Optional<Tag> expected = tagDao.findById(tag.getId());
 
-        tagDao.delete(tag.getId());
+        tagDao.delete(tag);
         Optional<Tag> actual = tagDao.findById(tag.getId());
 
         assertNotEquals(expected, actual);
-    }
-
-    @Test
-    void deleteWithNegativeId() {
-        int expected = tagDao.findAll().size();
-
-        tagDao.delete(-1);
-        int actual = tagDao.findAll().size();
-
-        assertEquals(expected, actual);
-    }
-
-    @Test
-    void deleteWithNotExist() {
-        int expected = tagDao.findAll().size();
-
-        tagDao.delete(10000);
-        int actual = tagDao.findAll().size();
-
-        assertEquals(expected, actual);
     }
 }

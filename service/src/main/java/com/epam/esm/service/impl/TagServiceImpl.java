@@ -1,7 +1,10 @@
 package com.epam.esm.service.impl;
 
 import com.epam.esm.dao.TagDao;
+import com.epam.esm.entity.CodeOfEntity;
+import com.epam.esm.entity.Pagination;
 import com.epam.esm.entity.Tag;
+import com.epam.esm.exception.ResourceNotFoundException;
 import com.epam.esm.service.TagService;
 import java.util.List;
 import java.util.Optional;
@@ -15,8 +18,8 @@ public class TagServiceImpl implements TagService {
     }
 
     @Override
-    public List<Tag> findAll() {
-        return tagDao.findAll();
+    public List<Tag> findAll(Pagination pagination) {
+        return tagDao.findAll(pagination);
     }
 
     @Override
@@ -30,8 +33,8 @@ public class TagServiceImpl implements TagService {
     }
 
     @Override
-    public List<Tag> findByGiftCertificateId(long giftCertificateId) {
-        return tagDao.findByGiftCertificateId(giftCertificateId);
+    public Optional<Tag> findMostUsedByUserHighestCost() {
+        return tagDao.findMostUsedByUserHighestCost();
     }
 
     @Override
@@ -39,15 +42,18 @@ public class TagServiceImpl implements TagService {
         if (tag == null) {
             return false;
         }
-        if (tagDao.findByName(tag.getName()).isEmpty()) {
-            tagDao.add(tag);
-            return true;
-        }
-        return false;
+
+        tagDao.add(tag);
+        return true;
     }
 
     @Override
     public void delete(long id) {
-        tagDao.delete(id);
+        Optional<Tag> optionalTag = findById(id);
+        if (optionalTag.isEmpty()) {
+            throw new ResourceNotFoundException(String.format("Resource is not found, (id=%d)", id), CodeOfEntity.TAG);
+        }
+
+        tagDao.delete(optionalTag.get());
     }
 }

@@ -13,12 +13,11 @@ dependencies {
     project.dependencies {
         implementation(project(':data'))
     }
-    implementation group: 'org.springframework', name: 'spring-core', version: '5.2.9.RELEASE'
-    implementation group: 'org.springframework', name: 'spring-context', version: '5.2.9.RELEASE'
-    implementation group: 'org.springframework', name: 'spring-context-support', version: '5.2.9.RELEASE'
+    implementation group: 'org.springframework.boot', name: 'spring-boot-starter', version: '2.3.5.RELEASE'
+    implementation group: 'org.springframework.security', name: 'spring-security-core', version: '5.3.5.RELEASE'
 
-    testImplementation group: 'org.springframework', name: 'spring-test', version: '5.2.9.RELEASE'
-    testImplementation group: 'org.mockito', name: 'mockito-core', version: '3.5.13'
+
+    testImplementation group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: '2.3.5.RELEASE'
     testImplementation group: 'org.mockito', name: 'mockito-junit-jupiter', version: '3.5.15'
     testImplementation(platform('org.junit:junit-bom:5.7.0'))
     testImplementation 'org.junit.jupiter:junit-jupiter-engine:5.3.1'

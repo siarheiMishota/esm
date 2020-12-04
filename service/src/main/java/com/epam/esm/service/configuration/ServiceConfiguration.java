@@ -50,7 +50,7 @@ public class ServiceConfiguration {
     }
 
     @Bean
-    public RoleService roleService(RoleDao roleDao){
+    public RoleService roleService(RoleDao roleDao) {
         return new RoleServiceImpl(roleDao);
     }
 

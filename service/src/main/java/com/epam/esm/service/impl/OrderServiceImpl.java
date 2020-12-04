@@ -58,7 +58,7 @@ public class OrderServiceImpl implements OrderService {
     public Order add(Order order, long userId, String emailAuthorizedUser) {
         checkRightsOnUser(userId, emailAuthorizedUser);
 
-        Optional<User> optionalUser = userService.findById(userId,emailAuthorizedUser);
+        Optional<User> optionalUser = userService.findById(userId, emailAuthorizedUser);
         Optional<GiftCertificate> optionalGiftCertificate = giftCertificateService.findById(
             order.getGiftCertificate().getId());
 
@@ -97,11 +97,11 @@ public class OrderServiceImpl implements OrderService {
     }
 
     private void checkRightsOnUserOrAdmin(long userId, String emailAuthorizedUser) {
-        userService.findById(userId,emailAuthorizedUser);
+        userService.findById(userId, emailAuthorizedUser);
     }
 
     private void checkRightsOnUser(long userId, String emailAuthorizedUser) {
-        Optional<User> optionalUser = userService.findById(userId,emailAuthorizedUser);
+        Optional<User> optionalUser = userService.findById(userId, emailAuthorizedUser);
 
         if (optionalUser.isEmpty()) {
             throw new ResourceNotFoundException(

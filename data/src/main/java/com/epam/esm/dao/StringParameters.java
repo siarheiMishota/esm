@@ -21,8 +21,8 @@ public class StringParameters {
     public static final String PATTERN_KEY_TAG = "tag";
     public static final String PATTERN_KEY_DESCRIPTION = "description";
 
-    public static final String ROLE_ADMIN="ROLE_ADMIN";
-    public static final String ROLE_USER="ROLE_USER";
+    public static final String ROLE_ADMIN = "ROLE_ADMIN";
+    public static final String ROLE_USER = "ROLE_USER";
 
     private StringParameters() {
     }

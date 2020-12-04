@@ -10,7 +10,7 @@ public interface UserService extends UserDetailsService {
 
     List<User> findAll(Pagination pagination);
 
-    Optional<User> findById(long id,String emailAuthorizedUser);
+    Optional<User> findById(long id, String emailAuthorizedUser);
 
     Optional<User> findByEmail(String email);
 

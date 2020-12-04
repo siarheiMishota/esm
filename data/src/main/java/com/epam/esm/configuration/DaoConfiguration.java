@@ -49,7 +49,7 @@ public class DaoConfiguration {
     }
 
     @Bean
-    public RoleDao roleDao(){
+    public RoleDao roleDao() {
         return new RoleDaoImpl();
     }
 

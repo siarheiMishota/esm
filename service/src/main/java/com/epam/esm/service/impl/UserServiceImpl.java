@@ -118,7 +118,7 @@ public class UserServiceImpl implements UserService {
             .filter(s -> s.equals(StringParameters.ROLE_ADMIN))
             .count();
         if (numberRoleAdminInUserRoles == 0 &&
-            user.getId()!=id) {
+            user.getId() != id) {
             throw new AccessDeniedException("Not rights");
         }
     }

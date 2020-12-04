@@ -20,6 +20,9 @@ import java.util.Optional;
 import javax.validation.Valid;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -45,6 +48,7 @@ public class OrderController {
         this.giftCertificateService = giftCertificateService;
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/orders")
     public CollectionModel<OrderDto> getOrders(@Valid PaginationDto paginationDto) {
         Pagination pagination = paginationConverter.convertFromDto(paginationDto);
@@ -63,6 +67,7 @@ public class OrderController {
         return CollectionModel.of(orderDtos);
     }
 
+    @PreAuthorize("hasRole('ADMIN') ")
     @GetMapping("/orders/{id}")
     public EntityModel<OrderDto> getOrderById(@PathVariable long id) {
         if (id < 0) {
@@ -80,15 +85,18 @@ public class OrderController {
         return EntityModel.of(orderDto);
     }
 
+    @PreAuthorize("hasRole('ADMIN') or hasRole('USER')")
     @GetMapping("/users/{userId}/orders")
     public CollectionModel<OrderDto> getSpecifiedOrdersByUserId(@PathVariable long userId,
-                                                                @Valid PaginationDto paginationDto) {
+                                                                @Valid PaginationDto paginationDto,
+                                                                @AuthenticationPrincipal User customUser) {
         if (userId < 0) {
             throw new ResourceException(String.format(ID_IS_NEGATIVE_ID, userId), CodeOfEntity.ORDER);
         }
+
         Pagination pagination = paginationConverter.convertFromDto(paginationDto);
 
-        List<Order> results = orderService.findByUserId(userId, pagination);
+        List<Order> results = orderService.findByUserId(userId, customUser.getUsername(), pagination);
         if (results.isEmpty()) {
             throw new ResourceNotFoundException(
                 String.format("Requested resource not found (id=%d)", userId), CodeOfEntity.ORDER);
@@ -96,14 +104,17 @@ public class OrderController {
         List<OrderDto> orderDtos = orderConverter.convertListToListDto(results);
 
         orderDtos.forEach(orderDto -> orderDto.add(
-            linkTo(methodOn(OrderController.class).getOrderById(orderDto.getId())).withSelfRel()));
+            linkTo(methodOn(OrderController.class).getSpecifiedOrderByIdByUserId(orderDto.getId(),
+                orderDto.getId(), customUser)).withSelfRel()));
 
         return CollectionModel.of(orderDtos);
     }
 
+    @PreAuthorize("hasRole('ADMIN') or hasRole('USER')")
     @GetMapping("/users/{userId}/orders/{id}")
     public EntityModel<OrderDto> getSpecifiedOrderByIdByUserId(@PathVariable long userId,
-                                                               @PathVariable long id) {
+                                                               @PathVariable long id,
+                                                               @AuthenticationPrincipal User customUser) {
         if (userId < 0) {
             throw new ResourceException(String.format("Id is negative (userId=%d)", userId), CodeOfEntity.USER);
         }
@@ -111,32 +122,31 @@ public class OrderController {
             throw new ResourceException(String.format(ID_IS_NEGATIVE_ID, userId), CodeOfEntity.ORDER);
         }
 
-        Optional<Order> optionalResult = orderService.findByUserIdAndId(userId, id);
+        Optional<Order> optionalResult = orderService.findByUserIdAndId(userId, id, customUser.getUsername());
         if (optionalResult.isEmpty()) {
             throw new ResourceNotFoundException(
                 String.format("Requested resource not found (userId=%d and id=%d)", userId, id), CodeOfEntity.ORDER);
         }
+
         OrderDto orderDto = orderConverter.convertToDto(optionalResult.get());
         orderDto.add(linkTo(methodOn(OrderController.class).getOrders(new PaginationDto())).withRel("orders"));
         return EntityModel.of(orderDto);
     }
 
+    @PreAuthorize("hasRole('USER')")
     @PostMapping("/users/{userId}/orders")
     public EntityModel<OrderDto> addOrder(@RequestBody @Valid OrderDto orderDto,
-                                          @PathVariable long userId) {
+                                          @PathVariable long userId,
+                                          @AuthenticationPrincipal User customUser) {
         if (userId < 0) {
             throw new ResourceException(String.format(ID_IS_NEGATIVE_ID, userId), CodeOfEntity.ORDER);
         }
 
         Order order = orderConverter.convertFromDto(orderDto);
         setCostOrder(order);
-        orderService.add(order, userId);
+        Order addedOrder = orderService.add(order, userId, customUser.getUsername());
 
-        Optional<Order> optionalResult = orderService.findById(order.getId());
-        if (optionalResult.isEmpty()) {
-            throw new ResourceNotFoundException("Order wasn't added", CodeOfEntity.ORDER);
-        }
-        OrderDto result = orderConverter.convertToDto(optionalResult.get());
+        OrderDto result = orderConverter.convertToDto(addedOrder);
         result.add(linkTo(methodOn(OrderController.class).getOrders(new PaginationDto())).withRel("orders"));
         return EntityModel.of(result);
     }

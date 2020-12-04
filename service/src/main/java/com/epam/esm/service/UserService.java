@@ -4,16 +4,17 @@ import com.epam.esm.entity.Pagination;
 import com.epam.esm.entity.User;
 import java.util.List;
 import java.util.Optional;
+import org.springframework.security.core.userdetails.UserDetailsService;
 
-public interface UserService {
+public interface UserService extends UserDetailsService {
 
     List<User> findAll(Pagination pagination);
 
-    Optional<User> findById(long id);
-
-    User add(User user);
+    Optional<User> findById(long id,String emailAuthorizedUser);
 
     Optional<User> findByEmail(String email);
 
-    boolean update(User user);
+    User add(User user);
+
+    boolean update(User user, String emailAuthorizedUser);
 }

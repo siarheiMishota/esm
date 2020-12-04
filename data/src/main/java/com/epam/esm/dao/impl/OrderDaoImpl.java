@@ -12,9 +12,7 @@ import java.util.Optional;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
-import org.springframework.transaction.annotation.Transactional;
 
-@Transactional
 public class OrderDaoImpl implements OrderDao {
 
     @PersistenceContext

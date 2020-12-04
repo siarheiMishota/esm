@@ -5,7 +5,8 @@ public enum CodeOfEntity {
     TAG("01"),
     GIFT_CERTIFICATE("02"),
     USER("03"),
-    ORDER("04");
+    ORDER("04"),
+    ROLE("05");
 
     private final String code;
 

@@ -19,6 +19,8 @@ import javax.validation.Valid;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.Link;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -43,8 +45,11 @@ public class UserController {
         this.paginationConverter = paginationConverter;
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping
-    public CollectionModel<UserDto> getUsers(@Valid PaginationDto paginationDto) {
+    public CollectionModel<UserDto> getUsers(@Valid PaginationDto paginationDto,
+                                             @AuthenticationPrincipal
+                                                 org.springframework.security.core.userdetails.User customUser) {
         Pagination pagination = paginationConverter.convertFromDto(paginationDto);
         List<User> users = userService.findAll(pagination);
         if (users.isEmpty()) {
@@ -54,7 +59,7 @@ public class UserController {
         List<UserDto> userDtos = userConverter.convertListToListDto(users);
 
         for (UserDto userDto : userDtos) {
-            userDto.add(linkTo(methodOn(UserController.class).getUserById(userDto.getId())).withSelfRel());
+            userDto.add(linkTo(methodOn(UserController.class).getUserById(userDto.getId(), customUser)).withSelfRel());
             userDto.getOrders().forEach(orderDto ->
                 orderDto.add(linkTo(methodOn(OrderController.class).getOrderById(orderDto.getId())).withSelfRel()));
         }
@@ -63,13 +68,16 @@ public class UserController {
         return CollectionModel.of(userDtos, link);
     }
 
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     @GetMapping("/{id}")
-    public EntityModel<UserDto> getUserById(@PathVariable long id) {
+    public EntityModel<UserDto> getUserById(@PathVariable long id,
+                                            @AuthenticationPrincipal
+                                                org.springframework.security.core.userdetails.User customUser) {
         if (id < 0) {
             throw new ResourceException(String.format("Id is negative (id=%d)", id), CodeOfEntity.USER);
         }
 
-        Optional<User> optionalResult = userService.findById(id);
+        Optional<User> optionalResult = userService.findById(id, customUser.getUsername());
         if (optionalResult.isEmpty()) {
             throw new ResourceNotFoundException(
                 String.format("Requested resource not found (id=%d)", id), CodeOfEntity.USER);
@@ -77,29 +85,32 @@ public class UserController {
 
         UserDto userDto = userConverter.convertToDto(optionalResult.get());
 
-        userDto.add(linkTo(methodOn(UserController.class).getUserById(userDto.getId())).withSelfRel());
+        userDto.add(linkTo(methodOn(UserController.class).getUserById(userDto.getId(), customUser)).withSelfRel());
         userDto.getOrders().forEach(orderDto ->
             orderDto.add(linkTo(methodOn(OrderController.class).getOrderById(orderDto.getId())).withSelfRel()));
 
         return EntityModel.of(userDto);
     }
 
+    @PreAuthorize("isAnonymous()")
     @PostMapping
     public EntityModel<UserDto> createUser(@RequestBody @Valid UserDto userDto) {
         User user = userConverter.convertFromDto(userDto);
         userService.add(user);
 
         UserDto result = userConverter.convertToDto(user);
-        result.add(linkTo(methodOn(UserController.class).getUserById(result.getId())).withSelfRel());
         result.getOrders().forEach(orderDto ->
             orderDto.add(linkTo(methodOn(OrderController.class).getOrderById(orderDto.getId())).withSelfRel()));
 
         return EntityModel.of(result);
     }
 
+    @PreAuthorize("hasRole('USER')")
     @PutMapping("/{id}")
     public EntityModel<UserDto> updateUser(@PathVariable long id,
-                                           @RequestBody @Valid UserDto userDto) {
+                                           @RequestBody @Valid UserDto userDto,
+                                           @AuthenticationPrincipal
+                                               org.springframework.security.core.userdetails.User customUser) {
         if (id < 0) {
             throw new ResourceNotFoundException(
                 "User wasn't updated because id is negative", CodeOfEntity.USER);
@@ -107,11 +118,11 @@ public class UserController {
         userDto.setId(id);
 
         User user = userConverter.convertFromDto(userDto);
-        if (!userService.update(user)) {
+        if (!userService.update(user, customUser.getUsername())) {
             throw new ResourceException("User wasn't updated", CodeOfEntity.USER);
         }
 
-        userDto.add(linkTo(methodOn(UserController.class).getUserById(userDto.getId())).withSelfRel());
+        userDto.add(linkTo(methodOn(UserController.class).getUserById(userDto.getId(), customUser)).withSelfRel());
         userDto.getOrders().forEach(orderDto ->
             orderDto.add(linkTo(methodOn(OrderController.class).getOrderById(orderDto.getId())).withSelfRel()));
 

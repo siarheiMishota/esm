@@ -1,11 +1,16 @@
 package com.epam.esm.entity;
 
 import java.util.List;
+import java.util.Set;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 
 @Entity
@@ -27,15 +32,39 @@ public class User {
     @OneToMany(mappedBy = "user")
     private List<Order> orders;
 
+    @ManyToMany( cascade = {CascadeType.MERGE, CascadeType.REFRESH, CascadeType.PERSIST})
+    @JoinTable(name = "user_role",
+        joinColumns = @JoinColumn(name = "user_id"),
+        inverseJoinColumns = @JoinColumn(name = "role_id"))
+    private Set<Role> roles;
+
     public User() {
     }
 
-    public User(long id, String name, String email, String password, List<Order> orders) {
+    public User(String name,
+                String email,
+                String password,
+                List<Order> orders,
+                Set<Role> roles) {
+        this.name = name;
+        this.email = email;
+        this.password = password;
+        this.orders = orders;
+        this.roles = roles;
+    }
+
+    public User(long id,
+                String name,
+                String email,
+                String password,
+                List<Order> orders,
+                Set<Role> roles) {
         this.id = id;
         this.name = name;
         this.email = email;
         this.password = password;
         this.orders = orders;
+        this.roles = roles;
     }
 
     public long getId() {
@@ -78,6 +107,14 @@ public class User {
         this.orders = orders;
     }
 
+    public Set<Role> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(Set<Role> roles) {
+        this.roles = roles;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -101,7 +138,10 @@ public class User {
         if (password != null ? !password.equals(user.password) : user.password != null) {
             return false;
         }
-        return orders != null ? orders.equals(user.orders) : user.orders == null;
+        if (orders != null ? !orders.equals(user.orders) : user.orders != null) {
+            return false;
+        }
+        return roles != null ? roles.equals(user.roles) : user.roles == null;
     }
 
     @Override
@@ -111,6 +151,7 @@ public class User {
         result = 31 * result + (email != null ? email.hashCode() : 0);
         result = 31 * result + (password != null ? password.hashCode() : 0);
         result = 31 * result + (orders != null ? orders.hashCode() : 0);
+        result = 31 * result + (roles != null ? roles.hashCode() : 0);
         return result;
     }
 
@@ -121,7 +162,8 @@ public class User {
             .append(id).append(", name= ")
             .append(name).append(", email= ")
             .append(email).append(", password= ")
-            .append(password).append(", orders=(")
+            .append(password).append(", roles=(")
+            .append(roles).append(", orders=(")
             .append(orders).append(")); ")
             .toString();
     }

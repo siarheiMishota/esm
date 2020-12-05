@@ -1,9 +1,7 @@
 package com.epam.esm.service.impl;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.BDDMockito.given;
 
 import com.epam.esm.dao.UserDao;
@@ -62,31 +60,6 @@ class UserServiceImplTest {
     void addOnNull() {
         given(userDao.add(null)).willThrow(NullPointerException.class);
         assertThrows(NullPointerException.class, () -> userService.add(null));
-    }
-
-    @Test
-    void update() {
-        User expected = getUser();
-        given(userDao.update(expected)).willReturn(true);
-        assertTrue( userService.update(expected));
-    }
-
-    @Test
-    void updateNotExist() {
-        User user = getUser();
-        user.setId(1000);
-
-        given(userDao.update(user)).willReturn(false);
-        assertFalse(userService.update(user));
-    }
-
-    @Test
-    void updateWithNegativeId() {
-        User user = getUser();
-        user.setId(-1);
-
-        given(userDao.update(user)).willReturn(false);
-        assertFalse(userService.update(user));
     }
 
     private User getUser() {

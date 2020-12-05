@@ -20,7 +20,6 @@ import java.util.Optional;
 import javax.validation.Valid;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -48,7 +47,6 @@ public class OrderController {
         this.giftCertificateService = giftCertificateService;
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/orders")
     public CollectionModel<OrderDto> getOrders(@Valid PaginationDto paginationDto) {
         Pagination pagination = paginationConverter.convertFromDto(paginationDto);
@@ -67,7 +65,6 @@ public class OrderController {
         return CollectionModel.of(orderDtos);
     }
 
-    @PreAuthorize("hasRole('ADMIN') ")
     @GetMapping("/orders/{id}")
     public EntityModel<OrderDto> getOrderById(@PathVariable long id) {
         if (id < 0) {
@@ -85,7 +82,6 @@ public class OrderController {
         return EntityModel.of(orderDto);
     }
 
-    @PreAuthorize("hasRole('ADMIN') or hasRole('USER')")
     @GetMapping("/users/{userId}/orders")
     public CollectionModel<OrderDto> getSpecifiedOrdersByUserId(@PathVariable long userId,
                                                                 @Valid PaginationDto paginationDto,
@@ -110,7 +106,6 @@ public class OrderController {
         return CollectionModel.of(orderDtos);
     }
 
-    @PreAuthorize("hasRole('ADMIN') or hasRole('USER')")
     @GetMapping("/users/{userId}/orders/{id}")
     public EntityModel<OrderDto> getSpecifiedOrderByIdByUserId(@PathVariable long userId,
                                                                @PathVariable long id,
@@ -133,7 +128,6 @@ public class OrderController {
         return EntityModel.of(orderDto);
     }
 
-    @PreAuthorize("hasRole('USER')")
     @PostMapping("/users/{userId}/orders")
     public EntityModel<OrderDto> addOrder(@RequestBody @Valid OrderDto orderDto,
                                           @PathVariable long userId,

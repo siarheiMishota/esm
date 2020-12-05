@@ -39,6 +39,7 @@ create table user
     name     varchar(50)  not null,
     email    varchar(50)  not null,
     password varchar(100) not null,
+    role enum('ROLE_ADMIN','ROLE_USER') default 'ROLE_USER',
 
     primary key (id),
 
@@ -61,26 +62,4 @@ create table orders
     foreign key (id_user) REFERENCES user (id),
 
     index orders_cost_id_user_index (cost, id_user)
-);
-
-create table role
-(
-    id   int auto_increment,
-    name varchar(20) unique not null,
-
-    primary key (id),
-
-    index role_name_index (name)
-);
-
-create table user_role
-(
-    user_id int not null,
-    role_id int not null,
-
-    primary key (user_id, role_id),
-
-    foreign key (user_id) references user (id),
-    foreign key (role_id) references role (id)
-
 );

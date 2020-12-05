@@ -19,12 +19,10 @@ import javax.validation.Valid;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.Link;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -45,7 +43,6 @@ public class UserController {
         this.paginationConverter = paginationConverter;
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping
     public CollectionModel<UserDto> getUsers(@Valid PaginationDto paginationDto,
                                              @AuthenticationPrincipal
@@ -68,7 +65,6 @@ public class UserController {
         return CollectionModel.of(userDtos, link);
     }
 
-    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     @GetMapping("/{id}")
     public EntityModel<UserDto> getUserById(@PathVariable long id,
                                             @AuthenticationPrincipal
@@ -92,7 +88,6 @@ public class UserController {
         return EntityModel.of(userDto);
     }
 
-    @PreAuthorize("isAnonymous()")
     @PostMapping
     public EntityModel<UserDto> createUser(@RequestBody @Valid UserDto userDto) {
         User user = userConverter.convertFromDto(userDto);
@@ -103,29 +98,5 @@ public class UserController {
             orderDto.add(linkTo(methodOn(OrderController.class).getOrderById(orderDto.getId())).withSelfRel()));
 
         return EntityModel.of(result);
-    }
-
-    @PreAuthorize("hasRole('USER')")
-    @PutMapping("/{id}")
-    public EntityModel<UserDto> updateUser(@PathVariable long id,
-                                           @RequestBody @Valid UserDto userDto,
-                                           @AuthenticationPrincipal
-                                               org.springframework.security.core.userdetails.User customUser) {
-        if (id < 0) {
-            throw new ResourceNotFoundException(
-                "User wasn't updated because id is negative", CodeOfEntity.USER);
-        }
-        userDto.setId(id);
-
-        User user = userConverter.convertFromDto(userDto);
-        if (!userService.update(user, customUser.getUsername())) {
-            throw new ResourceException("User wasn't updated", CodeOfEntity.USER);
-        }
-
-        userDto.add(linkTo(methodOn(UserController.class).getUserById(userDto.getId(), customUser)).withSelfRel());
-        userDto.getOrders().forEach(orderDto ->
-            orderDto.add(linkTo(methodOn(OrderController.class).getOrderById(orderDto.getId())).withSelfRel()));
-
-        return EntityModel.of(userDto);
     }
 }

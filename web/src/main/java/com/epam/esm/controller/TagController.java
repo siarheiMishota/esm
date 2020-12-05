@@ -19,7 +19,6 @@ import javax.validation.Valid;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.Link;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -77,7 +76,6 @@ public class TagController {
         return EntityModel.of(tagDto);
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/mostUsedByUserHighestCost")
     public EntityModel<TagDto> getTagMostUsedByUserHighestCost() {
         Optional<Tag> optionalTag = tagService.findMostUsedByUserHighestCost();
@@ -90,7 +88,6 @@ public class TagController {
         return EntityModel.of(tagDto);
     }
 
-    @PreAuthorize("hasRole('ADMIN') or hasRole('USER')")
     @PostMapping
     public EntityModel<TagDto> createTag(@RequestBody @Valid TagDto tagDto) {
         Tag tag = tagConverter.convertFromDto(tagDto);
@@ -104,7 +101,6 @@ public class TagController {
 
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     public void deleteTag(@PathVariable long id) {
         if (id < 0) {

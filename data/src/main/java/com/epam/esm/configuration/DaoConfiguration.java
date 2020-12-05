@@ -2,12 +2,10 @@ package com.epam.esm.configuration;
 
 import com.epam.esm.dao.GiftCertificateDao;
 import com.epam.esm.dao.OrderDao;
-import com.epam.esm.dao.RoleDao;
 import com.epam.esm.dao.TagDao;
 import com.epam.esm.dao.UserDao;
 import com.epam.esm.dao.impl.GiftCertificateDaoImpl;
 import com.epam.esm.dao.impl.OrderDaoImpl;
-import com.epam.esm.dao.impl.RoleDaoImpl;
 import com.epam.esm.dao.impl.TagDaoImpl;
 import com.epam.esm.dao.impl.UserDaoImpl;
 import com.epam.esm.util.GiftCertificateSqlBuilder;
@@ -46,11 +44,6 @@ public class DaoConfiguration {
     @Bean
     public GiftCertificateDao giftCertificateDao(GiftCertificateSqlBuilder giftCertificateSqlBuilder) {
         return new GiftCertificateDaoImpl(giftCertificateSqlBuilder);
-    }
-
-    @Bean
-    public RoleDao roleDao() {
-        return new RoleDaoImpl();
     }
 
     @Bean

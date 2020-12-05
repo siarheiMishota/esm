@@ -23,7 +23,6 @@ import java.util.Optional;
 import javax.validation.Valid;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -90,7 +89,6 @@ public class GiftCertificateController {
         return EntityModel.of(giftCertificateDto);
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
     public EntityModel<GiftCertificateDto> createGiftCertificates(
         @RequestBody @Valid GiftCertificateDto giftCertificateDto) {
@@ -106,7 +104,6 @@ public class GiftCertificateController {
         return EntityModel.of(giftCertificateResultDto);
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{id}")
     public EntityModel<GiftCertificateDto> updateGiftCertificate(@PathVariable long id,
                                                                  @RequestBody
@@ -126,7 +123,6 @@ public class GiftCertificateController {
         return EntityModel.of(giftCertificateResultDto);
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     public void deleteGiftCertificate(@PathVariable long id) {
         if (id < 0) {
@@ -141,7 +137,6 @@ public class GiftCertificateController {
         giftCertificateService.delete(id);
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
     @PatchMapping("/{id}")
     public EntityModel<GiftCertificateDto> updatePartGiftCertificate(
         @RequestBody GiftCertificatePatchDto giftCertificatePatchDto, @PathVariable long id) {

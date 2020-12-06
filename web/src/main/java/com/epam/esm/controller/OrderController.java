@@ -20,8 +20,6 @@ import java.util.Optional;
 import javax.validation.Valid;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -84,15 +82,14 @@ public class OrderController {
 
     @GetMapping("/users/{userId}/orders")
     public CollectionModel<OrderDto> getSpecifiedOrdersByUserId(@PathVariable long userId,
-                                                                @Valid PaginationDto paginationDto,
-                                                                @AuthenticationPrincipal User customUser) {
+                                                                @Valid PaginationDto paginationDto) {
         if (userId < 0) {
             throw new ResourceException(String.format(ID_IS_NEGATIVE_ID, userId), CodeOfEntity.ORDER);
         }
 
         Pagination pagination = paginationConverter.convertFromDto(paginationDto);
 
-        List<Order> results = orderService.findByUserId(userId, customUser.getUsername(), pagination);
+        List<Order> results = orderService.findByUserId(userId, pagination);
         if (results.isEmpty()) {
             throw new ResourceNotFoundException(
                 String.format("Requested resource not found (id=%d)", userId), CodeOfEntity.ORDER);
@@ -101,15 +98,14 @@ public class OrderController {
 
         orderDtos.forEach(orderDto -> orderDto.add(
             linkTo(methodOn(OrderController.class).getSpecifiedOrderByIdByUserId(orderDto.getId(),
-                orderDto.getId(), customUser)).withSelfRel()));
+                orderDto.getId())).withSelfRel()));
 
         return CollectionModel.of(orderDtos);
     }
 
     @GetMapping("/users/{userId}/orders/{id}")
     public EntityModel<OrderDto> getSpecifiedOrderByIdByUserId(@PathVariable long userId,
-                                                               @PathVariable long id,
-                                                               @AuthenticationPrincipal User customUser) {
+                                                               @PathVariable long id) {
         if (userId < 0) {
             throw new ResourceException(String.format("Id is negative (userId=%d)", userId), CodeOfEntity.USER);
         }
@@ -117,7 +113,7 @@ public class OrderController {
             throw new ResourceException(String.format(ID_IS_NEGATIVE_ID, userId), CodeOfEntity.ORDER);
         }
 
-        Optional<Order> optionalResult = orderService.findByUserIdAndId(userId, id, customUser.getUsername());
+        Optional<Order> optionalResult = orderService.findByUserIdAndId(userId, id);
         if (optionalResult.isEmpty()) {
             throw new ResourceNotFoundException(
                 String.format("Requested resource not found (userId=%d and id=%d)", userId, id), CodeOfEntity.ORDER);
@@ -130,15 +126,14 @@ public class OrderController {
 
     @PostMapping("/users/{userId}/orders")
     public EntityModel<OrderDto> addOrder(@RequestBody @Valid OrderDto orderDto,
-                                          @PathVariable long userId,
-                                          @AuthenticationPrincipal User customUser) {
+                                          @PathVariable long userId) {
         if (userId < 0) {
             throw new ResourceException(String.format(ID_IS_NEGATIVE_ID, userId), CodeOfEntity.ORDER);
         }
 
         Order order = orderConverter.convertFromDto(orderDto);
         setCostOrder(order);
-        Order addedOrder = orderService.add(order, userId, customUser.getUsername());
+        Order addedOrder = orderService.add(order, userId);
 
         OrderDto result = orderConverter.convertToDto(addedOrder);
         result.add(linkTo(methodOn(OrderController.class).getOrders(new PaginationDto())).withRel("orders"));
@@ -154,7 +149,6 @@ public class OrderController {
                 String.format("Requested resource isn't exist (giftCertificateId=%d)",
                     order.getGiftCertificate().getId()), CodeOfEntity.GIFT_CERTIFICATE);
         }
-
         order.setCost(optionalGiftCertificate.get().getPrice());
     }
 }

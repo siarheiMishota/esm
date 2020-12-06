@@ -60,14 +60,14 @@ class OrderServiceImplTest {
     void findByUserId() {
         List<Order> expected = List.of(getOrder());
         given(orderDao.findByUserId(4, new Pagination())).willReturn(List.of(getOrder()));
-        assertEquals(expected, orderService.findByUserId(4, "bbrayfordrn@gmpg.org",new Pagination()));
+        assertEquals(expected, orderService.findByUserId(4,new Pagination()));
     }
 
     @Test
     void findByUserIdAndId() {
         Order expected = getOrder();
         given(orderDao.findByUserIdAndId(4, 5)).willReturn(Optional.of(getOrder()));
-        assertEquals(expected, orderService.findByUserIdAndId(4, 5,"bbrayfordrn@gmpg.org").get());
+        assertEquals(expected, orderService.findByUserIdAndId(4, 5).get());
     }
 
     @Test

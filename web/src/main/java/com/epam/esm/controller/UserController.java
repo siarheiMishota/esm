@@ -73,7 +73,7 @@ public class UserController {
             throw new ResourceException(String.format("Id is negative (id=%d)", id), CodeOfEntity.USER);
         }
 
-        Optional<User> optionalResult = userService.findById(id, customUser.getUsername());
+        Optional<User> optionalResult = userService.findById(id);
         if (optionalResult.isEmpty()) {
             throw new ResourceNotFoundException(
                 String.format("Requested resource not found (id=%d)", id), CodeOfEntity.USER);

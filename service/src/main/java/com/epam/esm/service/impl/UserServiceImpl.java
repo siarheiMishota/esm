@@ -6,12 +6,10 @@ import com.epam.esm.entity.Pagination;
 import com.epam.esm.entity.Role;
 import com.epam.esm.entity.User;
 import com.epam.esm.exception.EntityDuplicateException;
-import com.epam.esm.exception.ResourceNotFoundException;
 import com.epam.esm.service.UserService;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,11 +30,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Optional<User> findById(long id, String emailAuthorizedUser) {
-        Optional<User> optionalUser = userDao.findById(id);
-
-        checkRightsOnUserOrAdmin(id, emailAuthorizedUser);
-        return optionalUser;
+    public Optional<User> findById(long id) {
+        return userDao.findById(id);
     }
 
     @Override
@@ -57,19 +52,5 @@ public class UserServiceImpl implements UserService {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         userDao.add(user);
         return user;
-    }
-
-    private void checkRightsOnUserOrAdmin(long id, String emailAuthorizedUser) {
-        Optional<User> optionalUser = findByEmail(emailAuthorizedUser);
-        if (optionalUser.isEmpty()) {
-            throw new ResourceNotFoundException(String.format("User wasn't found userId=%d", id),
-                CodeOfEntity.USER);
-        }
-
-        User user = optionalUser.get();
-        if (user.getRole() != Role.ROLE_ADMIN &&
-            user.getId() != id) {
-            throw new AccessDeniedException("Not rights");
-        }
     }
 }

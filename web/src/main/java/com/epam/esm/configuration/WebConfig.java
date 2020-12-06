@@ -1,6 +1,6 @@
 package com.epam.esm.configuration;
 
-import com.epam.esm.security.UserDetailsServiceImpl;
+import com.epam.esm.security.WebSecurity;
 import com.epam.esm.service.UserService;
 import com.epam.esm.service.configuration.ServiceConfiguration;
 import com.epam.esm.util.GiftCertificateUtil;
@@ -14,7 +14,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.validation.beanvalidation.MethodValidationPostProcessor;
 import org.springframework.web.servlet.ViewResolver;
 import org.springframework.web.servlet.config.annotation.DefaultServletHandlerConfigurer;
@@ -35,11 +34,6 @@ public class WebConfig implements WebMvcConfigurer {
     }
 
     @Bean
-    public UserDetailsService userDetailsService(UserService userService) {
-        return new UserDetailsServiceImpl(userService);
-    }
-
-    @Bean
     public ViewResolver viewResolver() {
         InternalResourceViewResolver viewResolver = new InternalResourceViewResolver();
         viewResolver.setViewClass(JstlView.class);
@@ -51,6 +45,11 @@ public class WebConfig implements WebMvcConfigurer {
     @Bean
     public MethodValidationPostProcessor methodValidationPostProcessor() {
         return new MethodValidationPostProcessor();
+    }
+
+    @Bean
+    public WebSecurity webSecurity(UserService userService) {
+        return new WebSecurity(userService);
     }
 
     @Bean

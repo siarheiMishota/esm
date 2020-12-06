@@ -13,9 +13,11 @@ import com.epam.esm.service.impl.GiftCertificateServiceImpl;
 import com.epam.esm.service.impl.OrderServiceImpl;
 import com.epam.esm.service.impl.TagServiceImpl;
 import com.epam.esm.service.impl.UserServiceImpl;
+import com.epam.esm.service.security.UserDetailsServiceImpl;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
@@ -44,6 +46,11 @@ public class ServiceConfiguration {
     @Bean
     public UserService userService(UserDao userDao, PasswordEncoder passwordEncoder) {
         return new UserServiceImpl(userDao, passwordEncoder);
+    }
+
+    @Bean
+    public UserDetailsService userDetailsService(UserService userService) {
+        return new UserDetailsServiceImpl(userService);
     }
 
     @Bean

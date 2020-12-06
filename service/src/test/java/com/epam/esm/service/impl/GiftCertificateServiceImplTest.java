@@ -7,14 +7,13 @@ import static org.mockito.BDDMockito.given;
 
 import com.epam.esm.dao.GiftCertificateDao;
 import com.epam.esm.entity.GiftCertificate;
+import com.epam.esm.entity.GiftCertificateParameter;
 import com.epam.esm.entity.Pagination;
 import com.epam.esm.entity.Tag;
 import com.epam.esm.service.TagService;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -36,8 +35,8 @@ class GiftCertificateServiceImplTest {
 
     @Test
     void findAll() {
-        given(giftCertificateDao.findAll(Map.of(), new Pagination())).willReturn(getGiftCertificates());
-        assertEquals(getGiftCertificates(), giftCertificateService.findAll(Map.of(), new Pagination()));
+        given(giftCertificateDao.findAll(new GiftCertificateParameter(), new Pagination())).willReturn(getGiftCertificates());
+        assertEquals(getGiftCertificates(), giftCertificateService.findAll(new GiftCertificateParameter(), new Pagination()));
     }
 
     @Test
@@ -65,9 +64,9 @@ class GiftCertificateServiceImplTest {
 
     @Test
     void delete() {
-        given(giftCertificateDao.findAll(new HashMap<>(), new Pagination())).willReturn(getGiftCertificates());
+        given(giftCertificateDao.findAll(new GiftCertificateParameter(), new Pagination())).willReturn(getGiftCertificates());
         giftCertificateService.delete(11);
-        assertEquals(3, giftCertificateService.findAll(new HashMap<>(), new Pagination()).size());
+        assertEquals(3, giftCertificateService.findAll(new GiftCertificateParameter(), new Pagination()).size());
     }
 
     @Test

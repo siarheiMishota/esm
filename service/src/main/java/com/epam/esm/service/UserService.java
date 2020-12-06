@@ -9,7 +9,7 @@ public interface UserService {
 
     List<User> findAll(Pagination pagination);
 
-    Optional<User> findById(long id, String emailAuthorizedUser);
+    Optional<User> findById(long id);
 
     Optional<User> findByEmail(String email);
 

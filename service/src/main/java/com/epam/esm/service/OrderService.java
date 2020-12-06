@@ -11,11 +11,11 @@ public interface OrderService {
 
     Optional<Order> findById(long id);
 
-    List<Order> findByUserId(long userId, String emailAuthorizedUser, Pagination pagination);
+    List<Order> findByUserId(long userId, Pagination pagination);
 
-    Optional<Order> findByUserIdAndId(long userId, long id, String emailAuthorizedUser);
+    Optional<Order> findByUserIdAndId(long userId, long id);
 
-    Order add(Order order, long userId, String emailAuthorizedUser);
+    Order add(Order order, long userId);
 
     boolean update(Order order);
 

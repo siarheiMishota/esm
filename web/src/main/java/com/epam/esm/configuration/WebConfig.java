@@ -1,7 +1,8 @@
 package com.epam.esm.configuration;
 
+import com.epam.esm.security.JwtFilter;
+import com.epam.esm.security.JwtProvider;
 import com.epam.esm.security.WebSecurity;
-import com.epam.esm.service.UserService;
 import com.epam.esm.service.configuration.ServiceConfiguration;
 import com.epam.esm.util.GiftCertificateUtil;
 import com.epam.esm.util.converter.GiftCertificateConverter;
@@ -10,6 +11,7 @@ import com.epam.esm.util.converter.OrderConverter;
 import com.epam.esm.util.converter.PaginationConverter;
 import com.epam.esm.util.converter.TagConverter;
 import com.epam.esm.util.converter.UserConverter;
+import com.epam.esm.util.converter.UserLoginResponseConverter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -48,8 +50,18 @@ public class WebConfig implements WebMvcConfigurer {
     }
 
     @Bean
-    public WebSecurity webSecurity(UserService userService) {
-        return new WebSecurity(userService);
+    public WebSecurity webSecurity() {
+        return new WebSecurity();
+    }
+
+    @Bean
+    public JwtProvider jwtProvider() {
+        return new JwtProvider();
+    }
+
+    @Bean
+    public JwtFilter jwtFilter(JwtProvider jwtProvider) {
+        return new JwtFilter(jwtProvider);
     }
 
     @Bean
@@ -85,5 +97,10 @@ public class WebConfig implements WebMvcConfigurer {
     @Bean
     public GiftCertificateUtil giftCertificateUtil() {
         return new GiftCertificateUtil();
+    }
+
+    @Bean
+    public UserLoginResponseConverter userLoginResponseConverter() {
+        return new UserLoginResponseConverter();
     }
 }

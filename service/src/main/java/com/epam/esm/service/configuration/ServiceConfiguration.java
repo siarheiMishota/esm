@@ -13,7 +13,7 @@ import com.epam.esm.service.impl.GiftCertificateServiceImpl;
 import com.epam.esm.service.impl.OrderServiceImpl;
 import com.epam.esm.service.impl.TagServiceImpl;
 import com.epam.esm.service.impl.UserServiceImpl;
-import com.epam.esm.service.security.UserDetailsServiceImpl;
+import com.epam.esm.service.security.impl.UserDetailsServiceImpl;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;

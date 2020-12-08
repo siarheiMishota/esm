@@ -53,4 +53,18 @@ public class UserServiceImpl implements UserService {
         userDao.add(user);
         return user;
     }
+
+    @Override
+    public Optional<User> findByEmailAndPassword(String email, String password) {
+        Optional<User> optionalUser = findByEmail(email);
+        if (optionalUser.isEmpty()) {
+            return Optional.empty();
+        }
+
+        User user = optionalUser.get();
+        if (passwordEncoder.matches(password, user.getPassword())) {
+            return optionalUser;
+        }
+        return Optional.empty();
+    }
 }

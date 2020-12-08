@@ -1,5 +1,7 @@
 package com.epam.esm.configuration;
 
+import static org.springframework.security.config.http.SessionCreationPolicy.STATELESS;
+
 import com.epam.esm.security.JwtFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
@@ -66,6 +68,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             .permitAll();
 
         http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
+        http.sessionManagement().sessionCreationPolicy(STATELESS);
         http.logout();
         http.csrf().disable();
     }

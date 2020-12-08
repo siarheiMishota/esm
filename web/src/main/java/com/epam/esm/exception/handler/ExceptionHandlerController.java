@@ -10,7 +10,7 @@ import java.util.stream.Collectors;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.access.AccessDeniedException;
-import org.springframework.security.oauth2.common.exceptions.BadClientCredentialsException;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
@@ -107,8 +107,8 @@ public class ExceptionHandlerController {
     }
 
     @ResponseStatus(HttpStatus.FORBIDDEN)
-    @ExceptionHandler(BadClientCredentialsException.class)
-    public ExceptionDto handleBadClientCredentialsException(BadClientCredentialsException e) {
+    @ExceptionHandler(BadCredentialsException.class)
+    public ExceptionDto handleBadClientCredentialsException(BadCredentialsException e) {
         return new ExceptionDto("No rights",
             HttpStatus.FORBIDDEN.value() + CodeOfEntity.DEFAULT.getCode());
     }

@@ -5,7 +5,10 @@ import com.epam.esm.entity.UserLoginResponseDto;
 
 public class UserLoginResponseConverter {
 
-    public UserLoginResponseDto convertToDto(User user, String token) {
+    private UserLoginResponseConverter() {
+    }
+
+    public static UserLoginResponseDto convertToDto(User user, String token) {
         UserLoginResponseDto userLoginResponseDto = new UserLoginResponseDto();
         userLoginResponseDto.setId(user.getId());
         userLoginResponseDto.setName(user.getName());

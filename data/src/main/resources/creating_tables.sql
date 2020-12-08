@@ -39,7 +39,7 @@ create table user
     name     varchar(50)  not null,
     email    varchar(50)  not null,
     password varchar(100) not null,
-    role enum('ROLE_ADMIN','ROLE_USER') default 'ROLE_USER',
+    role     enum ('ROLE_ADMIN','ROLE_USER') default 'ROLE_USER',
 
     primary key (id),
 

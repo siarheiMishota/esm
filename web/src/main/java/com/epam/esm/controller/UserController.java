@@ -36,32 +36,22 @@ import org.springframework.web.bind.annotation.RestController;
 public class UserController {
 
     private final UserService userService;
-    private final UserConverter userConverter;
-    private final PaginationConverter paginationConverter;
     private final JwtProvider jwtProvider;
-    private final UserLoginResponseConverter userLoginResponseConverter;
 
-    public UserController(UserService userService,
-                          UserConverter userConverter,
-                          PaginationConverter paginationConverter,
-                          JwtProvider jwtProvider,
-                          UserLoginResponseConverter userLoginResponseConverter) {
+    public UserController(UserService userService, JwtProvider jwtProvider) {
         this.userService = userService;
-        this.userConverter = userConverter;
-        this.paginationConverter = paginationConverter;
         this.jwtProvider = jwtProvider;
-        this.userLoginResponseConverter = userLoginResponseConverter;
     }
 
     @GetMapping
     public CollectionModel<UserDto> getUsers(@Valid PaginationDto paginationDto) {
-        Pagination pagination = paginationConverter.convertFromDto(paginationDto);
+        Pagination pagination = PaginationConverter.convertFromDto(paginationDto);
         List<User> users = userService.findAll(pagination);
         if (users.isEmpty()) {
             throw new ResourceNotFoundException("Requested resource not found ", CodeOfEntity.USER);
         }
 
-        List<UserDto> userDtos = userConverter.convertListToListDto(users);
+        List<UserDto> userDtos = UserConverter.convertListToListDto(users);
 
         for (UserDto userDto : userDtos) {
             userDto.add(linkTo(methodOn(UserController.class).getUserById(userDto.getId())).withSelfRel());
@@ -85,7 +75,7 @@ public class UserController {
                 String.format("Requested resource not found (id=%d)", id), CodeOfEntity.USER);
         }
 
-        UserDto userDto = userConverter.convertToDto(optionalResult.get());
+        UserDto userDto = UserConverter.convertToDto(optionalResult.get());
 
         userDto.add(linkTo(methodOn(UserController.class).getUserById(userDto.getId())).withSelfRel());
         userDto.getOrders().forEach(orderDto ->
@@ -96,10 +86,10 @@ public class UserController {
 
     @PostMapping
     public EntityModel<UserDto> createUser(@RequestBody @Valid UserDto userDto) {
-        User user = userConverter.convertFromDto(userDto);
+        User user = UserConverter.convertFromDto(userDto);
         userService.add(user);
 
-        UserDto result = userConverter.convertToDto(user);
+        UserDto result = UserConverter.convertToDto(user);
         result.getOrders().forEach(orderDto ->
             orderDto.add(linkTo(methodOn(OrderController.class).getOrderById(orderDto.getId())).withSelfRel()));
 
@@ -118,7 +108,7 @@ public class UserController {
         User user = optionalUser.get();
         String token = jwtProvider.generateToken(user.getId(), user.getName(), user.getEmail(), user.getRole());
 
-        UserLoginResponseDto result = userLoginResponseConverter.convertToDto(user, token);
+        UserLoginResponseDto result = UserLoginResponseConverter.convertToDto(user, token);
         result.add(linkTo(methodOn(UserController.class).getUserById(user.getId())).withSelfRel());
         return EntityModel.of(result);
     }

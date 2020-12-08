@@ -106,11 +106,11 @@ public class ExceptionHandlerController {
             HttpStatus.FORBIDDEN.value() + CodeOfEntity.DEFAULT.getCode());
     }
 
-    @ResponseStatus(HttpStatus.FORBIDDEN)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
     @ExceptionHandler(BadCredentialsException.class)
     public ExceptionDto handleBadClientCredentialsException(BadCredentialsException e) {
-        return new ExceptionDto("No rights",
-            HttpStatus.FORBIDDEN.value() + CodeOfEntity.DEFAULT.getCode());
+        return new ExceptionDto("Unauthorized",
+            HttpStatus.UNAUTHORIZED.value() + CodeOfEntity.DEFAULT.getCode());
     }
 
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)

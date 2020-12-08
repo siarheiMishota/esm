@@ -18,12 +18,12 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     }
 
     @Override
-    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+    public UserDetails loadUserByUsername(String email) {
         Optional<User> optionalUser = userService.findByEmail(email);
 
         if (optionalUser.isEmpty()) {
             throw new UsernameNotFoundException("User not found");
         }
-        return CustomerUserDetails.fromUserEntityToCustomUserDetails(optionalUser.get());
+        return CustomerUserDetails.createCustomUserDetails(optionalUser.get());
     }
 }

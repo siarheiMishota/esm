@@ -39,6 +39,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
+        http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
+        http.sessionManagement().sessionCreationPolicy(STATELESS);
+        http.logout();
+        http.csrf().disable();
+
         http.authorizeRequests()
             .antMatchers(HttpMethod.POST, "/giftCertificates", "/tags")
             .hasRole(ADMIN)
@@ -60,16 +65,13 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             .access("@webSecurity.checkUserId(authentication,#userId)")
             .antMatchers(HttpMethod.POST, "/users")
             .anonymous()
+            .antMatchers(HttpMethod.POST, "/users/login")
+            .anonymous()
             .antMatchers(HttpMethod.POST, "/users/**/orders")
             .hasRole(USER)
             .antMatchers("/tags/mostUsedByUserHighestCost")
             .hasRole(ADMIN)
-            .antMatchers("/giftCertificates/**", "/tags/**", "/users", "/login")
+            .antMatchers("/giftCertificates/**")
             .permitAll();
-
-        http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
-        http.sessionManagement().sessionCreationPolicy(STATELESS);
-        http.logout();
-        http.csrf().disable();
     }
 }

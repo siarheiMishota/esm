@@ -35,8 +35,10 @@ class GiftCertificateServiceImplTest {
 
     @Test
     void findAll() {
-        given(giftCertificateDao.findAll(new GiftCertificateParameter(), new Pagination())).willReturn(getGiftCertificates());
-        assertEquals(getGiftCertificates(), giftCertificateService.findAll(new GiftCertificateParameter(), new Pagination()));
+        given(giftCertificateDao.findAll(new GiftCertificateParameter(), new Pagination())).willReturn(
+            getGiftCertificates());
+        assertEquals(getGiftCertificates(),
+            giftCertificateService.findAll(new GiftCertificateParameter(), new Pagination()));
     }
 
     @Test
@@ -64,7 +66,8 @@ class GiftCertificateServiceImplTest {
 
     @Test
     void delete() {
-        given(giftCertificateDao.findAll(new GiftCertificateParameter(), new Pagination())).willReturn(getGiftCertificates());
+        given(giftCertificateDao.findAll(new GiftCertificateParameter(), new Pagination())).willReturn(
+            getGiftCertificates());
         giftCertificateService.delete(11);
         assertEquals(3, giftCertificateService.findAll(new GiftCertificateParameter(), new Pagination()).size());
     }

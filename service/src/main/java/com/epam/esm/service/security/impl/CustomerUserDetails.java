@@ -15,7 +15,7 @@ public class CustomerUserDetails implements UserDetails {
     private String password;
     private Collection<? extends GrantedAuthority> grantedAuthorities;
 
-    public static CustomerUserDetails fromUserEntityToCustomUserDetails(User user) {
+    public static CustomerUserDetails createCustomUserDetails(User user) {
         CustomerUserDetails c = new CustomerUserDetails();
         c.email = user.getEmail();
         c.id = user.getId();

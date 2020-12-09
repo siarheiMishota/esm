@@ -24,8 +24,6 @@ public class JwtProvider {
     public String generateToken(User user) {
         Date date = Date.from(LocalDateTime.now()
             .plusMinutes(durationMinute)
-            .toLocalDate()
-            .atStartOfDay()
             .atZone(ZoneId.systemDefault())
             .toInstant());
         return Jwts.builder()

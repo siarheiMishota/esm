@@ -57,15 +57,17 @@ public class OrderServiceImpl implements OrderService {
         Optional<GiftCertificate> optionalGiftCertificate = giftCertificateService.findById(
             order.getGiftCertificate().getId());
 
-        if (optionalUser.isEmpty() || optionalGiftCertificate.isEmpty()) {
-            throw new ResourceNotFoundException(
-                String.format("Resource is not found, (id=%d)", order.getId()),
-                CodeOfEntity.ORDER);
-        }
+        User user = optionalUser.orElseThrow(() -> new ResourceNotFoundException(
+            String.format("Resource is not found, (id=%d)", order.getId()),
+            CodeOfEntity.ORDER));
+
+        GiftCertificate giftCertificate = optionalGiftCertificate.orElseThrow(() -> new ResourceNotFoundException(
+            String.format("Resource is not found, (id=%d)", order.getId()),
+            CodeOfEntity.ORDER));
 
         order.setDate(LocalDateTime.now());
-        order.setUser(optionalUser.get());
-        order.setGiftCertificate(optionalGiftCertificate.get());
+        order.setUser(user);
+        order.setGiftCertificate(giftCertificate);
 
         orderDao.add(order, userId);
         Optional<Order> optionalResult = findById(order.getId());

@@ -20,10 +20,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String email) {
         Optional<User> optionalUser = userService.findByEmail(email);
-
-        if (optionalUser.isEmpty()) {
-            throw new UsernameNotFoundException("User not found");
-        }
-        return CustomerUserDetails.createCustomUserDetails(optionalUser.get());
+        User user = optionalUser.orElseThrow(() -> new UsernameNotFoundException("User not found"));
+        return CustomerUserDetails.createCustomUserDetails(user);
     }
 }

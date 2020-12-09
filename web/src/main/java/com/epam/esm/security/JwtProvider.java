@@ -5,6 +5,7 @@ import com.epam.esm.entity.User;
 import com.epam.esm.service.security.impl.CustomerUserDetails;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
+import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import java.time.LocalDateTime;
@@ -15,12 +16,15 @@ import org.springframework.security.authentication.BadCredentialsException;
 
 public class JwtProvider {
 
-    @Value("$(jwt.secret)")
+    @Value("jwtSecretToken")
     private String jwtSecret;
+
+    @Value("30")
+    private Integer durationMinute;
 
     public String generateToken(User user) {
         Date date = Date.from(LocalDateTime.now()
-            .plusSeconds(100)
+            .plusMinutes(durationMinute)
             .toLocalDate()
             .atStartOfDay()
             .atZone(ZoneId.systemDefault())
@@ -39,11 +43,10 @@ public class JwtProvider {
         try {
             Jws<Claims> claimsJws = Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(token);
             Date expiration = claimsJws.getBody().getExpiration();
-            if (new Date().compareTo(expiration) > 0) {
+            if (new Date().after(expiration)) {
                 return true;
             }
-
-            throw new BadCredentialsException("Unauthorized");
+            throw new JwtException("Token time is over");
 
         } catch (Exception e) {
             throw new BadCredentialsException("Unauthorized");

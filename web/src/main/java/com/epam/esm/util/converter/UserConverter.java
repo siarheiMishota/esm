@@ -7,22 +7,20 @@ import java.util.stream.Collectors;
 
 public class UserConverter {
 
-    private final OrderConverter orderConverter;
-
-    public UserConverter(OrderConverter orderConverter) {
-        this.orderConverter = orderConverter;
+    private UserConverter() {
     }
 
-    public UserDto convertToDto(User user) {
+    public static UserDto convertToDto(User user) {
         UserDto userDto = new UserDto();
         userDto.setId(user.getId());
         userDto.setName(user.getName());
+        userDto.setPassword("");
         userDto.setEmail(user.getEmail());
-        userDto.setOrders(orderConverter.convertListToListDto(user.getOrders()));
+        userDto.setOrders(OrderConverter.convertListToListDto(user.getOrders()));
         return userDto;
     }
 
-    public User convertFromDto(UserDto userDto) {
+    public static User convertFromDto(UserDto userDto) {
         User user = new User();
         user.setName(userDto.getName());
         user.setEmail(userDto.getEmail());
@@ -30,9 +28,9 @@ public class UserConverter {
         return user;
     }
 
-    public List<UserDto> convertListToListDto(List<User> users) {
+    public static List<UserDto> convertListToListDto(List<User> users) {
         return users.stream()
-            .map(this::convertToDto)
+            .map(UserConverter::convertToDto)
             .collect(Collectors.toList());
     }
 }

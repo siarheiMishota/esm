@@ -3,6 +3,8 @@ package com.epam.esm.entity;
 import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -24,17 +26,34 @@ public class User {
     @Column(length = 100)
     private String password;
 
+    @Enumerated(EnumType.STRING)
+    private Role role;
+
     @OneToMany(mappedBy = "user")
     private List<Order> orders;
 
     public User() {
     }
 
-    public User(long id, String name, String email, String password, List<Order> orders) {
+    public User(String name, String email, String password, Role role, List<Order> orders) {
+        this.name = name;
+        this.email = email;
+        this.password = password;
+        this.role = role;
+        this.orders = orders;
+    }
+
+    public User(long id,
+                String name,
+                String email,
+                String password,
+                Role role,
+                List<Order> orders) {
         this.id = id;
         this.name = name;
         this.email = email;
         this.password = password;
+        this.role = role;
         this.orders = orders;
     }
 
@@ -78,6 +97,14 @@ public class User {
         this.orders = orders;
     }
 
+    public Role getRole() {
+        return role;
+    }
+
+    public void setRole(Role role) {
+        this.role = role;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -101,6 +128,9 @@ public class User {
         if (password != null ? !password.equals(user.password) : user.password != null) {
             return false;
         }
+        if (role != null ? !role.equals(user.role) : user.role != null) {
+            return false;
+        }
         return orders != null ? orders.equals(user.orders) : user.orders == null;
     }
 
@@ -110,6 +140,7 @@ public class User {
         result = 31 * result + (name != null ? name.hashCode() : 0);
         result = 31 * result + (email != null ? email.hashCode() : 0);
         result = 31 * result + (password != null ? password.hashCode() : 0);
+        result = 31 * result + (role != null ? role.hashCode() : 0);
         result = 31 * result + (orders != null ? orders.hashCode() : 0);
         return result;
     }
@@ -121,7 +152,8 @@ public class User {
             .append(id).append(", name= ")
             .append(name).append(", email= ")
             .append(email).append(", password= ")
-            .append(password).append(", orders=(")
+            .append(password).append(", role=(")
+            .append(role).append(", orders=(")
             .append(orders).append(")); ")
             .toString();
     }

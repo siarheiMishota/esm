@@ -8,7 +8,9 @@ import com.epam.esm.exception.ResourceNotFoundException;
 import com.epam.esm.service.TagService;
 import java.util.List;
 import java.util.Optional;
+import org.springframework.transaction.annotation.Transactional;
 
+@Transactional
 public class TagServiceImpl implements TagService {
 
     private final TagDao tagDao;
@@ -43,7 +45,12 @@ public class TagServiceImpl implements TagService {
             return false;
         }
 
-        tagDao.add(tag);
+        Optional<Tag> optionalTag = findByName(tag.getName());
+        if (optionalTag.isPresent()) {
+            tag.setId(optionalTag.get().getId());
+        } else {
+            tagDao.add(tag);
+        }
         return true;
     }
 

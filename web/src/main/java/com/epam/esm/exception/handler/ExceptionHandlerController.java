@@ -9,6 +9,8 @@ import com.epam.esm.exception.handler.dto.ExceptionDto;
 import java.util.stream.Collectors;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
@@ -95,6 +97,20 @@ public class ExceptionHandlerController {
     public ExceptionDto handleHttpRequestMethodNotSupportedException(HttpRequestMethodNotSupportedException e) {
         return new ExceptionDto(e.getMessage(),
             HttpStatus.METHOD_NOT_ALLOWED.value() + CodeOfEntity.DEFAULT.getCode());
+    }
+
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    @ExceptionHandler(AccessDeniedException.class)
+    public ExceptionDto handleAccessDeniedException(AccessDeniedException e) {
+        return new ExceptionDto("No rights",
+            HttpStatus.FORBIDDEN.value() + CodeOfEntity.DEFAULT.getCode());
+    }
+
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    @ExceptionHandler(BadCredentialsException.class)
+    public ExceptionDto handleBadClientCredentialsException(BadCredentialsException e) {
+        return new ExceptionDto("Unauthorized",
+            HttpStatus.UNAUTHORIZED.value() + CodeOfEntity.DEFAULT.getCode());
     }
 
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)

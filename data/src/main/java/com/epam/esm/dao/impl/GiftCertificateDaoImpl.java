@@ -13,9 +13,7 @@ import java.util.Optional;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
-import org.springframework.transaction.annotation.Transactional;
 
-@Transactional
 public class GiftCertificateDaoImpl implements GiftCertificateDao {
 
     private final GiftCertificateSqlBuilder giftCertificateSqlBuilder;
@@ -65,7 +63,6 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
         entityManager.merge(giftCertificate);
         return true;
     }
-
 
     @Override
     public GiftCertificate add(GiftCertificate giftCertificate) {

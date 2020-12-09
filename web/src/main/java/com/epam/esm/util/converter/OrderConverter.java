@@ -8,7 +8,10 @@ import java.util.stream.Collectors;
 
 public class OrderConverter {
 
-    public Order convertFromDto(OrderDto orderDto) {
+    private OrderConverter() {
+    }
+
+    public static Order convertFromDto(OrderDto orderDto) {
         Order order = new Order();
         GiftCertificate giftCertificate = new GiftCertificate();
         giftCertificate.setId(orderDto.getIdGiftCertificate());
@@ -16,7 +19,7 @@ public class OrderConverter {
         return order;
     }
 
-    public OrderDto convertToDto(Order order) {
+    public static OrderDto convertToDto(Order order) {
         OrderDto orderDto = new OrderDto();
         orderDto.setId(order.getId());
         orderDto.setCost(order.getCost());
@@ -25,9 +28,9 @@ public class OrderConverter {
         return orderDto;
     }
 
-    public List<OrderDto> convertListToListDto(List<Order> orders) {
+    public static List<OrderDto> convertListToListDto(List<Order> orders) {
         return orders.stream()
-            .map(this::convertToDto)
+            .map(OrderConverter::convertToDto)
             .collect(Collectors.toList());
     }
 }

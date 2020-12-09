@@ -9,13 +9,10 @@ import java.util.stream.Collectors;
 
 public class GiftCertificateConverter {
 
-    private final TagConverter tagConverter;
-
-    public GiftCertificateConverter(TagConverter tagConverter) {
-        this.tagConverter = tagConverter;
+    private GiftCertificateConverter() {
     }
 
-    public GiftCertificate convertFromDto(GiftCertificateDto giftCertificateDto) {
+    public static GiftCertificate convertFromDto(GiftCertificateDto giftCertificateDto) {
         GiftCertificate giftCertificate = new GiftCertificate();
         giftCertificate.setId(giftCertificateDto.getId());
         giftCertificate.setName(giftCertificateDto.getName());
@@ -28,13 +25,13 @@ public class GiftCertificateConverter {
             giftCertificate.setTags(new ArrayList<>());
         } else {
             giftCertificate.setTags(tagsDto.stream()
-                .map(tagConverter::convertFromDto)
+                .map(TagConverter::convertFromDto)
                 .collect(Collectors.toList()));
         }
         return giftCertificate;
     }
 
-    public GiftCertificateDto convertToDto(GiftCertificate giftCertificate) {
+    public static GiftCertificateDto convertToDto(GiftCertificate giftCertificate) {
         GiftCertificateDto giftCertificateDto = new GiftCertificateDto();
         giftCertificateDto.setId(giftCertificate.getId());
         giftCertificateDto.setName(giftCertificate.getName());
@@ -43,13 +40,13 @@ public class GiftCertificateConverter {
         giftCertificateDto.setCreationDate(giftCertificate.getCreationDate().toString());
         giftCertificateDto.setLastUpdateDate(giftCertificate.getLastUpdateDate().toString());
         giftCertificateDto.setDuration(giftCertificate.getDuration());
-        giftCertificateDto.setTags(tagConverter.convertListToListDto(giftCertificate.getTags()));
+        giftCertificateDto.setTags(TagConverter.convertListToListDto(giftCertificate.getTags()));
         return giftCertificateDto;
     }
 
-    public List<GiftCertificateDto> convertListToListDto(List<GiftCertificate> giftCertificates) {
+    public static List<GiftCertificateDto> convertListToListDto(List<GiftCertificate> giftCertificates) {
         return giftCertificates.stream()
-            .map(this::convertToDto)
+            .map(GiftCertificateConverter::convertToDto)
             .collect(Collectors.toList());
     }
 }

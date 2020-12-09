@@ -15,7 +15,8 @@ dependencies {
     }
     implementation group: 'org.springframework.boot', name: 'spring-boot-starter', version: '2.3.5.RELEASE'
     implementation group: 'org.springframework.security', name: 'spring-security-core', version: '5.3.5.RELEASE'
-
+    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-security', version: '2.3.5.RELEASE'
+    implementation group: 'org.springframework', name: 'spring-tx', version: '5.2.11.RELEASE'
 
     testImplementation group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: '2.3.5.RELEASE'
     testImplementation group: 'org.mockito', name: 'mockito-junit-jupiter', version: '3.5.15'

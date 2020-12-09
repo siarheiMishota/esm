@@ -4,19 +4,14 @@ import static com.epam.esm.dao.sqlRequest.SqlRequestUser.FIND_ALL;
 import static com.epam.esm.dao.sqlRequest.SqlRequestUser.FIND_BY_EMAIL;
 
 import com.epam.esm.dao.UserDao;
-import com.epam.esm.entity.CodeOfEntity;
 import com.epam.esm.entity.Pagination;
 import com.epam.esm.entity.User;
-import com.epam.esm.exception.EntityDuplicateException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
-import org.springframework.transaction.annotation.Transactional;
 
-@Transactional
 public class UserDaoImpl implements UserDao {
 
     @PersistenceContext
@@ -45,13 +40,6 @@ public class UserDaoImpl implements UserDao {
 
     @Override
     public User add(User user) {
-        Optional<User> optionalUser = findByEmail(user.getEmail());
-        if (optionalUser.isPresent()) {
-            throw new EntityDuplicateException("User wasn't added because email is exist  " + user.getEmail(),
-                CodeOfEntity.USER);
-        }
-
-        user.setOrders(new ArrayList<>());
         entityManager.persist(user);
         return user;
     }

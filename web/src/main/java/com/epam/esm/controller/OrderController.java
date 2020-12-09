@@ -31,23 +31,16 @@ public class OrderController {
 
     private static final String ID_IS_NEGATIVE_ID = "Id is negative (id=%d)";
     private final OrderService orderService;
-    private final OrderConverter orderConverter;
-    private final PaginationConverter paginationConverter;
     private final GiftCertificateService giftCertificateService;
 
-    public OrderController(OrderService orderService,
-                           OrderConverter orderConverter,
-                           PaginationConverter paginationConverter,
-                           GiftCertificateService giftCertificateService) {
+    public OrderController(OrderService orderService, GiftCertificateService giftCertificateService) {
         this.orderService = orderService;
-        this.orderConverter = orderConverter;
-        this.paginationConverter = paginationConverter;
         this.giftCertificateService = giftCertificateService;
     }
 
     @GetMapping("/orders")
     public CollectionModel<OrderDto> getOrders(@Valid PaginationDto paginationDto) {
-        Pagination pagination = paginationConverter.convertFromDto(paginationDto);
+        Pagination pagination = PaginationConverter.convertFromDto(paginationDto);
 
         List<Order> orders = orderService.findAll(pagination);
         if (orders.isEmpty()) {
@@ -55,7 +48,7 @@ public class OrderController {
                 String.format("Requested resource not found, limit=%d, offset=%d ", paginationDto.getLimit(),
                     paginationDto.getOffset()), CodeOfEntity.ORDER);
         }
-        List<OrderDto> orderDtos = orderConverter.convertListToListDto(orders);
+        List<OrderDto> orderDtos = OrderConverter.convertListToListDto(orders);
 
         orderDtos.forEach(orderDto -> orderDto.add(
             linkTo(methodOn(OrderController.class).getOrderById(orderDto.getId())).withSelfRel()));
@@ -75,7 +68,7 @@ public class OrderController {
                 String.format("Requested resource not found (id=%d)", id), CodeOfEntity.ORDER);
         }
 
-        OrderDto orderDto = orderConverter.convertToDto(optionalResult.get());
+        OrderDto orderDto = OrderConverter.convertToDto(optionalResult.get());
         orderDto.add(linkTo(methodOn(OrderController.class).getOrderById(orderDto.getId())).withSelfRel());
         return EntityModel.of(orderDto);
     }
@@ -86,17 +79,19 @@ public class OrderController {
         if (userId < 0) {
             throw new ResourceException(String.format(ID_IS_NEGATIVE_ID, userId), CodeOfEntity.ORDER);
         }
-        Pagination pagination = paginationConverter.convertFromDto(paginationDto);
+
+        Pagination pagination = PaginationConverter.convertFromDto(paginationDto);
 
         List<Order> results = orderService.findByUserId(userId, pagination);
         if (results.isEmpty()) {
             throw new ResourceNotFoundException(
                 String.format("Requested resource not found (id=%d)", userId), CodeOfEntity.ORDER);
         }
-        List<OrderDto> orderDtos = orderConverter.convertListToListDto(results);
+        List<OrderDto> orderDtos = OrderConverter.convertListToListDto(results);
 
         orderDtos.forEach(orderDto -> orderDto.add(
-            linkTo(methodOn(OrderController.class).getOrderById(orderDto.getId())).withSelfRel()));
+            linkTo(methodOn(OrderController.class).getSpecifiedOrderByIdByUserId(orderDto.getId(),
+                orderDto.getId())).withSelfRel()));
 
         return CollectionModel.of(orderDtos);
     }
@@ -116,7 +111,8 @@ public class OrderController {
             throw new ResourceNotFoundException(
                 String.format("Requested resource not found (userId=%d and id=%d)", userId, id), CodeOfEntity.ORDER);
         }
-        OrderDto orderDto = orderConverter.convertToDto(optionalResult.get());
+
+        OrderDto orderDto = OrderConverter.convertToDto(optionalResult.get());
         orderDto.add(linkTo(methodOn(OrderController.class).getOrders(new PaginationDto())).withRel("orders"));
         return EntityModel.of(orderDto);
     }
@@ -128,15 +124,11 @@ public class OrderController {
             throw new ResourceException(String.format(ID_IS_NEGATIVE_ID, userId), CodeOfEntity.ORDER);
         }
 
-        Order order = orderConverter.convertFromDto(orderDto);
+        Order order = OrderConverter.convertFromDto(orderDto);
         setCostOrder(order);
-        orderService.add(order, userId);
+        Order addedOrder = orderService.add(order, userId);
 
-        Optional<Order> optionalResult = orderService.findById(order.getId());
-        if (optionalResult.isEmpty()) {
-            throw new ResourceNotFoundException("Order wasn't added", CodeOfEntity.ORDER);
-        }
-        OrderDto result = orderConverter.convertToDto(optionalResult.get());
+        OrderDto result = OrderConverter.convertToDto(addedOrder);
         result.add(linkTo(methodOn(OrderController.class).getOrders(new PaginationDto())).withRel("orders"));
         return EntityModel.of(result);
     }
@@ -150,7 +142,6 @@ public class OrderController {
                 String.format("Requested resource isn't exist (giftCertificateId=%d)",
                     order.getGiftCertificate().getId()), CodeOfEntity.GIFT_CERTIFICATE);
         }
-
         order.setCost(optionalGiftCertificate.get().getPrice());
     }
 }

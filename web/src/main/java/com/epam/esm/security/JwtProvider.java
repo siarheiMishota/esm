@@ -12,7 +12,6 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.authentication.BadCredentialsException;
 
 public class JwtProvider {
 
@@ -49,7 +48,7 @@ public class JwtProvider {
             throw new JwtException("Token time is over");
 
         } catch (Exception e) {
-            throw new BadCredentialsException("Unauthorized");
+            throw new JwtException("Unauthorized");
         }
     }
 

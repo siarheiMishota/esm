@@ -23,7 +23,9 @@ import javax.validation.Valid;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.Link;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -37,10 +39,14 @@ public class UserController {
 
     private final UserService userService;
     private final JwtProvider jwtProvider;
+    private final AuthenticationManager authenticationManager;
 
-    public UserController(UserService userService, JwtProvider jwtProvider) {
+    public UserController(UserService userService,
+                          JwtProvider jwtProvider,
+                          AuthenticationManager authenticationManager) {
         this.userService = userService;
         this.jwtProvider = jwtProvider;
+        this.authenticationManager = authenticationManager;
     }
 
     @GetMapping
@@ -98,15 +104,16 @@ public class UserController {
 
     @PostMapping("/login")
     public EntityModel<UserLoginResponseDto> login(@RequestBody @Valid UserLoginRequestDto userLoginRequestDto) {
-        Optional<User> optionalUser = userService.findByEmailAndPassword(userLoginRequestDto.getEmail(),
-            userLoginRequestDto.getPassword());
+        authenticationManager.authenticate(
+            new UsernamePasswordAuthenticationToken(userLoginRequestDto.getEmail(), userLoginRequestDto.getPassword()));
+
+        Optional<User> optionalUser = userService.findByEmail(userLoginRequestDto.getEmail());
 
         if (optionalUser.isEmpty()) {
             throw new BadCredentialsException("Incorrect email or password");
         }
-
         User user = optionalUser.get();
-        String token = jwtProvider.generateToken(user.getId(), user.getName(), user.getEmail(), user.getRole());
+        String token = jwtProvider.generateToken(user);
 
         UserLoginResponseDto result = UserLoginResponseConverter.convertToDto(user, token);
         result.add(linkTo(methodOn(UserController.class).getUserById(user.getId())).withSelfRel());

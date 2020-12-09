@@ -4,25 +4,32 @@ import com.epam.esm.entity.Role;
 import com.epam.esm.entity.User;
 import com.epam.esm.service.security.impl.CustomerUserDetails;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.authentication.BadCredentialsException;
 
 public class JwtProvider {
 
     @Value("$(jwt.secret)")
     private String jwtSecret;
 
-    public String generateToken(long id, String name, String email, Role role) {
-        Date date = Date.from(LocalDate.now().plusDays(10).atStartOfDay().atZone(ZoneId.systemDefault()).toInstant());
+    public String generateToken(User user) {
+        Date date = Date.from(LocalDateTime.now()
+            .plusSeconds(100)
+            .toLocalDate()
+            .atStartOfDay()
+            .atZone(ZoneId.systemDefault())
+            .toInstant());
         return Jwts.builder()
-            .setSubject(email)
-            .claim("id", id)
-            .claim("name", name)
-            .claim("role", role.toString())
+            .setSubject(user.getEmail())
+            .claim("id", user.getId())
+            .claim("name", user.getName())
+            .claim("role", user.getRole().toString())
             .setExpiration(date)
             .signWith(SignatureAlgorithm.HS512, jwtSecret)
             .compact();
@@ -30,10 +37,16 @@ public class JwtProvider {
 
     public boolean validateToken(String token) {
         try {
-            Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(token);
-            return true;
+            Jws<Claims> claimsJws = Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(token);
+            Date expiration = claimsJws.getBody().getExpiration();
+            if (new Date().compareTo(expiration) > 0) {
+                return true;
+            }
+
+            throw new BadCredentialsException("Unauthorized");
+
         } catch (Exception e) {
-            return false;
+            throw new BadCredentialsException("Unauthorized");
         }
     }
 

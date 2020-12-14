@@ -44,7 +44,7 @@ public class JwtProvider {
         try {
             claimsJws = Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(token);
         } catch (Exception e) {
-            throw new JwtException("Toke isn't correct");
+            throw new JwtException("Token isn't correct");
         }
 
         Date expiration = claimsJws.getBody().getExpiration();

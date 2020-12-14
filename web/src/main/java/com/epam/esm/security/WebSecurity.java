@@ -8,7 +8,7 @@ import org.springframework.security.core.GrantedAuthority;
 
 public class WebSecurity {
 
-    public boolean checkUserId(Authentication authentication, int id) {
+    public boolean checkUserIdOrAdmin(Authentication authentication, int id) {
         Object principal = authentication.getPrincipal();
         if (principal instanceof CustomerUserDetails) {
             CustomerUserDetails userDetails = (CustomerUserDetails) principal;
@@ -20,6 +20,25 @@ public class WebSecurity {
 
             if (numberAdminRole != 0) {
                 return true;
+            }
+
+            return userDetails.getId() == id;
+        }
+        return false;
+    }
+
+    public boolean checkUserIdWithoutAdmin(Authentication authentication, int id) {
+        Object principal = authentication.getPrincipal();
+        if (principal instanceof CustomerUserDetails) {
+            CustomerUserDetails userDetails = (CustomerUserDetails) principal;
+
+            long numberAdminRole = userDetails.getAuthorities().stream()
+                .map(GrantedAuthority::getAuthority)
+                .filter(ROLE_ADMIN.toString()::equals)
+                .count();
+
+            if (numberAdminRole != 0) {
+                return false;
             }
 
             return userDetails.getId() == id;

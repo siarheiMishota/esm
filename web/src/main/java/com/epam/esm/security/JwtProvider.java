@@ -1,5 +1,7 @@
 package com.epam.esm.security;
 
+import static com.epam.esm.security.SecurityConstant.TOKEN_PREFIX;
+
 import com.epam.esm.entity.Role;
 import com.epam.esm.entity.User;
 import com.epam.esm.service.security.impl.CustomerUserDetails;
@@ -26,7 +28,7 @@ public class JwtProvider {
             .plusMinutes(durationMinute)
             .atZone(ZoneId.systemDefault())
             .toInstant());
-        return Jwts.builder()
+        String jwtString = Jwts.builder()
             .setSubject(user.getEmail())
             .claim("id", user.getId())
             .claim("name", user.getName())
@@ -34,20 +36,22 @@ public class JwtProvider {
             .setExpiration(date)
             .signWith(SignatureAlgorithm.HS512, jwtSecret)
             .compact();
+        return TOKEN_PREFIX + jwtString;
     }
 
     public boolean validateToken(String token) {
+        Jws<Claims> claimsJws;
         try {
-            Jws<Claims> claimsJws = Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(token);
-            Date expiration = claimsJws.getBody().getExpiration();
-            if (new Date().after(expiration)) {
-                return true;
-            }
-            throw new JwtException("Token time is over");
-
+            claimsJws = Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(token);
         } catch (Exception e) {
-            throw new JwtException("Unauthorized");
+            throw new JwtException("Toke isn't correct");
         }
+
+        Date expiration = claimsJws.getBody().getExpiration();
+        if (new Date().before(expiration)) {
+            return true;
+        }
+        throw new JwtException("Token expired");
     }
 
     public CustomerUserDetails getCustomerUserDetailsFromToken(String token) {

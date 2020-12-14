@@ -10,13 +10,20 @@ import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
+import org.springframework.web.servlet.HandlerExceptionResolver;
 
 public class JwtFilter extends OncePerRequestFilter {
 
     private final JwtProvider jwtProvider;
+
+    @Autowired
+    @Qualifier("handlerExceptionResolver")
+    private HandlerExceptionResolver resolver;
 
     public JwtFilter(JwtProvider jwtProvider) {
         this.jwtProvider = jwtProvider;
@@ -26,14 +33,18 @@ public class JwtFilter extends OncePerRequestFilter {
     public void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
         throws IOException, ServletException {
         String token = getTokenFromRequest(request);
-
-        if (token != null && jwtProvider.validateToken(token)) {
-            CustomerUserDetails customerUserDetails = jwtProvider.getCustomerUserDetailsFromToken(token);
-            UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(customerUserDetails,
-                null, customerUserDetails.getAuthorities());
-            SecurityContextHolder.getContext().setAuthentication(auth);
+        try {
+            if (token != null && jwtProvider.validateToken(token)) {
+                CustomerUserDetails customerUserDetails = jwtProvider.getCustomerUserDetailsFromToken(token);
+                UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(customerUserDetails,
+                    null, customerUserDetails.getAuthorities());
+                SecurityContextHolder.getContext().setAuthentication(auth);
+            }
+            filterChain.doFilter(request, response);
+        } catch (Exception e) {
+            resolver.resolveException(request, response, null, e);
         }
-        filterChain.doFilter(request, response);
+
     }
 
     private String getTokenFromRequest(HttpServletRequest request) {

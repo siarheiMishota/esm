@@ -6,6 +6,7 @@ import com.epam.esm.exception.EntityIntegrityViolationException;
 import com.epam.esm.exception.ResourceException;
 import com.epam.esm.exception.ResourceNotFoundException;
 import com.epam.esm.exception.handler.dto.ExceptionDto;
+import io.jsonwebtoken.JwtException;
 import java.util.stream.Collectors;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -109,6 +110,13 @@ public class ExceptionHandlerController {
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     @ExceptionHandler(BadCredentialsException.class)
     public ExceptionDto handleBadClientCredentialsException(BadCredentialsException e) {
+        return new ExceptionDto("Unauthorized",
+            HttpStatus.UNAUTHORIZED.value() + CodeOfEntity.DEFAULT.getCode());
+    }
+
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    @ExceptionHandler(JwtException.class)
+    public ExceptionDto handleJwtException(JwtException e) {
         return new ExceptionDto("Unauthorized",
             HttpStatus.UNAUTHORIZED.value() + CodeOfEntity.DEFAULT.getCode());
     }

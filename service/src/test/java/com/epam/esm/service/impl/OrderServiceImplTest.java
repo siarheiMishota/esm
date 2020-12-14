@@ -86,7 +86,7 @@ class OrderServiceImplTest {
     void update() {
         Order order = getOrder();
         given(orderDao.update(order)).willReturn(true);
-        assertTrue( orderService.update(order));
+        assertTrue(orderService.update(order));
     }
 
     @Test

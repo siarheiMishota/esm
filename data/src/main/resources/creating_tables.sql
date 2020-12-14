@@ -3,8 +3,9 @@ create table tag
     id   int auto_increment,
     name varchar(50) not null unique,
 
-    primary key (id)
+    primary key (id),
 
+    index tag_name_index (name)
 );
 
 create table gift_certificate
@@ -38,10 +39,13 @@ create table user
     name     varchar(50)  not null,
     email    varchar(50)  not null,
     password varchar(100) not null,
+    role     enum ('ROLE_ADMIN','ROLE_USER') default 'ROLE_USER',
 
     primary key (id),
 
-    unique (email)
+    unique (email),
+
+    index user_name_email_index (email, name)
 );
 
 create table orders
@@ -55,5 +59,7 @@ create table orders
     primary key (id),
 
     foreign key (id_gift_certificate) REFERENCES gift_certificate (id),
-    foreign key (id_user) REFERENCES user (id)
+    foreign key (id_user) REFERENCES user (id),
+
+    index orders_cost_id_user_index (cost, id_user)
 );

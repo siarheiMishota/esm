@@ -1,4 +1,3 @@
-
 create table tag
 (
     id   int auto_increment,

@@ -13,7 +13,9 @@ import com.epam.esm.service.UserService;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import org.springframework.transaction.annotation.Transactional;
 
+@Transactional
 public class OrderServiceImpl implements OrderService {
 
     private final OrderDao orderDao;
@@ -54,17 +56,25 @@ public class OrderServiceImpl implements OrderService {
         Optional<User> optionalUser = userService.findById(userId);
         Optional<GiftCertificate> optionalGiftCertificate = giftCertificateService.findById(
             order.getGiftCertificate().getId());
-        if (optionalUser.isEmpty() || optionalGiftCertificate.isEmpty()) {
-            throw new ResourceNotFoundException(
-                String.format("Resource is not found, (id=%d)", order.getId()),
-                CodeOfEntity.ORDER);
-        }
+
+        User user = optionalUser.orElseThrow(() -> new ResourceNotFoundException(
+            String.format("Resource is not found, (id=%d)", order.getId()),
+            CodeOfEntity.ORDER));
+
+        GiftCertificate giftCertificate = optionalGiftCertificate.orElseThrow(() -> new ResourceNotFoundException(
+            String.format("Resource is not found, (id=%d)", order.getId()),
+            CodeOfEntity.ORDER));
 
         order.setDate(LocalDateTime.now());
-        order.setUser(optionalUser.get());
-        order.setGiftCertificate(optionalGiftCertificate.get());
+        order.setUser(user);
+        order.setGiftCertificate(giftCertificate);
 
-        return orderDao.add(order, userId);
+        orderDao.add(order, userId);
+        Optional<Order> optionalResult = findById(order.getId());
+        if (optionalResult.isEmpty()) {
+            throw new ResourceNotFoundException("Order wasn't added", CodeOfEntity.ORDER);
+        }
+        return optionalResult.get();
     }
 
     @Override

@@ -7,22 +7,25 @@ import java.util.stream.Collectors;
 
 public class TagConverter {
 
-    public TagDto convertToDto(Tag tag) {
+    private TagConverter() {
+    }
+
+    public static TagDto convertToDto(Tag tag) {
         TagDto tagDto = new TagDto();
         tagDto.setId(tag.getId());
         tagDto.setName(tag.getName());
         return tagDto;
     }
 
-    public Tag convertFromDto(TagDto tagDto) {
+    public static Tag convertFromDto(TagDto tagDto) {
         Tag tag = new Tag();
         tag.setName(tagDto.getName());
         return tag;
     }
 
-    public List<TagDto> convertListToListDto(List<Tag> tags) {
+    public static List<TagDto> convertListToListDto(List<Tag> tags) {
         return tags.stream()
-            .map(this::convertToDto)
+            .map(TagConverter::convertToDto)
             .collect(Collectors.toList());
     }
 }

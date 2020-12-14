@@ -6,7 +6,10 @@ import java.util.List;
 
 public class GiftCertificateParameterConverter {
 
-    public GiftCertificateParameter convertFromDto(GiftCertificateParameterDto giftCertificateParameterDto) {
+    private GiftCertificateParameterConverter() {
+    }
+
+    public static GiftCertificateParameter convertFromDto(GiftCertificateParameterDto giftCertificateParameterDto) {
         GiftCertificateParameter giftCertificateParameter = new GiftCertificateParameter();
         giftCertificateParameter.setName(giftCertificateParameterDto.getName());
         giftCertificateParameter.setDescription(giftCertificateParameterDto.getDescription());

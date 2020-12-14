@@ -12,9 +12,7 @@ import java.util.Optional;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
-import org.springframework.transaction.annotation.Transactional;
 
-@Transactional
 public class TagDaoImpl implements TagDao {
 
     @PersistenceContext
@@ -51,12 +49,7 @@ public class TagDaoImpl implements TagDao {
 
     @Override
     public Tag add(Tag tag) {
-        Optional<Tag> optionalTag = findByName(tag.getName());
-        if (optionalTag.isPresent()) {
-            tag.setId(optionalTag.get().getId());
-        } else {
-            entityManager.persist(tag);
-        }
+        entityManager.persist(tag);
         return tag;
     }
 

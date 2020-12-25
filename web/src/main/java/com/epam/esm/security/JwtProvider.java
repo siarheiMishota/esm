@@ -1,7 +1,5 @@
 package com.epam.esm.security;
 
-import static com.epam.esm.security.SecurityConstant.TOKEN_PREFIX;
-
 import com.epam.esm.entity.Role;
 import com.epam.esm.entity.User;
 import com.epam.esm.service.security.impl.CustomerUserDetails;
@@ -28,7 +26,7 @@ public class JwtProvider {
             .plusMinutes(durationMinute)
             .atZone(ZoneId.systemDefault())
             .toInstant());
-        String jwtString = Jwts.builder()
+        return Jwts.builder()
             .setSubject(user.getEmail())
             .claim("id", user.getId())
             .claim("name", user.getName())
@@ -36,7 +34,6 @@ public class JwtProvider {
             .setExpiration(date)
             .signWith(SignatureAlgorithm.HS512, jwtSecret)
             .compact();
-        return TOKEN_PREFIX + jwtString;
     }
 
     public boolean validateToken(String token) {

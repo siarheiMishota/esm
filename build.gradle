@@ -1,25 +1,24 @@
-plugins {
-    id 'java'
-}
+apply plugin: 'java'
+apply plugin: 'maven'
+apply plugin: 'idea'
+apply plugin: 'io.spring.dependency-management'
 
-group 'com.epam'
-version '1.0-SNAPSHOT'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = 1.8
 
-java {
-    sourceCompatibility = JavaVersion.VERSION_1_8
-    targetCompatibility = JavaVersion.VERSION_1_8
-}
+buildscript {
+    ext {
+        springBootVersion = '2.0.0.RELEASE'
+    }
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
 
-repositories {
-    mavenCentral()
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+    }
 }
 
 dependencies {
-    compile group: 'org.springframework', name: 'spring-context-support', version: '5.2.9.RELEASE'
-    implementation group: 'org.springframework', name: 'spring-core', version: '5.2.9.RELEASE'
-
-
-    testImplementation group: 'org.mockito', name: 'mockito-core', version: '3.5.13'
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.3.1'
-    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.3.1'
+    compile('org.springframework.boot:spring-boot-starter')
 }

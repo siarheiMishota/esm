@@ -1,5 +1,5 @@
 rootProject.name = 'esm'
 include 'data'
-include 'web'
 include 'service'
+include 'web'
 

@@ -41,13 +41,11 @@ public class GiftCertificate {
     public GiftCertificate() {
     }
 
-    public GiftCertificate(long id,
-                           String name,
+    public GiftCertificate(String name,
                            String description,
                            BigDecimal price,
                            LocalDateTime creationDate,
                            LocalDateTime lastUpdateDate, int duration, List<Tag> tags) {
-        this.id = id;
         this.name = name;
         this.description = description;
         this.price = price;
@@ -57,11 +55,13 @@ public class GiftCertificate {
         this.tags = tags;
     }
 
-    public GiftCertificate(String name,
+    public GiftCertificate(long id,
+                           String name,
                            String description,
                            BigDecimal price,
                            LocalDateTime creationDate,
                            LocalDateTime lastUpdateDate, int duration, List<Tag> tags) {
+        this.id = id;
         this.name = name;
         this.description = description;
         this.price = price;

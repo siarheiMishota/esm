@@ -6,26 +6,24 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import com.epam.esm.configuration.DaoConfigurationTest;
 import com.epam.esm.dao.UserDao;
-import com.epam.esm.entity.Order;
 import com.epam.esm.entity.Pagination;
 import com.epam.esm.entity.User;
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.transaction.annotation.Transactional;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(classes = DaoConfigurationTest.class)
+@Transactional
 class UserDaoImplTest {
 
-    private final UserDao userDao;
-
-    public UserDaoImplTest(UserDao userDao) {
-        this.userDao = userDao;
-    }
+    @Autowired
+    private UserDao userDao;
 
     @Test
     void findAllWithParameters() {
@@ -43,17 +41,8 @@ class UserDaoImplTest {
 
     @Test
     void findById() {
-        User expected = new User();
-        expected.setId(50);
-        expected.setName("Jennee");
-        expected.setEmail("jmottram1d@un.org");
-        expected.setPassword("7faab5f29ab9712326938b3267de8f5c764d3e097cf84d937ace6b29bed0016f");
-
-        Order order = new Order();
-        order.setId(50);
-        order.setCost(BigDecimal.valueOf(50));
-
-        assertEquals(expected, userDao.findById(50).get());
+        User expected = getUser();
+        assertEquals(expected, userDao.findById(2).get());
     }
 
     @Test
@@ -70,6 +59,7 @@ class UserDaoImplTest {
     void add() {
         User user = getUser();
         user.setEmail("jenneee@mail.ru");
+        user.setId(0);
 
         long expected = user.getId();
         userDao.add(user);
@@ -78,15 +68,16 @@ class UserDaoImplTest {
 
     @Test()
     void addWithNull() {
-        assertThrows(NullPointerException.class, () -> userDao.add(null));
+        assertThrows(IllegalArgumentException.class, () -> userDao.add(null));
     }
 
     private User getUser() {
         User user = new User();
-        user.setId(50);
-        user.setName("Jennee");
-        user.setEmail("jmottram1d@un.org");
-        user.setPassword("7faab5f29ab9712326938b3267de8f5c764d3e097cf84d937ace6b29bed0016f");
+        user.setId(2);
+        user.setName("Nat");
+        user.setEmail("nlafont1@imgur.com");
+        user.setPassword("6855d35eb88cfa08539aade1f8fc9d8f9ae82bf179d55a8a23c30412b4c83908");
+        user.setOrders(List.of());
         return user;
     }
 }

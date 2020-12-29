@@ -17,7 +17,9 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
+import org.springframework.stereotype.Component;
 
+@Component
 public class GiftCertificateSqlBuilder {
 
     public void buildSort(GiftCertificateParameter giftCertificateParameter, StringBuilder fullFindBuilder) {

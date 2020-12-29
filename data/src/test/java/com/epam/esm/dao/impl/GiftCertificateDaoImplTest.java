@@ -1,7 +1,6 @@
 package com.epam.esm.dao.impl;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -17,14 +16,12 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.jdbc.BadSqlGrammarException;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.transaction.annotation.Transactional;
 
-@ExtendWith(SpringExtension.class)
 @SpringBootTest(classes = DaoConfigurationTest.class)
+@Transactional
 class GiftCertificateDaoImplTest {
 
     @Autowired
@@ -32,13 +29,8 @@ class GiftCertificateDaoImplTest {
 
     @Test
     void findAllWithParametersNameAndSort() {
-        assertEquals(11, giftCertificateDao.findAll(new GiftCertificateParameter(), new Pagination()).size());
-    }
-
-    @Test
-    void findAllWithParametersNameAndSortException() {
-        assertThrows(BadSqlGrammarException.class,
-            () -> giftCertificateDao.findAll(new GiftCertificateParameter(), new Pagination()).size());
+        List<GiftCertificate> all = giftCertificateDao.findAll(new GiftCertificateParameter(), new Pagination());
+        assertEquals(11, all.size());
     }
 
     @Test
@@ -64,37 +56,14 @@ class GiftCertificateDaoImplTest {
     @Test
     void delete() {
         GiftCertificate giftCertificate = getGiftCertificate();
+        giftCertificate.setId(0);
         giftCertificateDao.add(giftCertificate);
         Optional<GiftCertificate> expected = giftCertificateDao.findById(giftCertificate.getId());
 
-        giftCertificateDao.delete(giftCertificate);
+        giftCertificateDao.delete(expected.get());
         Optional<GiftCertificate> actual = giftCertificateDao.findById(giftCertificate.getId());
 
-        assertNotEquals(expected, actual);
-    }
-
-    @Test
-    void deleteWithNegativeId() {
-        int expected = giftCertificateDao.findAll(new GiftCertificateParameter(), new Pagination()).size();
-
-        GiftCertificate giftCertificate = new GiftCertificate();
-        giftCertificate.setId(-1);
-        giftCertificateDao.delete(giftCertificate);
-        int actual = giftCertificateDao.findAll(new GiftCertificateParameter(), new Pagination()).size();
-
-        assertEquals(expected, actual);
-    }
-
-    @Test
-    void deleteWithNotExist() {
-        int expected = giftCertificateDao.findAll(new GiftCertificateParameter(), new Pagination()).size();
-
-        GiftCertificate giftCertificate = new GiftCertificate();
-        giftCertificate.setId(40000);
-        giftCertificateDao.delete(giftCertificate);
-        int actual = giftCertificateDao.findAll(new GiftCertificateParameter(), new Pagination()).size();
-
-        assertEquals(expected, actual);
+        assertEquals(Optional.empty(), actual);
     }
 
     @Test
@@ -111,23 +80,11 @@ class GiftCertificateDaoImplTest {
     }
 
     @Test
-    void updateWithNull() {
-        assertThrows(NullPointerException.class, () -> giftCertificateDao.update(null));
-    }
-
-    @Test
-    void updateWithNotExist() {
-        GiftCertificate giftCertificate = getGiftCertificate();
-        giftCertificate.setId(4000);
-
-        assertFalse(giftCertificateDao.update(giftCertificate));
-    }
-
-    @Test
     void add() {
         GiftCertificate giftCertificate = getGiftCertificate();
         giftCertificate.setName("name new");
         giftCertificate.setDescription("description new");
+        giftCertificate.setId(0);
         long expected = giftCertificate.getId();
         giftCertificateDao.add(giftCertificate);
         assertNotEquals(expected, giftCertificate.getId());
@@ -141,10 +98,18 @@ class GiftCertificateDaoImplTest {
     }
 
     private GiftCertificate getGiftCertificate() {
-        return new GiftCertificate(4, "name 4", "description 4",
+        Tag tag = new Tag("extreme");
+        tag.setId(1L);
+        GiftCertificate result = new GiftCertificate("name 4", "description 4",
             BigDecimal.valueOf(4),
             LocalDateTime.of(2020, 10, 22, 0, 3, 22, 917992000),
             LocalDateTime.of(2020, 10, 22, 0, 3, 22, 917992000),
-            4, List.of(new Tag(1L, "extreme")));
+            4, List.of(tag));
+        result.setId(4);
+        return result;
     }
 }
+
+
+
+

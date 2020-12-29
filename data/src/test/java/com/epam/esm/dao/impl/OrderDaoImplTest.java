@@ -22,9 +22,11 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.transaction.annotation.Transactional;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(classes = DaoConfigurationTest.class)
+@Transactional
 class OrderDaoImplTest {
 
     @Autowired
@@ -32,7 +34,8 @@ class OrderDaoImplTest {
 
     @Test
     void findAll() {
-        assertEquals(11, orderDao.findAll(new Pagination()).size());
+        List<Order> all = orderDao.findAll(new Pagination());
+        assertEquals(11, all.size());
     }
 
     @Test
@@ -164,11 +167,16 @@ class OrderDaoImplTest {
     }
 
     private GiftCertificate getGiftCertificate() {
-        return new GiftCertificate(4, "name 4", "description 4",
+        Tag tag = new Tag("extreme");
+        tag.setId(1L);
+
+        GiftCertificate result = new GiftCertificate("name 4", "description 4",
             BigDecimal.valueOf(4),
             LocalDateTime.of(2020, 10, 22, 0, 3, 22, 917992000),
             LocalDateTime.of(2020, 10, 22, 0, 3, 22, 917992000),
-            4, List.of(new Tag(1, "extreme")));
+            4, List.of(tag));
+        result.setId(4);
+        return result;
     }
 
     private User getUser() {

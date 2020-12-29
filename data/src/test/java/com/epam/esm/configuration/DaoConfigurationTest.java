@@ -9,11 +9,9 @@ import com.epam.esm.dao.impl.OrderDaoImpl;
 import com.epam.esm.dao.impl.TagDaoImpl;
 import com.epam.esm.dao.impl.UserDaoImpl;
 import com.epam.esm.util.GiftCertificateSqlBuilder;
-import java.util.Properties;
 import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
@@ -25,37 +23,32 @@ import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 @Configuration
-@ComponentScan("com.epam.esm.entity")
 @EnableTransactionManagement
 public class DaoConfigurationTest {
 
     @Bean
-    LocalContainerEntityManagerFactoryBean entityManagerFactory() {
+    public LocalContainerEntityManagerFactoryBean entityManagerFactory() {
         LocalContainerEntityManagerFactoryBean emf =
             new LocalContainerEntityManagerFactoryBean();
         emf.setPackagesToScan("com.epam.esm.entity");
         emf.setDataSource(createDataSource());
         emf.setJpaVendorAdapter(createJpaVendorAdapter());
-        emf.setJpaProperties(createHibernateProperties());
         emf.afterPropertiesSet();
         return emf;
     }
 
-    private DataSource createDataSource() {
-        EmbeddedDatabaseBuilder builder = new EmbeddedDatabaseBuilder();
-        builder.addScript("classpath:schema.sql");
-        return builder.setType(EmbeddedDatabaseType.H2).build();
+    @Bean
+    public DataSource createDataSource() {
+        return new EmbeddedDatabaseBuilder()
+            .setType(EmbeddedDatabaseType.H2)
+            .addScript("classpath:schema.sql")
+            .build();
     }
 
     private JpaVendorAdapter createJpaVendorAdapter() {
-        return new HibernateJpaVendorAdapter();
-    }
-
-    private Properties createHibernateProperties() {
-        Properties properties = new Properties();
-        properties.setProperty("hibernate.hbm2ddl.auto", "create");
-        properties.setProperty("hibernate.dialect", "org.hibernate.dialect.H2Dialect");
-        return properties;
+        HibernateJpaVendorAdapter hibernateJpaVendorAdapter = new HibernateJpaVendorAdapter();
+        hibernateJpaVendorAdapter.setGenerateDdl(true);
+        return hibernateJpaVendorAdapter;
     }
 
     @Bean
@@ -79,7 +72,7 @@ public class DaoConfigurationTest {
     }
 
     @Bean
-    public GiftCertificateSqlBuilder giftCertificateParameter() {
+    public GiftCertificateSqlBuilder giftCertificateSqlBuilder() {
         return new GiftCertificateSqlBuilder();
     }
 

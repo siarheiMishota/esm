@@ -19,8 +19,8 @@ import javax.persistence.SqlResultSetMapping;
     classes = @ConstructorResult(
         targetClass = Tag.class,
         columns = {
-            @ColumnResult(name = "t.id", type = Long.class),
-            @ColumnResult(name = "t.name")}))
+            @ColumnResult(name = "id", type = Long.class),
+            @ColumnResult(name = "name")}))
 @Entity
 public class Tag {
 

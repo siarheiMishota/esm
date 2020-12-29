@@ -6,7 +6,7 @@ public final class SqlRequestTag {
     public static final String FIND_ALL = BASE_QUERY;
     public static final String FIND_BY_NAME = BASE_QUERY + "  where t.name= :name";
     public static final String FIND_MOST_USED_BY_USER_HIGHEST_COST =
-        " select t.id, t.name\n"
+        " select t.id as id, t.name as name\n"
             + "from tag t\n"
             + "         join tag_gift_certificate tgc on t.id = tgc.tag_id\n"
             + "where tgc.gift_certificate_id in (\n"

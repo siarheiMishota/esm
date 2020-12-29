@@ -32,7 +32,7 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
         TypedQuery<GiftCertificate> query = entityManager.createQuery(fullFind, GiftCertificate.class)
             .setMaxResults(pagination.getLimit())
             .setFirstResult(pagination.getOffset());
-            return query.getResultList();
+        return query.getResultList();
     }
 
     private String getFullSqlWithParameters(GiftCertificateParameter giftCertificateParameter) {

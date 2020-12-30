@@ -1,7 +1,7 @@
 package com.epam.esm.service.impl;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.BDDMockito.given;
 
@@ -87,12 +87,13 @@ class TagServiceImplTest {
     @Test
     void addOnNull() {
         given(tagDao.add(null)).willThrow(NullPointerException.class);
-        assertThrows(NullPointerException.class, () -> tagService.add(null));
+        assertFalse(tagService.add(null));
     }
 
     @Test
     void delete() {
         given(tagDao.findAll(new Pagination())).willReturn(List.of(new Tag(), new Tag(), new Tag()));
+        given(tagDao.findById(4)).willReturn(Optional.of(new Tag()));
         tagService.delete(4);
         assertEquals(3, tagService.findAll(new Pagination()).size());
 

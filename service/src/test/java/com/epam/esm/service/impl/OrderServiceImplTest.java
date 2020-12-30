@@ -12,6 +12,8 @@ import com.epam.esm.entity.Order;
 import com.epam.esm.entity.Pagination;
 import com.epam.esm.entity.Tag;
 import com.epam.esm.entity.User;
+import com.epam.esm.service.GiftCertificateService;
+import com.epam.esm.service.UserService;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -27,6 +29,12 @@ class OrderServiceImplTest {
 
     @Mock
     private OrderDao orderDao;
+
+    @Mock
+    private UserService userService;
+
+    @Mock
+    private GiftCertificateService giftCertificateService;
 
     @InjectMocks
     private OrderServiceImpl orderService;
@@ -72,8 +80,11 @@ class OrderServiceImplTest {
 
     @Test
     void add() {
-        given(orderDao.add(getOrder(), 5)).willReturn(getOrder());
-        assertEquals(getOrder(), orderService.add(getOrder(), 5));
+        given(orderDao.findById(4)).willReturn(Optional.of(getOrder()));
+        given(userService.findById(50)).willReturn(Optional.of(getUser()));
+        given(giftCertificateService.findById(4)).willReturn(Optional.of(getGiftCertificate()));
+
+        assertEquals(getOrder(), orderService.add(getOrder(), 50));
     }
 
     @Test
@@ -110,6 +121,10 @@ class OrderServiceImplTest {
     @Test
     void delete() {
         given(orderDao.findAll(new Pagination())).willReturn(List.of(getOrder(), getOrder(), getOrder()));
+        Order order = getOrder();
+        order.setId(4);
+        given(orderDao.findById(4)).willReturn(Optional.of(order));
+
         orderService.delete(4);
         assertEquals(3, orderService.findAll(new Pagination()).size());
     }

@@ -14,12 +14,18 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
+@Configuration
 @SpringBootTest(classes = MockitoExtension.class)
 class UserServiceImplTest {
 
     @Mock
     private UserDao userDao;
+
+    @Mock
+    private BCryptPasswordEncoder passwordEncoder;
 
     @InjectMocks
     private UserServiceImpl userService;
@@ -52,7 +58,10 @@ class UserServiceImplTest {
     @Test
     void add() {
         User expected = getUser();
+
         given(userDao.add(expected)).willReturn(expected);
+        given(passwordEncoder.encode(expected.getPassword())).willReturn("1234");
+
         assertEquals(expected, userService.add(expected));
     }
 

@@ -1,7 +1,8 @@
 package com.epam.esm.service.impl;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.BDDMockito.given;
 
@@ -10,6 +11,7 @@ import com.epam.esm.entity.GiftCertificate;
 import com.epam.esm.entity.GiftCertificateParameter;
 import com.epam.esm.entity.Pagination;
 import com.epam.esm.entity.Tag;
+import com.epam.esm.exception.ResourceNotFoundException;
 import com.epam.esm.service.TagService;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -24,6 +26,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 @SpringBootTest(classes = MockitoExtension.class)
 class GiftCertificateServiceImplTest {
 
+    private final GiftCertificateParameter giftCertificateParameter = new GiftCertificateParameter();
+    private final Pagination pagination = new Pagination();
+
     @Mock
     private GiftCertificateDao giftCertificateDao;
 
@@ -35,10 +40,12 @@ class GiftCertificateServiceImplTest {
 
     @Test
     void findAll() {
-        given(giftCertificateDao.findAll(new GiftCertificateParameter(), new Pagination())).willReturn(
+        GiftCertificateParameter giftCertificateParameter = new GiftCertificateParameter();
+        Pagination pagination = new Pagination();
+        given(giftCertificateDao.findAll(giftCertificateParameter, pagination)).willReturn(
             getGiftCertificates());
         assertEquals(getGiftCertificates(),
-            giftCertificateService.findAll(new GiftCertificateParameter(), new Pagination()));
+            giftCertificateService.findAll(giftCertificateParameter, pagination));
     }
 
     @Test
@@ -66,16 +73,18 @@ class GiftCertificateServiceImplTest {
 
     @Test
     void delete() {
-        given(giftCertificateDao.findAll(new GiftCertificateParameter(), new Pagination())).willReturn(
-            getGiftCertificates());
-        giftCertificateService.delete(11);
-        assertEquals(3, giftCertificateService.findAll(new GiftCertificateParameter(), new Pagination()).size());
+        given(giftCertificateDao.findAll(giftCertificateParameter, pagination)).willReturn(getGiftCertificates());
+        given(giftCertificateDao.findById(1)).willReturn(Optional.of(getGiftCertificate()));
+
+        assertDoesNotThrow(() -> giftCertificateService.delete(1));
     }
 
     @Test
     void update() {
         GiftCertificate giftCertificate = getGiftCertificate();
         given(giftCertificateDao.update(giftCertificate)).willReturn(true);
+        given(giftCertificateDao.findById(1)).willReturn(Optional.of(getGiftCertificate()));
+
         assertTrue(giftCertificateService.update(giftCertificate));
     }
 
@@ -85,16 +94,17 @@ class GiftCertificateServiceImplTest {
         giftCertificate.setId(100);
 
         given(giftCertificateDao.update(giftCertificate)).willReturn(false);
-        assertFalse(giftCertificateService.update(giftCertificate));
+        given(giftCertificateDao.findById(100)).willReturn(Optional.empty());
+        assertThrows(ResourceNotFoundException.class, () -> giftCertificateService.update(giftCertificate));
     }
 
     @Test
     void updateWithNegativeId() {
         GiftCertificate giftCertificate = getGiftCertificate();
         giftCertificate.setId(-1);
-
         given(giftCertificateDao.update(giftCertificate)).willReturn(false);
-        assertFalse(giftCertificateService.update(giftCertificate));
+
+        assertThrows(ResourceNotFoundException.class, () -> giftCertificateService.update(giftCertificate));
     }
 
     @Test

@@ -25,7 +25,11 @@ public class GiftCertificate {
     private String name;
     private String description;
     private BigDecimal price;
+
+    @Column(columnDefinition = "timestamp   not null default now()")
     private LocalDateTime creationDate;
+
+    @Column(columnDefinition = "timestamp   not null default now()")
     private LocalDateTime lastUpdateDate;
     private int duration;
 

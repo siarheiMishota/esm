@@ -13,14 +13,19 @@ import com.epam.esm.entity.Pagination;
 import com.epam.esm.entity.Tag;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
 @SpringBootTest(classes = DaoConfigurationTest.class)
+@TestMethodOrder(OrderAnnotation.class)
 @Transactional
 class GiftCertificateDaoImplTest {
 
@@ -28,15 +33,12 @@ class GiftCertificateDaoImplTest {
     private GiftCertificateDao giftCertificateDao;
 
     @Test
-    void findAllWithParametersNameAndSort() {
-        List<GiftCertificate> all = giftCertificateDao.findAll(new GiftCertificateParameter(), new Pagination());
-        assertEquals(11, all.size());
-    }
-
-    @Test
+    @Order(1)
     void findById() {
-        GiftCertificate expected = getGiftCertificate();
+        getGetCertificates().forEach(giftCertificateDao::add);
+        List<GiftCertificate> all = giftCertificateDao.findAll(new GiftCertificateParameter(), new Pagination());
 
+        GiftCertificate expected = getGiftCertificate();
         GiftCertificate actual = giftCertificateDao.findById(4).get();
         expected.setCreationDate(actual.getCreationDate());
         expected.setLastUpdateDate(actual.getLastUpdateDate());
@@ -44,16 +46,28 @@ class GiftCertificateDaoImplTest {
     }
 
     @Test
+    @Order(2)
+    void findAllWithParametersNameAndSort() {
+        getGetCertificates().forEach(giftCertificateDao::add);
+        List<GiftCertificate> all = giftCertificateDao.findAll(new GiftCertificateParameter(), new Pagination());
+        assertEquals(11, all.size());
+    }
+
+
+    @Test
+    @Order(3)
     void findByIdWithIdNotExist() {
         assertEquals(Optional.empty(), giftCertificateDao.findById(400));
     }
 
     @Test
+    @Order(3)
     void findByIdWithNegativeId() {
         assertEquals(Optional.empty(), giftCertificateDao.findById(-400));
     }
 
     @Test
+    @Order(3)
     void delete() {
         GiftCertificate giftCertificate = getGiftCertificate();
         giftCertificate.setId(0);
@@ -67,6 +81,7 @@ class GiftCertificateDaoImplTest {
     }
 
     @Test
+    @Order(3)
     void update() {
         GiftCertificate giftCertificate = getGiftCertificate();
         giftCertificate.setName("name 400");
@@ -80,6 +95,7 @@ class GiftCertificateDaoImplTest {
     }
 
     @Test
+    @Order(3)
     void add() {
         GiftCertificate giftCertificate = getGiftCertificate();
         giftCertificate.setName("name new");
@@ -93,6 +109,7 @@ class GiftCertificateDaoImplTest {
     }
 
     @Test()
+    @Order(3)
     void addWithNull() {
         assertThrows(NullPointerException.class, () -> giftCertificateDao.add(null));
     }
@@ -107,6 +124,20 @@ class GiftCertificateDaoImplTest {
             4, List.of(tag));
         result.setId(4);
         return result;
+    }
+
+    private List<GiftCertificate> getGetCertificates() {
+        List<GiftCertificate> giftCertificates = new ArrayList<>();
+
+        for (int i = 1; i < 12; i++) {
+            GiftCertificate giftCertificate = getGiftCertificate();
+            giftCertificate.setId(0);
+            giftCertificate.setName("name " + i);
+            giftCertificate.setDescription("description " + i);
+            giftCertificate.setDuration(i);
+            giftCertificates.add(giftCertificate);
+        }
+        return giftCertificates;
     }
 }
 

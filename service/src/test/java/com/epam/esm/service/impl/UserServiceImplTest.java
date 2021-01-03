@@ -52,7 +52,7 @@ class UserServiceImplTest {
     @Test
     void findByIdWithNegativeId() {
         given(userDao.findById(-1)).willReturn(Optional.empty());
-        assertEquals(Optional.empty(), userService.findById(-1));
+        assertEquals(Optional.empty(), userService.findById(-3));
     }
 
     @Test

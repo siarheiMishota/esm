@@ -52,7 +52,7 @@ class UserDaoImplTest {
 
     @Test
     void findByIdWithNotExist() {
-        assertEquals(Optional.empty(), userDao.findById(5456));
+        assertEquals(Optional.empty(), userDao.findById(545556));
     }
 
     @Test

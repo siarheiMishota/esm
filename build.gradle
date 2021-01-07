@@ -16,9 +16,7 @@ buildscript {
     dependencies {
 
         classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+        classpath "org.jacoco:org.jacoco.core:0.8.6"
     }
 }
 
-dependencies {
-    compile('org.springframework.boot:spring-boot-starter')
-}

@@ -1,7 +1,11 @@
+allprojects {
+    apply plugin: 'jacoco'
+}
 apply plugin: 'java'
 apply plugin: 'maven'
 apply plugin: 'idea'
 apply plugin: 'io.spring.dependency-management'
+
 
 version = '0.0.1-SNAPSHOT'
 sourceCompatibility = 1.8
@@ -20,3 +24,14 @@ buildscript {
     }
 }
 
+jacoco {
+    toolVersion = "0.8.6"
+}
+
+jacocoTestReport {
+    reports {
+        xml.enabled = true
+        csv.enabled = true
+        html.enabled = true
+    }
+}

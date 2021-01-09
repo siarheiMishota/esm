@@ -35,3 +35,9 @@ jacocoTestReport {
         html.enabled = true
     }
 }
+
+task jacocoMerge(type: JacocoMerge) {
+    subprojects.each { subproject ->
+        executionData subproject.tasks.withType(Test)
+    }
+}

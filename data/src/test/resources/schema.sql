@@ -59,6 +59,7 @@ create table orders
     foreign key (id_user) REFERENCES user (id)
 );
 
+
 insert into tag(name)
 values ('extreme'),
        ('fun'),
@@ -91,7 +92,8 @@ values (1, 1),
        (2, 8),
        (3, 9),
        (3, 10),
-       (2, 3);
+       (2, 3),
+       (4,11);
 
 insert into user (name, email, password)
 values ('Jobi', 'jchessun0@moonfruit.com', 'afb591939cccb575099d348c23d7e5892a3c35c1a2bf5420d3b131c62cbd4ef7'),

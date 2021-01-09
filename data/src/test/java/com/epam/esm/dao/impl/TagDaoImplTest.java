@@ -9,14 +9,17 @@ import com.epam.esm.dao.TagDao;
 import com.epam.esm.entity.Pagination;
 import com.epam.esm.entity.Tag;
 import java.util.Optional;
+import javax.persistence.PersistenceException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.transaction.annotation.Transactional;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(classes = DaoConfigurationTest.class)
+@Transactional
 class TagDaoImplTest {
 
     @Autowired
@@ -24,12 +27,13 @@ class TagDaoImplTest {
 
     @Test
     void findAll() {
-        assertEquals(10, tagDao.findAll(new Pagination()).size());
+        assertEquals(5, tagDao.findAll(new Pagination()).size());
     }
 
     @Test
     void findById() {
-        Tag expected = new Tag(4, "relax");
+        Tag expected = new Tag("relax");
+        expected.setId(4);
         assertEquals(expected, tagDao.findById(4).get());
     }
 
@@ -45,7 +49,8 @@ class TagDaoImplTest {
 
     @Test
     void findByName() {
-        Tag expected = new Tag(4, "relax");
+        Tag expected = new Tag("relax");
+        expected.setId(4);
         assertEquals(expected, tagDao.findByName("relax").get());
     }
 
@@ -61,7 +66,8 @@ class TagDaoImplTest {
 
     @Test
     void findMostUsedByUserHighestCost() {
-        Tag expected = new Tag(1, "extreme");
+        Tag expected = new Tag("relax");
+        expected.setId(4);
         assertEquals(expected, tagDao.findMostUsedByUserHighestCost().get());
     }
 
@@ -78,13 +84,14 @@ class TagDaoImplTest {
 
     @Test
     void addDuplicate() {
-        assertEquals(new Tag(4, "relax"), tagDao.add(new Tag("relax")));
-
+        Tag expected = new Tag("relax");
+        expected.setId(4);
+        assertThrows(PersistenceException.class, () -> tagDao.add(new Tag("relax")));
     }
 
     @Test()
     void addWithNull() {
-        assertThrows(NullPointerException.class, () -> tagDao.add(null));
+        assertThrows(IllegalArgumentException.class, () -> tagDao.add(null));
     }
 
     @Test

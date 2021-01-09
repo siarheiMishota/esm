@@ -128,7 +128,7 @@ public class User {
         if (password != null ? !password.equals(user.password) : user.password != null) {
             return false;
         }
-        if (role != null ? !role.equals(user.role) : user.role != null) {
+        if (role != user.role) {
             return false;
         }
         return orders != null ? orders.equals(user.orders) : user.orders == null;

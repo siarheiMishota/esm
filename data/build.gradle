@@ -19,7 +19,7 @@ dependencies {
     implementation group: 'org.hibernate', name: 'hibernate-entitymanager', version: '5.4.27.Final'
     implementation group: 'com.zaxxer', name: 'HikariCP', version: '3.4.5'
     implementation group: 'org.springframework.boot', name: 'spring-boot-starter-security', version: '2.3.5.RELEASE'
-    runtime group: 'com.h2database', name: 'h2', version: '1.4.194'
+    runtime group: 'com.h2database', name: 'h2', version: '1.4.200'
 
     testImplementation group: 'com.h2database', name: 'h2', version: '1.4.200'
     testImplementation(group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: '2.3.5.RELEASE')

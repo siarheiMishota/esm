@@ -14,6 +14,7 @@ repositories {
 dependencies {
     implementation group: 'org.springframework.boot', name: 'spring-boot-starter', version: '2.3.5.RELEASE'
     runtime group: 'mysql', name: 'mysql-connector-java', version: '8.0.22'
+    implementation group: 'mysql', name: 'mysql-connector-java', version: '8.0.22'
     implementation group: 'org.springframework', name: 'spring-orm', version: '5.2.11.RELEASE'
     implementation group: 'org.hibernate', name: 'hibernate-core', version: '5.4.27.Final'
     implementation group: 'org.hibernate', name: 'hibernate-entitymanager', version: '5.4.27.Final'

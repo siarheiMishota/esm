@@ -1,4 +1,4 @@
-html{
+html {
   width: 100%;
   height: 100%;
 }
@@ -12,9 +12,9 @@ body {
   margin: 0 auto;
 }
 
-.content {
+.container {
   display: flex;
-  background: #ffffff;
+  background: #f2f2f2;
   flex-direction: column;
   align-items: center;
   min-height: 500px;
@@ -22,14 +22,13 @@ body {
   width: 100%;
 }
 
-.add-new-item {
+.form {
   background: #ffffff;
   display: flex;
   flex-direction: row;
   align-items: center;
   width: 1000px;
   min-height: 350px;
-  border: 2px #e6e6e6 solid;
 }
 
 
@@ -37,13 +36,13 @@ body {
   margin: 4px 20px 0 0;
   padding: 10px 0;
   display: flex;
-  width: 250px;
+  width: 200px;
   border: 1px #ececec solid;
   box-sizing: content-box;
 
 }
 
-.select-category, .valid-to,.price-input, .company-name, .images, .item-name{
+.select-category, .valid-to, .price-input, .company-name, .images, .item-name {
   margin: 4px 20px 0 0;
   padding: 10px 0 10px 8px;
   display: flex;
@@ -54,7 +53,7 @@ body {
   box-sizing: content-box;
 }
 
-.short-description, .long-description{
+.short-description, .long-description {
   margin: 4px 20px 0 0;
   padding: 10px 0 10px 8px;
   display: flex;
@@ -77,6 +76,7 @@ body {
   box-sizing: content-box;
   color: white;
   font-size: 16px;
+  border: 1px solid grey;
 }
 
 .submit-back {
@@ -90,14 +90,13 @@ body {
   box-sizing: content-box;
   color: #8d8d8d;
   font-size: 16px;
-  border: 1px solid grey;
 }
 
 .add-new-item-input-label {
   display: flex;
   flex-direction: column;
   width: 40%;
-  padding: 10px 10px;
+  padding: 5px 10px;
   height: 60px;
   font-size: 12px;
   color: #b9b9b9;
@@ -108,7 +107,7 @@ body {
   display: flex;
   flex-direction: column;
   width: 40%;
-  padding: 0px 10px;
+  padding: 5px 10px;
   height: 140px;
   font-size: 12px;
   color: #b9b9b9;
@@ -124,26 +123,37 @@ body {
   height: 100%;
 }
 
-.add-new-item-label {
+.top-sidebar {
   display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
   width: 100%;
-  height: 65px;
-  background: #bdbdbd;
+  height: 100px;
+  min-height: 100px;
+  background: #e0e0e0;
   font-size: 20px;
   color: #fdfdfd;
-  align-items: center;
+}
+
+.category-card {
+  display: flex;
+  flex-direction: column;
+  width: 80px;
+  height: 100px;
+  justify-content: center;
   box-sizing: border-box;
-  padding-left: 200px;
 }
 
-.add-new-item-submits-full {
+.category-card img {
   display: flex;
-  width: 100%;
-  justify-content: flex-end;
+  margin: 5px 0;
+  height: 70%;
+  background: white;
 }
 
-.add-new-item-submits {
+.category-card label{
   display: flex;
-  width: 40%;
-  margin: 0 5% 0 0;
+  justify-content: center;
+  font-size: 12px;
+  color: #878787;
 }

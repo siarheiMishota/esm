@@ -11,6 +11,8 @@ import com.epam.esm.dao.impl.UserDaoImpl;
 import com.epam.esm.util.GiftCertificateSqlBuilder;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.sql.DataSource;
+import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
@@ -24,6 +26,16 @@ public class DaoConfiguration {
     @Bean
     public EntityManager entityManager(EntityManagerFactory entityManagerFactory) {
         return entityManagerFactory.createEntityManager();
+    }
+
+    @Bean
+    public DataSource datasource() {
+        return DataSourceBuilder.create()
+            .driverClassName("com.mysql.cj.jdbc.Driver")
+            .url("jdbc:mysql://localhost:3306/tag")
+            .username("root")
+            .password("root")
+            .build();
     }
 
     @Bean

@@ -2,8 +2,6 @@ allprojects {
     apply plugin: 'jacoco'
 }
 apply plugin: 'java'
-apply plugin: 'maven'
-apply plugin: 'idea'
 apply plugin: 'io.spring.dependency-management'
 
 version = '0.0.1-SNAPSHOT'

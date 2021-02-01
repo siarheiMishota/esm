@@ -22,26 +22,15 @@ body {
   width: 100%;
 }
 
-.add-new-item {
+.container {
   background: #ffffff;
   display: flex;
   flex-direction: row;
   align-items: center;
   width: 1000px;
   min-height: 350px;
-  border: 2px #e6e6e6 solid;
 }
 
-
-.add-new-item-input, .password {
-  margin: 4px 20px 0 0;
-  padding: 10px 0;
-  display: flex;
-  width: 250px;
-  border: 1px #ececec solid;
-  box-sizing: content-box;
-
-}
 
 .select-category, .valid-to,.price-input, .company-name, .images, .item-name{
   margin: 4px 20px 0 0;
@@ -77,6 +66,7 @@ body {
   box-sizing: content-box;
   color: white;
   font-size: 16px;
+  border:none;
 }
 
 .submit-back {
@@ -93,7 +83,7 @@ body {
   border: 1px solid grey;
 }
 
-.add-new-item-input-label {
+.input-label {
   display: flex;
   flex-direction: column;
   width: 40%;
@@ -104,7 +94,7 @@ body {
   box-sizing: content-box;
 }
 
-.add-new-item-input-textarea {
+.input-textarea {
   display: flex;
   flex-direction: column;
   width: 40%;
@@ -116,7 +106,7 @@ body {
 
 }
 
-.add-new-item-input-fields {
+.input-fields {
   display: flex;
   align-items: flex-start;
   justify-content: center;
@@ -124,10 +114,11 @@ body {
   height: 100%;
 }
 
-.add-new-item-label {
+.main-label {
   display: flex;
   width: 100%;
   height: 65px;
+  min-height: 65px;
   background: #bdbdbd;
   font-size: 20px;
   color: #fdfdfd;
@@ -136,13 +127,13 @@ body {
   padding-left: 200px;
 }
 
-.add-new-item-submits-full {
+.submits-full {
   display: flex;
   width: 100%;
   justify-content: flex-end;
 }
 
-.add-new-item-submits {
+.submits {
   display: flex;
   width: 40%;
   margin: 0 5% 0 0;

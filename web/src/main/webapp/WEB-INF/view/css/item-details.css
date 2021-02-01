@@ -1,0 +1,162 @@
+html {
+  width: 100%;
+  height: 100%;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 100%;
+  width: 1200px;
+  margin: 0 auto;
+  /*font-family: Arial;*/
+
+}
+
+.container {
+  display: flex;
+  background: #f2f2f2;
+  flex-direction: column;
+  align-items: center;
+  padding: 30px 50px;
+  box-sizing: border-box;
+  height: 100vh;
+  width: 100%;
+}
+
+.content-item {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  flex-direction: row;
+  flex-wrap: wrap;
+  place-content: flex-start;
+  background: #f2f2f2;
+}
+
+.item-image {
+  display: flex;
+  width: 710px;
+  height: 300px;
+  background: #e0e0e0;
+  margin-right: 30px;
+}
+
+.coupon-information {
+  display: flex;
+  flex-direction: column;
+  padding: 10px 20px;
+  width: 280px;
+  height: 300px;
+  background: white;
+  margin-left: 20px;
+  box-sizing: border-box;
+  font-family: Arial;
+
+}
+
+.coupon-name {
+  display: flex;
+  flex: 1;
+}
+
+.coupon-name label {
+  font-size: 18px;
+  font-weight: 900;
+}
+
+.coupon-description {
+  display: flex;
+  flex: 4;
+  text-align: left;
+  font-size: 14px;
+  color: #8f8f8f;
+  max-height: 180px;
+}
+
+.coupon-description p {
+  margin: 2px 0;
+}
+
+.coupon-time {
+  display: flex;
+  flex: 2;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.coupon-time .label-time-left {
+  display: flex;
+  height: 50%;
+  justify-content: right;
+  align-items: center;
+  text-align: left;
+  font-size: 10px;
+  color: #8f8f8f;
+}
+
+.coupon-time .days-hours {
+  display: flex;
+  height: 50%;
+  text-align: left;
+  font-size: 16px;
+  font-weight: bold;
+  color: black;
+}
+
+.coupon-price-and-add {
+  display: flex;
+  flex: 1;
+}
+
+.coupon-price-and-add .price {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  font-weight: bold;
+  font-size: 20px;
+  width: 50%;
+}
+
+.coupon-price-and-add .add-to-cart {
+  display: flex;
+  align-items: center;
+  width: 50%;
+  justify-content: flex-end;
+}
+
+.coupon-price-and-add .add-to-cart img {
+  display: flex;
+  margin: 0 5px;
+  height: 65%;
+}
+
+.coupon-price-and-add .add-to-cart a {
+  display: flex;
+  font-size: 14px;
+  color: #21a8f3;
+  text-decoration: none;
+
+}
+
+.item-detailed-description {
+  display: flex;
+  flex-direction: column;
+  width: 710px;
+  /*background: #e0e0e0;*/
+  margin: 40px 30px 0 0;
+}
+
+.item-detailed-description label{
+  font-size: 18px;
+  font-family: Arial;
+  font-weight: 600;
+}
+
+.item-detailed-description p{
+  font-size: 12px;
+  font-family: Arial;
+  color: #8f8f8f;
+}
+

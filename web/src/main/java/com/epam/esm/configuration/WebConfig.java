@@ -17,9 +17,9 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
 import org.springframework.web.servlet.view.JstlView;
 
+@Import(ServiceConfiguration.class)
 @Configuration
 @EnableWebMvc
-@Import(ServiceConfiguration.class)
 @ComponentScan(basePackages = "com.epam.esm.controller")
 public class WebConfig implements WebMvcConfigurer {
 

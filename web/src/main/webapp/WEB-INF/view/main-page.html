@@ -5,20 +5,22 @@
   <title>Main page</title>
   <link href="css/header.css" rel="stylesheet">
   <link href="css/main-page.css" rel="stylesheet">
+  <link href="css/loader.css" rel="stylesheet">
+  <link href="css/scrolling-back-button.css" rel="stylesheet">
 </head>
 <body>
-<div class="header">
+<div class="header" id="header">
   <div class="header-menu-logo">
     <a href="#"> <img class="header-svg-menu" src="svg/menu.svg" width="40" height="40" alt="menu-log"></a>
     <a href="#"> <img src="svg/logo.svg" width="40" height="40" alt="logo"></a>
   </div>
   <div class="header-search-category">
     <input class="header-search-input" name="search-gift" maxlength="50" placeholder="Search by item name">
-    <select name="select-category" class="header-select-category">
-      <option value="s1">All categories</option>
-      <option value="s2">Category 1</option>
-      <option value="s3">Category 2</option>
-      <option value="s4">Category 3</option>
+    <select id="select-category"  name="search-category" class="header-select-category">
+      <option value="all" selected>All categories</option>
+      <option value="name">By name</option>
+      <option value="description">By description</option>
+      <option value="tags">By tags</option>
     </select>
   </div>
   <div class="header-favourite-cart-sign-login">
@@ -62,303 +64,22 @@
 </div>
 <div class="container">
   <div class="coupons">
-    <div class="coupon">
-      <img class="coupon-image" src="svg/collections.svg" alt="photo of coupon">
-      <div class="information">
-        <div class="one-block">
-          <div class="coupon-name">
-            <label>
-              Coupon name
-            </label>
-          </div>
-          <div class=favorite>
-            <img src="svg/favorite.svg" alt="photo of favorite">
-          </div>
-        </div>
-        <div class="one-block">
-          <div class="brief-description">
-            <label>
-              Some brief description
-            </label>
-          </div>
-          <div class=duration-delivery>
-            <label>
-              Express in 3 days
-            </label>
-          </div>
-        </div>
-        <div class="third-block">
-          <div class="price">
-            <label>
-              $235
-            </label>
-          </div>
-          <div class=add-to-cart>
-            <input class="submit-add-to-cart" type="submit" value="Add to cart">
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="coupon">
-      <img class="coupon-image" src="svg/collections.svg" alt="photo of coupon">
-      <div class="information">
-        <div class="one-block">
-          <div class="coupon-name">
-            <label>
-              Coupon name
-            </label>
-          </div>
-          <div class=favorite>
-            <img src="svg/favorite.svg" alt="photo of favorite">
-          </div>
-        </div>
-        <div class="one-block">
-          <div class="brief-description">
-            <label>
-              Some brief description
-            </label>
-          </div>
-          <div class=duration-delivery>
-            <label>
-              Express in 3 days
-            </label>
-          </div>
-        </div>
-        <div class="third-block">
-          <div class="price">
-            <label>
-              $235
-            </label>
-          </div>
-          <div class=add-to-cart>
-            <input class="submit-add-to-cart" type="submit" value="Add to cart">
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="coupon">
-      <img class="coupon-image" src="svg/collections.svg" alt="photo of coupon">
-      <div class="information">
-        <div class="one-block">
-          <div class="coupon-name">
-            <label>
-              Coupon name
-            </label>
-          </div>
-          <div class=favorite>
-            <img src="svg/favorite.svg" alt="photo of favorite">
-          </div>
-        </div>
-        <div class="one-block">
-          <div class="brief-description">
-            <label>
-              Some brief description
-            </label>
-          </div>
-          <div class=duration-delivery>
-            <label>
-              Express in 3 days
-            </label>
-          </div>
-        </div>
-        <div class="third-block">
-          <div class="price">
-            <label>
-              $235
-            </label>
-          </div>
-          <div class=add-to-cart>
-            <input class="submit-add-to-cart" type="submit" value="Add to cart">
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="coupon">
-      <img class="coupon-image" src="svg/collections.svg" alt="photo of coupon">
-      <div class="information">
-        <div class="one-block">
-          <div class="coupon-name">
-            <label>
-              Coupon name
-            </label>
-          </div>
-          <div class=favorite>
-            <img src="svg/favorite.svg" alt="photo of favorite">
-          </div>
-        </div>
-        <div class="one-block">
-          <div class="brief-description">
-            <label>
-              Some brief description
-            </label>
-          </div>
-          <div class=duration-delivery>
-            <label>
-              Express in 3 days
-            </label>
-          </div>
-        </div>
-        <div class="third-block">
-          <div class="price">
-            <label>
-              $235
-            </label>
-          </div>
-          <div class=add-to-cart>
-            <input class="submit-add-to-cart" type="submit" value="Add to cart">
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="coupon">
-      <img class="coupon-image" src="svg/collections.svg" alt="photo of coupon">
-      <div class="information">
-        <div class="one-block">
-          <div class="coupon-name">
-            <label>
-              Coupon name
-            </label>
-          </div>
-          <div class=favorite>
-            <img src="svg/favorite.svg" alt="photo of favorite">
-          </div>
-        </div>
-        <div class="one-block">
-          <div class="brief-description">
-            <label>
-              Some brief description
-            </label>
-          </div>
-          <div class=duration-delivery>
-            <label>
-              Express in 3 days
-            </label>
-          </div>
-        </div>
-        <div class="third-block">
-          <div class="price">
-            <label>
-              $235
-            </label>
-          </div>
-          <div class=add-to-cart>
-            <input class="submit-add-to-cart" type="submit" value="Add to cart">
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="coupon">
-      <img class="coupon-image" src="svg/collections.svg" alt="photo of coupon">
-      <div class="information">
-        <div class="one-block">
-          <div class="coupon-name">
-            <label>
-              Coupon name
-            </label>
-          </div>
-          <div class=favorite>
-            <img src="svg/favorite.svg" alt="photo of favorite">
-          </div>
-        </div>
-        <div class="one-block">
-          <div class="brief-description">
-            <label>
-              Some brief description
-            </label>
-          </div>
-          <div class=duration-delivery>
-            <label>
-              Express in 3 days
-            </label>
-          </div>
-        </div>
-        <div class="third-block">
-          <div class="price">
-            <label>
-              $235
-            </label>
-          </div>
-          <div class=add-to-cart>
-            <input class="submit-add-to-cart" type="submit" value="Add to cart">
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="coupon">
-      <img class="coupon-image" src="svg/collections.svg" alt="photo of coupon">
-      <div class="information">
-        <div class="one-block">
-          <div class="coupon-name">
-            <label>
-              Coupon name
-            </label>
-          </div>
-          <div class=favorite>
-            <img src="svg/favorite.svg" alt="photo of favorite">
-          </div>
-        </div>
-        <div class="one-block">
-          <div class="brief-description">
-            <label>
-              Some brief description
-            </label>
-          </div>
-          <div class=duration-delivery>
-            <label>
-              Express in 3 days
-            </label>
-          </div>
-        </div>
-        <div class="third-block">
-          <div class="price">
-            <label>
-              $235
-            </label>
-          </div>
-          <div class=add-to-cart>
-            <input class="submit-add-to-cart" type="submit" value="Add to cart">
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="coupon">
-      <img class="coupon-image" src="svg/collections.svg" alt="photo of coupon">
-      <div class="information">
-        <div class="one-block">
-          <div class="coupon-name">
-            <label>
-              Coupon name
-            </label>
-          </div>
-          <div class=favorite>
-            <img src="svg/favorite.svg" alt="photo of favorite">
-          </div>
-        </div>
-        <div class="one-block">
-          <div class="brief-description">
-            <label>
-              Some brief description
-            </label>
-          </div>
-          <div class=duration-delivery>
-            <label>
-              Express in 3 days
-            </label>
-          </div>
-        </div>
-        <div class="third-block">
-          <div class="price">
-            <label>
-              $235
-            </label>
-          </div>
-          <div class=add-to-cart>
-            <input class="submit-add-to-cart" type="submit" value="Add to cart">
-          </div>
-        </div>
-      </div>
-    </div>
+
+  </div>
+  <div class="lds-roller">
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
   </div>
 </div>
+<button onclick="topFunction()" id="scroll-back-button" title="Go to top">Top</button>
+<script src="js/coupons.js"></script>
+<script src="js/main-page.js"></script>
+<script src="js/scrolling-back-button.js"></script>
 </body>
 </html>

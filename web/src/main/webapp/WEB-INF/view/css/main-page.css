@@ -19,7 +19,6 @@ body {
   align-items: center;
   padding: 20px 12px;
   box-sizing: border-box;
-  height: 100vh;
   width: 100%;
 }
 
@@ -100,18 +99,19 @@ body {
   display: flex;
   flex-direction: column;
   justify-content: space-evenly;
-  width: 100%;
-  height: 100%;
+  width: 225px;
+  height: 84px;
 }
 
 .coupon .information .coupon-name {
   display: flex;
   width: 45%;
   justify-content: flex-start;
-  align-items: center;
   margin: 5px 5px 0 5px;
   font-size: 14px;
   font-weight: bold;
+  height: 16px;
+  overflow: hidden;
 }
 
 .coupon .information .favorite {
@@ -129,15 +129,15 @@ body {
   display: flex;
   width: 60%;
   justify-content: flex-start;
-  align-items: center;
   margin: 5px;
   font-size: 12px;
   color: black;
+  overflow: hidden;
 }
 
 .coupon .information .duration-delivery {
   display: flex;
-  width: 40%;
+  width: 55%;
   justify-content: flex-end;
   text-align: left;
   align-items: center;

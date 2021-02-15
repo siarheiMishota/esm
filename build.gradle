@@ -1,22 +1,18 @@
-allprojects {
-    apply plugin: 'jacoco'
-}
+//allprojects {
+//    apply plugin: 'jacoco'
+//}
 apply plugin: 'java'
-apply plugin: 'io.spring.dependency-management'
+apply plugin: 'org.springframework.boot'
 
-version = '0.0.1-SNAPSHOT'
+group 'com.epam'
+version '1.0-SNAPSHOT'
 sourceCompatibility = 1.8
-
 buildscript {
-    ext {
-        springBootVersion = '2.3.5.RELEASE'
-    }
     repositories {
         mavenCentral()
     }
     dependencies {
-
-        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
-        classpath "org.jacoco:org.jacoco.core:0.8.6"
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:2.3.5.RELEASE")
+//        classpath "org.jacoco:org.jacoco.core:0.8.6"
     }
 }

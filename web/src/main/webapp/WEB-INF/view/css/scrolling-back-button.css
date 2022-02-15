@@ -1,0 +1,19 @@
+#scroll-back-button {
+    display: none;
+    position: fixed;
+    bottom: 20px;
+    right: 270px;
+    z-index: 99;
+    border: none;
+    outline: none;
+    background-color: #585858;
+    color: black;
+    cursor: pointer;
+    padding: 15px;
+    border-radius: 10px;
+    font-size: 18px;
+}
+
+#scroll-back-button:hover {
+    background-color: lawngreen; /* Add a dark-grey background on hover */
+}

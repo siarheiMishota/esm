@@ -5,7 +5,9 @@ import static com.epam.esm.entity.Role.ROLE_ADMIN;
 import com.epam.esm.service.security.impl.CustomerUserDetails;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.stereotype.Component;
 
+@Component
 public class WebSecurity {
 
     public boolean checkUserIdOrAdmin(Authentication authentication, int id) {
